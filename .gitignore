@@ -1,0 +1,13 @@
+﻿TestProject_Unity6/.utmp
+TestProject_Unity6/.vs
+TestProject_Unity6/Logs
+TestProject_Unity6/Temp
+TestProject_Unity6/.vsconfig
+TestProject_Unity6/UserSettings
+TestProject_Unity6/Builds
+TestProject_Unity6/obj
+TestProject_Unity6/Library
+TestProject_Unity6/Assets/ExternalPackages
+TestProject_Unity6/Assets/ExternalPackages.meta
+*.csproj
+*.sln
