@@ -22,7 +22,6 @@ public class DroppedItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            gameObject.SetActive(false);
             onGetItem?.Invoke(id, this);
         }
     }

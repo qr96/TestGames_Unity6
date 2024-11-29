@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +11,9 @@ public class DroppedItemManager : MonoBehaviour
 
     private void Awake()
     {
+        foreach (var item in items)
+            item.gameObject.SetActive(false);
+
         for (int i = 0; i < items.Count; i++)
             pool.Add(i, new Stack<DroppedItem>());
     }
@@ -35,7 +37,9 @@ public class DroppedItemManager : MonoBehaviour
 
     void OnGetItem(int typeId, DroppedItem item)
     {
+        item.gameObject.SetActive(false);
         pool[typeId].Push(item);
         Managers.effect.ShowEffect(3, item.transform.position);
+        Managers.GameData.PickupItem(typeId);
     }
 }

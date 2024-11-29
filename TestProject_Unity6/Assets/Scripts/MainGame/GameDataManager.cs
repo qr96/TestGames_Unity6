@@ -76,6 +76,9 @@ public class GameDataManager : MonoBehaviour
 
             Managers.effect.ShowEffect(0, monsterPosition);
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+
+            if (Random.Range(0f, 1f) > 0.1f)
+                Managers.DropItem.SpawnItem(1, monsterPosition, 1);
         }
     }
 
@@ -131,6 +134,16 @@ public class GameDataManager : MonoBehaviour
         else
         {
             Debug.LogError($"Quest is not progressing. id = {questId}");
+        }
+    }
+
+    public void PickupItem(int typeId)
+    {
+        if (typeId == 1)
+        {
+            playerStat.nowHp += 5;
+            if (playerStat.nowHp > playerStat.maxHp)
+                playerStat.nowHp = playerStat.maxHp;
         }
     }
 }
