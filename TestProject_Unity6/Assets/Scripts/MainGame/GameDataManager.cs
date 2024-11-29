@@ -66,6 +66,7 @@ public class GameDataManager : MonoBehaviour
                 Managers.MonsterManager.RemoveMonster(monsterId);
                 Managers.effect.ShowEffect(1, monsterPosition);
                 Managers.DropItem.SpawnItem(0, monsterPosition, 5);
+                Managers.UIManager.GetLayout<StateLayout>().SetQuestList(progressQuests);
             }
             else
             {
@@ -109,7 +110,8 @@ public class GameDataManager : MonoBehaviour
         }
         else
         {
-            progressQuests.Add(new Quest() { id = questId });
+            progressQuests.Add(new Quest() { id = questId, targetAmount = 10 });
+            Managers.UIManager.GetLayout<StateLayout>().SetQuestList(progressQuests);
         }
     }
 
@@ -123,6 +125,7 @@ public class GameDataManager : MonoBehaviour
             {
                 progressQuests.RemoveAt(questIndex);
                 completeQuests.Add(quest);
+                Managers.UIManager.GetLayout<StateLayout>().SetQuestList(progressQuests);
             }
         }
         else
