@@ -14,8 +14,16 @@ public class ConfirmPopup : UIPopup
 
     private void Start()
     {
-        yesButton.onClick.AddListener(() => onYes?.Invoke());
-        noButton.onClick.AddListener(() => onNo?.Invoke());
+        yesButton.onClick.AddListener(() =>
+        {
+            Hide();
+            onYes?.Invoke();
+        });
+        noButton.onClick.AddListener(() =>
+        {
+            Hide();
+            onNo?.Invoke();
+        });
     }
 
     public override void OnCreate()
