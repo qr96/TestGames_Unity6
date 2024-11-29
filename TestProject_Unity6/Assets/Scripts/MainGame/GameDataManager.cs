@@ -20,7 +20,7 @@ public class GameDataManager : MonoBehaviour
 
     private void Awake()
     {
-        playerStat = new Stat() { maxHp = 10, nowHp = 10, attack = 10 };
+        playerStat = new Stat() { maxHp = 20, nowHp = 20, attack = 10 };
         for (int i = 0; i < maxMonster; i++)
             monsters.Add(new Stat() { maxHp = 100, nowHp = 0, attack = 2 });
     }
@@ -77,7 +77,7 @@ public class GameDataManager : MonoBehaviour
             Managers.effect.ShowEffect(0, monsterPosition);
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
 
-            if (Random.Range(0f, 1f) > 0.1f)
+            if (Random.Range(0f, 1f) < 0.2f)
                 Managers.DropItem.SpawnItem(1, monsterPosition, 1);
         }
     }
@@ -89,7 +89,7 @@ public class GameDataManager : MonoBehaviour
 
         if (DateTime.Now > itemCoolEnds[itemId])
         {
-            var itemCool = 0.1f;
+            var itemCool = 5f;
             itemCoolEnds[itemId] = DateTime.Now.AddSeconds(itemCool);
 
             playerStat.nowHp += 10;
@@ -144,6 +144,8 @@ public class GameDataManager : MonoBehaviour
             playerStat.nowHp += 5;
             if (playerStat.nowHp > playerStat.maxHp)
                 playerStat.nowHp = playerStat.maxHp;
+
+            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
         }
     }
 }
