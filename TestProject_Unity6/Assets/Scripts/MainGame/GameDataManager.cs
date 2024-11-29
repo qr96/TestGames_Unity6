@@ -20,9 +20,11 @@ public class GameDataManager : MonoBehaviour
 
     private void Awake()
     {
-        playerStat = new Stat() { maxHp = 20, nowHp = 20, attack = 10 };
+        playerStat = new Stat() { maxHp = 20, attack = 10 };
+        playerStat.ReSpawn();
+
         for (int i = 0; i < maxMonster; i++)
-            monsters.Add(new Stat() { maxHp = 100, nowHp = 0, attack = 2 });
+            monsters.Add(new Stat() { maxHp = 100, attack = 2 });
     }
 
     private void Update()
@@ -38,7 +40,7 @@ public class GameDataManager : MonoBehaviour
                 {
                     var newPos = new Vector3(Random.Range(15f, 50f), 1f, Random.Range(15f, 50f));
                     var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-                    monster.nowHp = monster.maxHp;
+                    monster.ReSpawn();
                     Managers.MonsterManager.SpawnMonster(i, newPos, newRotate);
                 }
             }
@@ -56,7 +58,7 @@ public class GameDataManager : MonoBehaviour
         else
         {
             var monsterPosition = Managers.MonsterManager.GetMonsterPosition(monsterId);
-            monster.nowHp -= playerStat.attack;
+            monster.ModifyNowHp(-playerStat.attack);
 
             if (monster.nowHp <= 0)
             {
@@ -70,7 +72,7 @@ public class GameDataManager : MonoBehaviour
             }
             else
             {
-                playerStat.nowHp -= monsters[monsterId].attack;
+                playerStat.ModifyNowHp(-monsters[monsterId].attack);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
             }
 
@@ -91,10 +93,7 @@ public class GameDataManager : MonoBehaviour
         {
             var itemCool = 5f;
             itemCoolEnds[itemId] = DateTime.Now.AddSeconds(itemCool);
-
-            playerStat.nowHp += 10;
-            if (playerStat.nowHp > playerStat.maxHp) 
-                playerStat.nowHp = playerStat.maxHp;
+            playerStat.ModifyNowHp(10);
 
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
             Managers.UIManager.GetLayout<VirtualButtonLayout>().StartItemCoolTime(itemId, itemCool);
@@ -141,10 +140,8 @@ public class GameDataManager : MonoBehaviour
     {
         if (typeId == 1)
         {
-            playerStat.nowHp += 5;
-            if (playerStat.nowHp > playerStat.maxHp)
-                playerStat.nowHp = playerStat.maxHp;
-
+            playerStat.ModifyNowHp(5);
+            
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
         }
     }
@@ -155,6 +152,18 @@ public class Stat
     public long maxHp;
     public long nowHp;
     public long attack;
+
+    public void ReSpawn()
+    {
+        nowHp = maxHp;
+    }
+
+    public void ModifyNowHp(long hp)
+    {
+        nowHp += hp;
+        if (nowHp > maxHp) nowHp = maxHp;
+        else if (nowHp < 0) nowHp = 0;
+    }
 }
 
 public class Quest
