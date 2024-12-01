@@ -85,7 +85,7 @@ public class GameDataManager : MonoBehaviour
 
             if (monster.nowHp <= 0)
             {
-                playerInfo.ModifyExp(10);
+                playerInfo.ModifyExp(10, () => Managers.effect.ShowEffect(3, Managers.MonsterManager.player.transform.position));
 
                 foreach (var quest in progressQuests)
                     quest.nowAmount++;
@@ -218,7 +218,7 @@ public class playerInfo
     public int level;
     public long nowExp;
 
-    public void ModifyExp(long exp)
+    public void ModifyExp(long exp, Action onLevelUp)
     {
         nowExp += exp;
 
@@ -229,6 +229,7 @@ public class playerInfo
         {
             nowExp -= TableData.GetMaxExp(level);
             level++;
+            onLevelUp?.Invoke();
         }
     }
 }
