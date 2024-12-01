@@ -10,6 +10,8 @@ public class GameDataManager : MonoBehaviour
     public float respawnTime = 30f;
 
     Stat playerStat;
+    playerInfo playerInfo;
+
     List<Stat> monsters = new List<Stat>();
 
     List<Quest> progressQuests = new List<Quest>();
@@ -22,11 +24,18 @@ public class GameDataManager : MonoBehaviour
 
     private void Awake()
     {
+        playerInfo = new playerInfo() { level = 1, nowExp = 0 };
         playerStat = new Stat() { maxHp = 20, attack = 10, speed = 6 };
         playerStat.ReSpawn();
 
         for (int i = 0; i < maxMonster; i++)
             monsters.Add(new Stat() { maxHp = 100, attack = 2 });
+    }
+
+    private void Start()
+    {
+        Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
+        Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
     }
 
     private void Update()
@@ -76,6 +85,8 @@ public class GameDataManager : MonoBehaviour
 
             if (monster.nowHp <= 0)
             {
+                playerInfo.ModifyExp(10);
+
                 foreach (var quest in progressQuests)
                     quest.nowAmount++;
 
@@ -84,6 +95,8 @@ public class GameDataManager : MonoBehaviour
                 Managers.MonsterManager.RemoveMonster(monsterId);
                 Managers.effect.ShowEffect(1, monsterPosition);
                 Managers.DropItem.SpawnItem(0, monsterPosition, 5);
+                Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
+                Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
                 Managers.UIManager.GetLayout<StateLayout>().SetQuestList(progressQuests);
             }
             else
@@ -197,6 +210,26 @@ public class Stat
         nowHp += hp;
         if (nowHp > maxHp) nowHp = maxHp;
         else if (nowHp < 0) nowHp = 0;
+    }
+}
+
+public class playerInfo
+{
+    public int level;
+    public long nowExp;
+
+    public void ModifyExp(long exp)
+    {
+        nowExp += exp;
+
+        if (nowExp < 0)
+            nowExp = 0;
+
+        while (nowExp >= TableData.GetMaxExp(level))
+        {
+            nowExp -= TableData.GetMaxExp(level);
+            level++;
+        }
     }
 }
 

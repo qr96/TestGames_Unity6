@@ -5,6 +5,9 @@ using UnityEngine;
 public class StateLayout : UILayout
 {
     public GuageBar userHpBar;
+    public GuageBar expBar;
+    public TMP_Text levelText;
+    
     public TMP_Text questPrefab;
 
     List<TMP_Text> questPool = new List<TMP_Text>();
@@ -17,6 +20,16 @@ public class StateLayout : UILayout
     public void SetUserHpBar(long maxHp, long nowHp)
     {
         userHpBar.SetGuage(maxHp, nowHp);
+    }
+
+    public void SetUserExpBar(long maxExp, long nowExp)
+    {
+        expBar.SetGuage(maxExp, nowExp);
+    }
+
+    public void SetLevel(int level)
+    {
+        levelText.text = level.ToString();
     }
 
     public void SetQuestList(List<Quest> quests)
