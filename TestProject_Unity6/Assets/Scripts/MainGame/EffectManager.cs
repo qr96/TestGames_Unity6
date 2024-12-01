@@ -20,7 +20,7 @@ public class EffectManager : MonoBehaviour
             effect.SetActive(false);
     }
 
-    public void ShowEffect(int id, Vector3 position)
+    public void ShowEffect(int id, Vector3 position, Transform parent = null)
     {
         GameObject newEffect;
 
@@ -30,6 +30,7 @@ public class EffectManager : MonoBehaviour
             newEffect = effectPool[id].Dequeue();
 
         newEffect.transform.position = position;
+        newEffect.transform.SetParent(parent);
         newEffect.SetActive(false);
         newEffect.SetActive(true);
 
