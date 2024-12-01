@@ -85,7 +85,7 @@ public class GameDataManager : MonoBehaviour
 
             if (monster.nowHp <= 0)
             {
-                playerInfo.ModifyExp(10, () => Managers.effect.ShowEffect(3, Managers.MonsterManager.player.transform.position));
+                playerInfo.ModifyExp(10, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position));
 
                 foreach (var quest in progressQuests)
                     quest.nowAmount++;
