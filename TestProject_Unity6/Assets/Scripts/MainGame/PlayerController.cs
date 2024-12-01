@@ -17,7 +17,8 @@ public class PlayerController : MonoBehaviour
 
     public Rigidbody rigid;
     public Animator animator;
-    public FloatingJoystick joystick;
+    //public FloatingJoystick joystick;
+    public VirtualJoystick joystick;
     public TriggerEvent attackTrigger;
 
     public float speed;
