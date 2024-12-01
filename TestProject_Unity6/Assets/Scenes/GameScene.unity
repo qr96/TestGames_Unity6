@@ -3270,6 +3270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db72c2308f6c2fb47ab62e837b345e97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 700958385}
   monsterPrefab: {fileID: 2070198218}
 --- !u!1 &739360089
 GameObject:
@@ -6925,7 +6926,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1702553719
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7630,7 +7631,8 @@ MonoBehaviour:
   - {fileID: 1305298006}
   - {fileID: 634215427}
   - {fileID: 2058078391}
-  uiPopups: []
+  uiPopups:
+  - {fileID: 1702553720}
   canvas: {fileID: 1559769535}
   root: {fileID: 595624729}
 --- !u!1 &1957657042

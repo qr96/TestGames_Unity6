@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MonsterManager : MonoBehaviour
 {
+    public PlayerController player;
     public BaseMonster monsterPrefab;
 
     Stack<BaseMonster> monsterPool = new Stack<BaseMonster>();

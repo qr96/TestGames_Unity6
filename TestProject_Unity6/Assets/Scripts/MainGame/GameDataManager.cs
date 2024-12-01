@@ -15,12 +15,14 @@ public class GameDataManager : MonoBehaviour
     List<Quest> progressQuests = new List<Quest>();
     List<Quest> completeQuests = new List<Quest>();
     Dictionary<int, DateTime> itemCoolEnds = new Dictionary<int, DateTime>();
+    Dictionary<int, DateTime> buffEndTimes = new Dictionary<int, DateTime>();
+    Dictionary<int, bool> buffActives = new Dictionary<int, bool>();
 
     DateTime nextSpawnTime;
 
     private void Awake()
     {
-        playerStat = new Stat() { maxHp = 20, attack = 10 };
+        playerStat = new Stat() { maxHp = 20, attack = 10, speed = 6 };
         playerStat.ReSpawn();
 
         for (int i = 0; i < maxMonster; i++)
@@ -45,6 +47,18 @@ public class GameDataManager : MonoBehaviour
                 }
             }
         }
+
+        foreach (var buff in buffEndTimes)
+        {
+            if (buffActives[buff.Key] == true)
+            {
+                if (buffEndTimes[buff.Key] < DateTime.Now)
+                {
+                    buffActives[buff.Key] = false;
+                    Managers.MonsterManager.player.speed = playerStat.speed;
+                }
+            }
+        }
     }
 
     public void Battle(int monsterId)
@@ -64,6 +78,8 @@ public class GameDataManager : MonoBehaviour
             {
                 foreach (var quest in progressQuests)
                     quest.nowAmount++;
+
+                UseBuffSkill(0);
 
                 Managers.MonsterManager.RemoveMonster(monsterId);
                 Managers.effect.ShowEffect(1, monsterPosition);
@@ -86,18 +102,35 @@ public class GameDataManager : MonoBehaviour
 
     public void UseItem(int itemId)
     {
+        var itemCool = 5f;
+
         if (!itemCoolEnds.ContainsKey(itemId))
             itemCoolEnds.Add(itemId, DateTime.MinValue);
 
         if (DateTime.Now > itemCoolEnds[itemId])
         {
-            var itemCool = 5f;
             itemCoolEnds[itemId] = DateTime.Now.AddSeconds(itemCool);
             playerStat.ModifyNowHp(10);
 
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
             Managers.UIManager.GetLayout<VirtualButtonLayout>().StartItemCoolTime(itemId, itemCool);
         }
+    }
+
+    public void UseBuffSkill(int skillId)
+    {
+        var buffTime = 3f;
+
+        if (!buffEndTimes.ContainsKey(skillId))
+            buffEndTimes.Add(skillId, DateTime.MinValue);
+
+        if (!buffActives.ContainsKey(skillId))
+            buffActives.Add(skillId, false);
+
+        buffEndTimes[skillId] = DateTime.Now.AddSeconds(buffTime);
+        buffActives[skillId] = true;
+
+        Managers.MonsterManager.player.speed = playerStat.speed + 2f;
     }
 
     public void StartQuest(int questId)
@@ -152,6 +185,7 @@ public class Stat
     public long maxHp;
     public long nowHp;
     public long attack;
+    public float speed;
 
     public void ReSpawn()
     {
