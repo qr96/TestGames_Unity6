@@ -10,11 +10,15 @@ public class StateLayout : UILayout
     
     public TMP_Text questPrefab;
 
+    public IconSlot skillDurationPrefab;
+
     List<TMP_Text> questPool = new List<TMP_Text>();
+    Stack<IconSlot> skillDurationPool = new Stack<IconSlot>();
 
     private void Start()
     {
         questPrefab.gameObject.SetActive(false);
+        skillDurationPrefab.gameObject.SetActive(false);
     }
 
     public void SetUserHpBar(long maxHp, long nowHp)
@@ -49,5 +53,16 @@ public class StateLayout : UILayout
         {
             questPool[i].gameObject.SetActive(false);
         }
+    }
+
+    public void AddSkillDutaion(int skillId, float duration)
+    {
+        var skillDuration = skillDurationPool.Count > 0 ? skillDurationPool.Pop() : Instantiate(skillDurationPrefab, skillDurationPrefab.transform.parent);
+        skillDuration.gameObject.SetActive(true);
+        skillDuration.StartCoolTime(duration, () =>
+        {
+            skillDuration.gameObject.SetActive(false);
+            skillDurationPool.Push(skillDuration);
+        });
     }
 }

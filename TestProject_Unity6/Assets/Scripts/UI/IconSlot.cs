@@ -9,6 +9,7 @@ public class IconSlot : MonoBehaviour
 
     float coolTime;
     DateTime coolEndTime;
+    Action onEnd;
 
     private void Update()
     {
@@ -19,12 +20,14 @@ public class IconSlot : MonoBehaviour
         else
         {
             cool.fillAmount = 0;
+            onEnd?.Invoke();
         }
     }
 
-    public void StartCoolTime(float seconds)
+    public void StartCoolTime(float seconds, Action onEnd = null)
     {
         coolTime = seconds;
         coolEndTime = DateTime.Now.AddSeconds(seconds);
+        this.onEnd = onEnd;
     }
 }
