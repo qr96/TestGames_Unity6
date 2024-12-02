@@ -4,6 +4,6 @@ public class TableData
 {
     public static long GetMaxExp(int level)
     {
-        return level * 100;
+        return level * 20;
     }
 }

@@ -144,6 +144,7 @@ public class GameDataManager : MonoBehaviour
         buffActives[skillId] = true;
 
         Managers.MonsterManager.player.speed = playerStat.speed + 2f;
+        Managers.UIManager.GetLayout<StateLayout>().AddSkillDutaion(skillId, buffTime);
     }
 
     public void StartQuest(int questId)
