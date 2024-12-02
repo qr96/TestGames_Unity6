@@ -14,6 +14,7 @@ public class StateLayout : UILayout
 
     List<TMP_Text> questPool = new List<TMP_Text>();
     Stack<IconSlot> skillDurationPool = new Stack<IconSlot>();
+    Dictionary<int, IconSlot> skillDurationDic = new Dictionary<int, IconSlot>();
 
     private void Start()
     {
@@ -55,9 +56,22 @@ public class StateLayout : UILayout
         }
     }
 
-    public void AddSkillDutaion(int skillId, float duration)
+    public void SetSkillDutaion(int skillId, float duration)
     {
-        var skillDuration = skillDurationPool.Count > 0 ? skillDurationPool.Pop() : Instantiate(skillDurationPrefab, skillDurationPrefab.transform.parent);
+        IconSlot skillDuration;
+
+        if (skillDurationDic.ContainsKey(skillId))
+            skillDuration = skillDurationDic[skillId];
+        else
+        {
+            if (skillDurationPool.Count > 0)
+                skillDuration = skillDurationPool.Pop();
+            else
+                skillDuration = Instantiate(skillDurationPrefab, skillDurationPrefab.transform.parent);
+
+            skillDurationDic.Add(skillId, skillDuration);
+        }
+        
         skillDuration.gameObject.SetActive(true);
         skillDuration.StartCoolTime(duration, () =>
         {
