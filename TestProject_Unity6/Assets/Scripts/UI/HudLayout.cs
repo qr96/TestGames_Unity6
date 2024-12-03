@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class HudLayout : UILayout
 {
     public GuageBar hpBarPrefab;
+    public TMP_Text nameTagPrefab;
 
     List<int> targetIds = new List<int>();
     Dictionary<int, GuageBar> targetDic = new Dictionary<int, GuageBar>();
     Stack<GuageBar> hpBarPool = new Stack<GuageBar>();
+
+    Dictionary<Transform, TMP_Text> nameTargetDic = new Dictionary<Transform, TMP_Text>();
+    Stack<TMP_Text> nameTagPool = new Stack<TMP_Text>();
 
     Camera mainCamera;
 
@@ -16,6 +21,7 @@ public class HudLayout : UILayout
     {
         mainCamera = Camera.main;
         hpBarPrefab.SetActive(false);
+        nameTagPrefab.gameObject.SetActive(false);
     }
 
     private void LateUpdate()
@@ -26,6 +32,14 @@ public class HudLayout : UILayout
             var barPos = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.2f);
 
             targetDic[targetId].transform.position = barPos;
+        }
+
+        foreach (var target in nameTargetDic)
+        {
+            var targetPos = target.Key.position;
+            var nameTag = target.Value;
+
+            nameTag.transform.position = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.4f);
         }
     }
 
@@ -60,5 +74,30 @@ public class HudLayout : UILayout
     {
         if (targetDic.ContainsKey(targetId))
             targetDic[targetId].SetGuage(max, now);
+    }
+
+    public void AddNameTarget(Transform target, string name)
+    {
+        if (!nameTargetDic.ContainsKey(target))
+        {
+            if (nameTagPool.Count > 0)
+                nameTargetDic.Add(target, nameTagPool.Pop());
+            else
+                nameTargetDic.Add(target, Instantiate(nameTagPrefab, nameTagPrefab.transform.parent));
+
+            nameTargetDic[target].gameObject.SetActive(true);
+            nameTargetDic[target].text = name;
+        }
+    }
+
+    public void RemoveNameTarget(Transform target)
+    {
+        if (nameTargetDic.ContainsKey(target))
+        {
+            var nameTag = nameTargetDic[target];
+            nameTag.gameObject.SetActive(false);
+            nameTagPool.Push(nameTag);
+            nameTargetDic.Remove(target);
+        }
     }
 }
