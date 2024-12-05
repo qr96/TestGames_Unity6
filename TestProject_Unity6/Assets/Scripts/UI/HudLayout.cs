@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,7 @@ public class HudLayout : UILayout
 {
     public GuageBar hpBarPrefab;
     public TMP_Text nameTagPrefab;
+    public TMP_Text damagePrefab;
 
     List<int> targetIds = new List<int>();
     Dictionary<int, GuageBar> targetDic = new Dictionary<int, GuageBar>();
@@ -15,6 +17,8 @@ public class HudLayout : UILayout
     Dictionary<Transform, TMP_Text> nameTargetDic = new Dictionary<Transform, TMP_Text>();
     Stack<TMP_Text> nameTagPool = new Stack<TMP_Text>();
 
+    Stack<TMP_Text> damagePool = new Stack<TMP_Text>();
+
     Camera mainCamera;
 
     private void Start()
@@ -22,6 +26,7 @@ public class HudLayout : UILayout
         mainCamera = Camera.main;
         hpBarPrefab.SetActive(false);
         nameTagPrefab.gameObject.SetActive(false);
+        damagePrefab.gameObject.SetActive(false);
     }
 
     private void LateUpdate()
@@ -99,5 +104,33 @@ public class HudLayout : UILayout
             nameTagPool.Push(nameTag);
             nameTargetDic.Remove(target);
         }
+    }
+
+    public void ShowDamage(long damage, Vector3 position)
+    {
+        TMP_Text damageIns;
+        var startPos = mainCamera.WorldToScreenPoint(position);
+        var endPos = mainCamera.WorldToScreenPoint(position + Vector3.up);
+
+        if (damagePool.Count > 0)
+            damageIns = damagePool.Pop();
+        else
+            damageIns = Instantiate(damagePrefab, transform);
+
+        damageIns.gameObject.SetActive(true);
+        damageIns.text = damage.ToString();
+        damageIns.color = Color.white;
+        damageIns.transform.position = startPos;
+        damageIns.transform.SetAsLastSibling();
+        damageIns.transform.DOMoveY(endPos.y, 1f);
+        damageIns.DOFade(0f, 1f)
+            .SetEase(Ease.InCirc)
+            .OnComplete(() => damagePool.Push(damageIns));
+    }
+
+    public void ShowDamage(List<long> damages, Vector3 position)
+    {
+        for (int i = 0; i < damages.Count; i++)
+            ShowDamage(damages[i], position);
     }
 }

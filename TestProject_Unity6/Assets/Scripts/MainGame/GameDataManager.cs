@@ -81,7 +81,9 @@ public class GameDataManager : MonoBehaviour
         else
         {
             var monsterPosition = Managers.MonsterManager.GetMonsterPosition(monsterId);
-            monster.ModifyNowHp(-playerStat.attack);
+            var playerAttackDamage = playerStat.attack;
+
+            monster.ModifyNowHp(-playerAttackDamage);
 
             if (monster.nowHp <= 0)
             {
@@ -103,6 +105,7 @@ public class GameDataManager : MonoBehaviour
             {
                 playerStat.ModifyNowHp(-monsters[monsterId].attack);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
+                Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
             }
 
             Managers.effect.ShowEffect(0, monsterPosition);
