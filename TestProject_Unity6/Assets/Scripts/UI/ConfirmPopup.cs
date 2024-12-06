@@ -26,11 +26,6 @@ public class ConfirmPopup : UIPopup
         });
     }
 
-    public override void OnCreate()
-    {
-        
-    }
-
     public void SetPopup(string title, string content, Action onYes, Action onNo)
     {
         this.title.text = title;

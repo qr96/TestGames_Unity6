@@ -6,7 +6,6 @@ public abstract class UIPopup : MonoBehaviour
 {
     protected bool playerMoveLock = true;
 
-    public abstract void OnCreate();
     public virtual void OnShow()
     {
         // Called after gameObject activated;
