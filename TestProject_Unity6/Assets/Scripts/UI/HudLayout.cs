@@ -119,7 +119,7 @@ public class HudLayout : UILayout
 
         damageIns.gameObject.SetActive(true);
         damageIns.text = damage.ToString();
-        damageIns.color = Color.white;
+        damageIns.alpha = 1f;
         damageIns.transform.position = startPos;
         damageIns.transform.SetAsLastSibling();
         damageIns.transform.DOMoveY(endPos.y, 1f);
