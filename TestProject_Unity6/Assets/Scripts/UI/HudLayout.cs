@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class HudLayout : UILayout
 {
+    const float DAMAGE_TEXT_SPACE = 0.5f;
+
     public GuageBar hpBarPrefab;
     public TMP_Text nameTagPrefab;
     public TMP_Text damagePrefab;
@@ -130,7 +132,7 @@ public class HudLayout : UILayout
 
     public void ShowDamage(List<long> damages, Vector3 position)
     {
-        for (int i = 0; i < damages.Count; i++)
-            ShowDamage(damages[i], position);
+        for (int i = damages.Count - 1; i >= 0; i--)
+            ShowDamage(damages[i], position + Vector3.up * DAMAGE_TEXT_SPACE * i);
     }
 }
