@@ -11,6 +11,9 @@ public class UIManager : MonoBehaviour
     public RectTransform canvas;
     public RectTransform root;
 
+    public RectTransform layoutParent;
+    public RectTransform popupParent;
+
     private void Awake()
     {
         foreach (var popup in uiPopups)
@@ -24,6 +27,8 @@ public class UIManager : MonoBehaviour
         {
             UIUtil.ApplySafeAreaAnchor(ref root);
         });
+
+        RegisterAllLayoutsAndPopups();
     }
 
     public T GetLayout<T>() where T : UILayout
@@ -80,5 +85,17 @@ public class UIManager : MonoBehaviour
         }
 
         Debug.LogError($"[{GetType().Name}] GetPopup(). Can't find popup {typeof(T)}");
+    }
+
+    void RegisterAllLayoutsAndPopups()
+    {
+        var layouts = layoutParent.GetComponentsInChildren<UILayout>(true);
+        var popups = popupParent.GetComponentsInChildren<UIPopup>(true);
+
+        foreach (var layout in layouts)
+            uiLayouts.Add(layout);
+
+        foreach (var popup in popups)
+            uiPopups.Add(popup);
     }
 }
