@@ -59,12 +59,14 @@ public class GameDataManager : MonoBehaviour
 
         foreach (var buff in buffEndTimes)
         {
-            if (buffActives[buff.Key] == true)
+            var skillId = buff.Key;
+
+            if (buffActives[skillId] == true)
             {
-                if (buffEndTimes[buff.Key] < DateTime.Now)
+                if (buffEndTimes[skillId] < DateTime.Now)
                 {
-                    buffActives[buff.Key] = false;
-                    Managers.MonsterManager.player.speed = playerStat.speed;
+                    buffActives[skillId] = false;
+                    Managers.MonsterManager.player.speed -= TableData.GetSkillBuffStat(skillId, 1).speed;
                 }
             }
         }
@@ -135,8 +137,8 @@ public class GameDataManager : MonoBehaviour
 
     public void UseBuffSkill(int skillId)
     {
-        var buffTime = 8f;
-        var speedUp = 2f;
+        var buffTime = TableData.GetSkillBuffTime(skillId, 1);
+        var buffStat = TableData.GetSkillBuffStat(skillId, 1);
 
         if (!buffEndTimes.ContainsKey(skillId))
             buffEndTimes.Add(skillId, DateTime.MinValue);
@@ -147,7 +149,7 @@ public class GameDataManager : MonoBehaviour
         buffEndTimes[skillId] = DateTime.Now.AddSeconds(buffTime);
         buffActives[skillId] = true;
 
-        Managers.MonsterManager.player.speed = playerStat.speed + speedUp;
+        Managers.MonsterManager.player.speed = playerStat.speed + buffStat.speed;
         Managers.UIManager.GetLayout<StateLayout>().SetSkillDutaion(skillId, buffTime);
     }
 
