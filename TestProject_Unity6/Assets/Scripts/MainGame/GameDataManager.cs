@@ -25,11 +25,11 @@ public class GameDataManager : MonoBehaviour
     private void Awake()
     {
         playerInfo = new playerInfo() { level = 1, nowExp = 0 };
-        playerStat = new Stat() { maxHp = 20, attack = 10, speed = 6 };
+        playerStat = new Stat() { maxHp = 20, attack = 10, speed = 6f, mastery = 0.5f };
         playerStat.ReSpawn();
 
         for (int i = 0; i < maxMonster; i++)
-            monsters.Add(new Stat() { maxHp = 100, attack = 2 });
+            monsters.Add(new Stat() { maxHp = 50, attack = 2 });
     }
 
     private void Start()
@@ -83,7 +83,7 @@ public class GameDataManager : MonoBehaviour
         else
         {
             var monsterPosition = Managers.MonsterManager.GetMonsterPosition(monsterId);
-            var playerAttackDamage = playerStat.attack;
+            var playerAttackDamage = GetDamage(playerStat);
 
             monster.ModifyNowHp(-playerAttackDamage);
 
@@ -107,10 +107,10 @@ public class GameDataManager : MonoBehaviour
             {
                 playerStat.ModifyNowHp(-monsters[monsterId].attack);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
-                Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
             }
 
             Managers.effect.ShowEffect(0, monsterPosition);
+            Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
 
             if (Random.Range(0f, 1f) < 0.2f)
@@ -198,6 +198,12 @@ public class GameDataManager : MonoBehaviour
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
         }
     }
+
+    public long GetDamage(Stat stat)
+    {
+        var rand = Random.Range(stat.mastery, 1f);
+        return (long)(rand * stat.attack);
+    }
 }
 
 public class Stat
@@ -206,6 +212,7 @@ public class Stat
     public long nowHp;
     public long attack;
     public float speed;
+    public float mastery;
 
     public void ReSpawn()
     {
