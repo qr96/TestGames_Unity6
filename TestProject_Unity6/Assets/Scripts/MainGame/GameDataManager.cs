@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,7 +26,7 @@ public class GameDataManager : MonoBehaviour
     private void Awake()
     {
         playerInfo = new playerInfo() { level = 1, nowExp = 0 };
-        playerStat = new Stat() { maxHp = 20, attack = 10, speed = 6f, mastery = 0.5f };
+        playerStat = new Stat() { maxHp = 20, maxMp = 20, attack = 10, speed = 6f, mastery = 0.5f };
         playerStat.ReSpawn();
 
         for (int i = 0; i < maxMonster; i++)
@@ -36,6 +37,8 @@ public class GameDataManager : MonoBehaviour
     {
         Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
         Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
+
+        StartCoroutine(ChargeMpCo(1f));
     }
 
     private void Update()
@@ -105,13 +108,14 @@ public class GameDataManager : MonoBehaviour
             }
             else
             {
-                playerStat.ModifyNowHp(-monsters[monsterId].attack);
+                playerStat.ModifyNowMp(-monsters[monsterId].attack);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
             }
 
             Managers.effect.ShowEffect(0, monsterPosition);
             Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
             Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+            Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
 
             if (Random.Range(0f, 1f) < 0.2f)
                 Managers.DropItem.SpawnItem(1, monsterPosition, 1);
@@ -204,12 +208,24 @@ public class GameDataManager : MonoBehaviour
         var rand = Random.Range(stat.mastery, 1f);
         return (long)(rand * stat.attack);
     }
+
+    IEnumerator ChargeMpCo(float delay)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            playerStat.ModifyNowMp(1);
+            Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
+        }
+    }
 }
 
 public class Stat
 {
     public long maxHp;
     public long nowHp;
+    public long maxMp;
+    public long nowMp;
     public long attack;
     public float speed;
     public float mastery;
@@ -217,6 +233,7 @@ public class Stat
     public void ReSpawn()
     {
         nowHp = maxHp;
+        nowMp = maxMp;
     }
 
     public void ModifyNowHp(long hp)
@@ -224,6 +241,13 @@ public class Stat
         nowHp += hp;
         if (nowHp > maxHp) nowHp = maxHp;
         else if (nowHp < 0) nowHp = 0;
+    }
+
+    public void ModifyNowMp(long mp)
+    {
+        nowMp += mp;
+        if (nowMp > maxMp) nowMp = maxMp;
+        else if (nowMp < 0) nowMp = 0;
     }
 }
 

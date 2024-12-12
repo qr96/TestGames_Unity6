@@ -5,6 +5,7 @@ using UnityEngine;
 public class StateLayout : UILayout
 {
     public GuageBar userHpBar;
+    public GuageBar userMpBar;
     public GuageBar expBar;
     public TMP_Text levelText;
     
@@ -27,6 +28,11 @@ public class StateLayout : UILayout
         userHpBar.SetGuage(maxHp, nowHp);
     }
 
+    public void SetUserMpBar(long maxMp, long nowMp)
+    {
+        userMpBar.SetGuage(maxMp, nowMp);
+    }
+
     public void SetUserExpBar(long maxExp, long nowExp)
     {
         expBar.SetGuage(maxExp, nowExp);
@@ -46,7 +52,7 @@ public class StateLayout : UILayout
             if (i >= questPool.Count)
                 questPool.Add(Instantiate(questPrefab, questPrefab.transform.parent));
 
-            questPool[i].text = $"[¸ó½ºÅÍ] »ç³É {nowQuest.nowAmount}/{nowQuest.targetAmount}";
+            questPool[i].text = $"[ëª¬ìŠ¤í„°] ì‚¬ëƒ¥ {nowQuest.nowAmount}/{nowQuest.targetAmount}";
             questPool[i].gameObject.SetActive(true);
         }
 
