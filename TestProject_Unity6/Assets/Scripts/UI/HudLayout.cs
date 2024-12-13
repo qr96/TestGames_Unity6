@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -51,6 +52,18 @@ public class HudLayout : UILayout
 
             nameTag.transform.position = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.4f);
         }
+    }
+
+    public void ClearLayout()
+    {
+        var hpBarTargetIds = hpBarTargetDic.Keys.ToArray();
+        var nameTagTargets = nameTargetDic.Keys.ToArray();
+
+        foreach (var hpBarTargetId in hpBarTargetIds)
+            RemoveTarget(hpBarTargetId);
+
+        foreach (var nameTagTarget in nameTagTargets)
+            RemoveNameTarget(nameTagTarget);
     }
 
     public void AddTarget(int targetId)

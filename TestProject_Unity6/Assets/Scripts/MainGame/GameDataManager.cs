@@ -98,6 +98,7 @@ public class GameDataManager : MonoBehaviour
 
     public void EnterMap(int mapId)
     {
+        Managers.UIManager.GetLayout<HudLayout>().ClearLayout();
         mapData.EnterMap(mapId);
     }
 
