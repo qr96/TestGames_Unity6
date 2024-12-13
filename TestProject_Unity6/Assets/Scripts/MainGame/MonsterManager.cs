@@ -52,6 +52,33 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
+    public void RemoveAllMonsters()
+    {
+        foreach (var monster in spawnedMonsters)
+        {
+            monster.OnDead();
+            monsterPool.Push(monster);
+            monsterDic.Remove(monster.Id);
+        }
+
+        spawnedMonsters.Clear();
+    }
+
+    public bool TryGetMonsterPosition(int monsterId, out Vector3 position)
+    {
+        if (monsterDic.ContainsKey(monsterId))
+        {
+            position = monsterDic[monsterId].transform.position;
+            return true;
+        }
+        else
+        {
+            Debug.LogError($"Id not exist. id = {monsterId}");
+            position = Vector3.zero;
+            return false;
+        }
+    }
+
     public Vector3 GetMonsterPosition(int id)
     {
         if (monsterDic.ContainsKey(id))

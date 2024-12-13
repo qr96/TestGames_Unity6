@@ -33,13 +33,22 @@ public class HudLayout : UILayout
 
     private void LateUpdate()
     {
+        var removeTargets = new List<int>();
         foreach (var targetId in targetIds)
         {
-            var targetPos = Managers.MonsterManager.GetMonsterPosition(targetId);
-            var barPos = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.2f);
-
-            targetDic[targetId].transform.position = barPos;
+            if (Managers.MonsterManager.TryGetMonsterPosition(targetId, out var targetPos))
+            {
+                var barPos = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.2f);
+                targetDic[targetId].transform.position = barPos;
+            }
+            else
+            {
+                removeTargets.Add(targetId);
+            }
         }
+
+        foreach (var targetId in removeTargets)
+            RemoveTarget(targetId);
 
         foreach (var target in nameTargetDic)
         {

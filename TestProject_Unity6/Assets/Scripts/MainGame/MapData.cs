@@ -36,6 +36,8 @@ public class MapData : MonoBehaviour
 
     public void EnterMap(int mapId)
     {
+        Managers.MonsterManager.RemoveAllMonsters();
+
         if (mapId == 1)
         {
             for (int i = 0; i < maxMonster; i++)
@@ -55,28 +57,30 @@ public class MapData : MonoBehaviour
         }
         else
         {
-            var monsterPosition = Managers.MonsterManager.GetMonsterPosition(monsterId);
-            var playerAttackDamage = Managers.GameData.GetPlayerDamage();
-
-            monster.ModifyNowHp(-playerAttackDamage);
-            SpawnHpPotion(monsterPosition);
-
-            Managers.effect.ShowEffect(0, monsterPosition);
-            Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
-            Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
-
-            if (monster.nowHp <= 0)
+            if (Managers.MonsterManager.TryGetMonsterPosition(monsterId, out var monsterPosition))
             {
-                Managers.GameData.ModifyPlayerExp(10);
-                Managers.GameData.UseBuffSkill(0);
+                var playerAttackDamage = Managers.GameData.GetPlayerDamage();
 
-                Managers.MonsterManager.KillMonster(monsterId);
-                Managers.effect.ShowEffect(1, monsterPosition);
-                Managers.DropItem.SpawnItem(0, monsterPosition, 5);
-            }
-            else
-            {
-                Managers.GameData.ModifyPlayerMp(-monsters[monsterId].attack);
+                monster.ModifyNowHp(-playerAttackDamage);
+                SpawnHpPotion(monsterPosition);
+
+                Managers.effect.ShowEffect(0, monsterPosition);
+                Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
+                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
+
+                if (monster.nowHp <= 0)
+                {
+                    Managers.GameData.ModifyPlayerExp(10);
+                    Managers.GameData.UseBuffSkill(0);
+
+                    Managers.MonsterManager.KillMonster(monsterId);
+                    Managers.effect.ShowEffect(1, monsterPosition);
+                    Managers.DropItem.SpawnItem(0, monsterPosition, 5);
+                }
+                else
+                {
+                    Managers.GameData.ModifyPlayerMp(-monsters[monsterId].attack);
+                }
             }
         }
     }
