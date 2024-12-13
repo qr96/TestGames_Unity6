@@ -78,15 +78,4 @@ public class MonsterManager : MonoBehaviour
             return false;
         }
     }
-
-    public Vector3 GetMonsterPosition(int id)
-    {
-        if (monsterDic.ContainsKey(id))
-            return monsterDic[id].transform.position;
-        else
-        {
-            Debug.LogError($"Id not exist. id = {id}");
-            return Vector3.zero;
-        }
-    }
 }
