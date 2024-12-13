@@ -12,7 +12,6 @@ public class HudLayout : UILayout
     public TMP_Text nameTagPrefab;
     public TMP_Text damagePrefab;
 
-    List<int> hpBarTargetIds = new List<int>();
     Dictionary<int, GuageBar> hpBarTargetDic = new Dictionary<int, GuageBar>();
     Stack<GuageBar> hpBarPool = new Stack<GuageBar>();
 
@@ -33,12 +32,15 @@ public class HudLayout : UILayout
 
     private void LateUpdate()
     {
-        foreach (var targetId in hpBarTargetIds)
+        foreach (var hpBarTarget in hpBarTargetDic)
         {
+            var targetId = hpBarTarget.Key;
+            var hpBar = hpBarTarget.Value;
+
             if (Managers.MonsterManager.TryGetMonsterPosition(targetId, out var targetPos))
             {
                 var barPos = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.2f);
-                hpBarTargetDic[targetId].transform.position = barPos;
+                hpBar.transform.position = barPos;
             }
         }
 
@@ -60,7 +62,6 @@ public class HudLayout : UILayout
             else
                 hpBarTargetDic.Add(targetId, Instantiate(hpBarPrefab, hpBarPrefab.transform.parent));
 
-            hpBarTargetIds.Add(targetId);
             hpBarTargetDic[targetId].SetActive(true);
         }
     }
@@ -74,7 +75,6 @@ public class HudLayout : UILayout
             hpBarPool.Push(hpBar);
 
             hpBarTargetDic.Remove(targetId);
-            hpBarTargetIds.Remove(targetId);
         }
     }
 
