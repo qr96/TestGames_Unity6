@@ -20,6 +20,7 @@ public class MapManager : MonoBehaviour
 
     public void MoveMap(int targetMapId)
     {
+        Managers.GameData.EnterMap(targetMapId);
         DestroyAllMap();
         SpawnPortal(targetMapId);
         Managers.MonsterManager.player.transform.position = GetWarpPoint(targetMapId, nowMapId);

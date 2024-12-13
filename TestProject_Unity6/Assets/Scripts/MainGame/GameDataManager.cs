@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 
 public class GameDataManager : MonoBehaviour
 {
+    public MapData mapData;
+
     public int maxMonster = 5;
     public float respawnTime = 30f;
 
@@ -28,9 +30,6 @@ public class GameDataManager : MonoBehaviour
         playerInfo = new playerInfo() { level = 1, nowExp = 0 };
         playerStat = new Stat() { maxHp = 20, maxMp = 20, attack = 10, speed = 6f, mastery = 0.5f };
         playerStat.ReSpawn();
-
-        for (int i = 0; i < maxMonster; i++)
-            monsters.Add(new Stat() { maxHp = 50, attack = 2 });
     }
 
     private void Start()
@@ -75,51 +74,31 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
+    public void ModifyPlayerMp(long mp)
+    {
+        playerStat.ModifyNowMp(mp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
+    }
+
+    public void ModifyPlayerExp(long exp)
+    {
+        playerInfo.ModifyExp(exp, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
+        Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
+    }
+
+    public long GetPlayerDamage()
+    {
+        return GetDamage(playerStat);
+    }
+
     public void Battle(int monsterId)
     {
-        var monster = monsters[monsterId];
+        mapData.Battle(monsterId);
+    }
 
-        if (monster.nowHp <= 0)
-        {
-            Debug.LogError($"Attack dead monster. id={monsterId}");
-        }
-        else
-        {
-            var monsterPosition = Managers.MonsterManager.GetMonsterPosition(monsterId);
-            var playerAttackDamage = GetDamage(playerStat);
-
-            monster.ModifyNowHp(-playerAttackDamage);
-
-            if (monster.nowHp <= 0)
-            {
-                playerInfo.ModifyExp(10, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
-
-                foreach (var quest in progressQuests)
-                    quest.nowAmount++;
-
-                UseBuffSkill(0);
-
-                Managers.MonsterManager.RemoveMonster(monsterId);
-                Managers.effect.ShowEffect(1, monsterPosition);
-                Managers.DropItem.SpawnItem(0, monsterPosition, 5);
-                Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
-                Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
-                Managers.UIManager.GetLayout<StateLayout>().SetQuestList(progressQuests);
-            }
-            else
-            {
-                playerStat.ModifyNowMp(-monsters[monsterId].attack);
-                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
-            }
-
-            Managers.effect.ShowEffect(0, monsterPosition);
-            Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
-            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
-            Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
-
-            if (Random.Range(0f, 1f) < 0.2f)
-                Managers.DropItem.SpawnItem(1, monsterPosition, 1);
-        }
+    public void EnterMap(int mapId)
+    {
+        mapData.EnterMap(mapId);
     }
 
     public void UseItem(int itemId)
