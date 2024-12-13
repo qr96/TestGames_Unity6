@@ -36,6 +36,7 @@ public class MapData : MonoBehaviour
 
     public void EnterMap(int mapId)
     {
+        monsters.Clear();
         Managers.MonsterManager.RemoveAllMonsters();
 
         if (mapId == 1)
