@@ -12,8 +12,8 @@ public class HudLayout : UILayout
     public TMP_Text nameTagPrefab;
     public TMP_Text damagePrefab;
 
-    List<int> targetIds = new List<int>();
-    Dictionary<int, GuageBar> targetDic = new Dictionary<int, GuageBar>();
+    List<int> hpBarTargetIds = new List<int>();
+    Dictionary<int, GuageBar> hpBarTargetDic = new Dictionary<int, GuageBar>();
     Stack<GuageBar> hpBarPool = new Stack<GuageBar>();
 
     Dictionary<Transform, TMP_Text> nameTargetDic = new Dictionary<Transform, TMP_Text>();
@@ -33,22 +33,14 @@ public class HudLayout : UILayout
 
     private void LateUpdate()
     {
-        var removeTargets = new List<int>();
-        foreach (var targetId in targetIds)
+        foreach (var targetId in hpBarTargetIds)
         {
             if (Managers.MonsterManager.TryGetMonsterPosition(targetId, out var targetPos))
             {
                 var barPos = mainCamera.WorldToScreenPoint(targetPos + Vector3.up * 1.2f);
-                targetDic[targetId].transform.position = barPos;
-            }
-            else
-            {
-                removeTargets.Add(targetId);
+                hpBarTargetDic[targetId].transform.position = barPos;
             }
         }
-
-        foreach (var targetId in removeTargets)
-            RemoveTarget(targetId);
 
         foreach (var target in nameTargetDic)
         {
@@ -61,35 +53,35 @@ public class HudLayout : UILayout
 
     public void AddTarget(int targetId)
     {
-        if (!targetDic.ContainsKey(targetId))
+        if (!hpBarTargetDic.ContainsKey(targetId))
         {
             if (hpBarPool.Count > 0)
-                targetDic.Add(targetId, hpBarPool.Pop());
+                hpBarTargetDic.Add(targetId, hpBarPool.Pop());
             else
-                targetDic.Add(targetId, Instantiate(hpBarPrefab, hpBarPrefab.transform.parent));
+                hpBarTargetDic.Add(targetId, Instantiate(hpBarPrefab, hpBarPrefab.transform.parent));
 
-            targetIds.Add(targetId);
-            targetDic[targetId].SetActive(true);
+            hpBarTargetIds.Add(targetId);
+            hpBarTargetDic[targetId].SetActive(true);
         }
     }
 
     public void RemoveTarget(int targetId)
     {
-        if (targetDic.ContainsKey(targetId))
+        if (hpBarTargetDic.ContainsKey(targetId))
         {
-            var hpBar = targetDic[targetId];
+            var hpBar = hpBarTargetDic[targetId];
             hpBar.SetActive(false);
             hpBarPool.Push(hpBar);
 
-            targetDic.Remove(targetId);
-            targetIds.Remove(targetId);
+            hpBarTargetDic.Remove(targetId);
+            hpBarTargetIds.Remove(targetId);
         }
     }
 
     public void SetHpBar(int targetId, long max, long now)
     {
-        if (targetDic.ContainsKey(targetId))
-            targetDic[targetId].SetGuage(max, now);
+        if (hpBarTargetDic.ContainsKey(targetId))
+            hpBarTargetDic[targetId].SetGuage(max, now);
     }
 
     public void AddNameTarget(Transform target, string name)
