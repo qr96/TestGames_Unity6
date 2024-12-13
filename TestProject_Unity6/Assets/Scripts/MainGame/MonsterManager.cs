@@ -35,7 +35,7 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
-    public void RemoveMonster(int id)
+    public void KillMonster(int id)
     {
         if (monsterDic.ContainsKey(id))
         {

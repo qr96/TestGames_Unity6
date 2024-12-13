@@ -70,7 +70,7 @@ public class MapData : MonoBehaviour
                 Managers.GameData.ModifyPlayerExp(10);
                 Managers.GameData.UseBuffSkill(0);
 
-                Managers.MonsterManager.RemoveMonster(monsterId);
+                Managers.MonsterManager.KillMonster(monsterId);
                 Managers.effect.ShowEffect(1, monsterPosition);
                 Managers.DropItem.SpawnItem(0, monsterPosition, 5);
             }
