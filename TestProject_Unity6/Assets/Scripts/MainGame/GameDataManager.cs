@@ -71,6 +71,12 @@ public class GameDataManager : MonoBehaviour
         Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
     }
 
+    public void MakePlayerHpFull()
+    {
+        var needHp = playerStat.maxHp - playerStat.nowHp;
+        ModifyPlayerHp(needHp);
+    }
+
     public long GetPlayerDamage()
     {
         return GetDamage(playerStat);

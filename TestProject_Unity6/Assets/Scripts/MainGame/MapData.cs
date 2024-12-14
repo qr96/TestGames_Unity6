@@ -40,8 +40,6 @@ public class MapData : MonoBehaviour
 
     public void EnterMap(int mapId)
     {
-        Debug.Log($"{mapId}, {nowMapId}");
-
         monsters.Clear();
         Managers.MonsterManager.RemoveAllMonsters();
 
@@ -50,11 +48,16 @@ public class MapData : MonoBehaviour
 
         if (mapId == 0 && nowMapId == 1)
         {
-            Managers.UIManager.GetPopup<ExploreResultPopup>().SetItems(acquiredItems);
-            Managers.UIManager.ShowPopup<ExploreResultPopup>();
+            Managers.GameData.MakePlayerHpFull();
 
-            acquiredItems.Clear();
-            acquiredMoney = 0;
+            if (nowMapId == 1)
+            {
+                Managers.UIManager.GetPopup<ExploreResultPopup>().SetItems(acquiredItems);
+                Managers.UIManager.ShowPopup<ExploreResultPopup>();
+
+                acquiredItems.Clear();
+                acquiredMoney = 0;
+            }
         }
         else if (mapId == 1)
         {
