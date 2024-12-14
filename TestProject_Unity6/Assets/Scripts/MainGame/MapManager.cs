@@ -60,8 +60,10 @@ public class MapManager : MonoBehaviour
 
     Vector3 GetWarpPoint(int targetMapId, int prevMapId)
     {
-        if (targetMapId == 0 && prevMapId == 0)
-            return Vector3.zero;
+        if (targetMapId == 1 && prevMapId == 0)
+            return new Vector3(30f, 1f, 1f);
+        else if (targetMapId == 0 && prevMapId == 1)
+            return new Vector3(-24f, 1f, 5f);
 
         return Vector3.zero;
     }
@@ -69,9 +71,9 @@ public class MapManager : MonoBehaviour
     List<Tuple<int, Vector3>> GetPortalInfos(int mapId)
     {
         if (mapId == 0)
-            return new List<Tuple<int, Vector3>>() { new Tuple<int, Vector3>(1, new Vector3(-12, 0, 8)) };
+            return new List<Tuple<int, Vector3>>() { new Tuple<int, Vector3>(1, new Vector3(-24f, 0f, 5f)) };
         else if (mapId == 1)
-            return new List<Tuple<int, Vector3>>() { new Tuple<int, Vector3>(0, new Vector3(-12, 0, 8)) };
+            return new List<Tuple<int, Vector3>>() { new Tuple<int, Vector3>(0, new Vector3(30f, 0f, 1f)) };
 
         return default;
     }

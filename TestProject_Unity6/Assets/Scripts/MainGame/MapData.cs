@@ -26,7 +26,7 @@ public class MapData : MonoBehaviour
                 var monster = monsters[i];
                 if (monster.nowHp <= 0)
                 {
-                    var newPos = new Vector3(Random.Range(15f, 50f), 1f, Random.Range(15f, 50f));
+                    var newPos = new Vector3(Random.Range(-10f, 10f), 1f, Random.Range(-10f, 10f));
                     var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
                     monster.ReSpawn();
                     Managers.MonsterManager.SpawnMonster(i, newPos, newRotate);
