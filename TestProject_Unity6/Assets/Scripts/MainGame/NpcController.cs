@@ -23,6 +23,6 @@ public class NpcController : MonoBehaviour
     {
         Managers.UIManager.GetPopup<ConfirmPopup>().SetPopup("퀘스트", "이런 사정이 있네. 도와주겠나?",
                 () => Managers.GameData.StartQuest(id), null);
-        Managers.UIManager.GetPopup<ConfirmPopup>().Show();
+        Managers.UIManager.ShowPopup<ConfirmPopup>();
     }
 }

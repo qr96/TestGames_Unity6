@@ -160,12 +160,14 @@ public class GameDataManager : MonoBehaviour
 
     public void PickupItem(int typeId)
     {
-        if (typeId == 1)
-        {
-            playerStat.ModifyNowHp(5);
+        mapData.PickupItem(typeId);
+
+        //if (typeId == 1)
+        //{
+        //    playerStat.ModifyNowHp(5);
             
-            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
-        }
+        //    Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+        //}
     }
 
     public long GetDamage(Stat stat)

@@ -11,9 +11,12 @@ public class MapData : MonoBehaviour
     public float respawnTime = 30f;
 
     List<Stat> monsters = new List<Stat>();
+    List<int> acquiredItems = new List<int>();
 
     DateTime nextSpawnTime;
     Coroutine reduceHpCo;
+    long acquiredMoney;
+    int nowMapId = -1;
 
     private void Update()
     {
@@ -37,13 +40,23 @@ public class MapData : MonoBehaviour
 
     public void EnterMap(int mapId)
     {
+        Debug.Log($"{mapId}, {nowMapId}");
+
         monsters.Clear();
         Managers.MonsterManager.RemoveAllMonsters();
 
         if (reduceHpCo != null)
             StopCoroutine(reduceHpCo);
 
-        if (mapId == 1)
+        if (mapId == 0 && nowMapId == 1)
+        {
+            Managers.UIManager.GetPopup<ExploreResultPopup>().SetItems(acquiredItems);
+            Managers.UIManager.ShowPopup<ExploreResultPopup>();
+
+            acquiredItems.Clear();
+            acquiredMoney = 0;
+        }
+        else if (mapId == 1)
         {
             for (int i = 0; i < maxMonster; i++)
                 monsters.Add(new Stat() { maxHp = 50, attack = 2 });
@@ -51,6 +64,8 @@ public class MapData : MonoBehaviour
             nextSpawnTime = DateTime.Now;    
             reduceHpCo = StartCoroutine(ReduceHpCo(1f));
         }
+
+        nowMapId = mapId;
     }
 
     public void Battle(int monsterId)
@@ -90,6 +105,14 @@ public class MapData : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void PickupItem(int typeId)
+    {
+        if (typeId == 0)
+            acquiredMoney += 10;
+        else if (typeId != 1)
+            acquiredItems.Add(typeId);
     }
 
     void SpawnHpPotion(Vector3 monsterPosition)
