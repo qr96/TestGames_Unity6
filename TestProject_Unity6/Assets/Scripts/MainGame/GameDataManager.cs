@@ -9,21 +9,14 @@ public class GameDataManager : MonoBehaviour
 {
     public MapData mapData;
 
-    public int maxMonster = 5;
-    public float respawnTime = 30f;
-
     Stat playerStat;
     playerInfo playerInfo;
-
-    List<Stat> monsters = new List<Stat>();
 
     List<Quest> progressQuests = new List<Quest>();
     List<Quest> completeQuests = new List<Quest>();
     Dictionary<int, DateTime> itemCoolEnds = new Dictionary<int, DateTime>();
     Dictionary<int, DateTime> buffEndTimes = new Dictionary<int, DateTime>();
     Dictionary<int, bool> buffActives = new Dictionary<int, bool>();
-
-    DateTime nextSpawnTime;
 
     private void Awake()
     {
@@ -42,23 +35,6 @@ public class GameDataManager : MonoBehaviour
 
     private void Update()
     {
-        if (DateTime.Now > nextSpawnTime)
-        {
-            nextSpawnTime = DateTime.Now.AddSeconds(respawnTime);
-
-            for (int i = 0; i < monsters.Count; i++)
-            {
-                var monster = monsters[i];
-                if (monster.nowHp <= 0)
-                {
-                    var newPos = new Vector3(Random.Range(15f, 50f), 1f, Random.Range(15f, 50f));
-                    var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-                    monster.ReSpawn();
-                    Managers.MonsterManager.SpawnMonster(i, newPos, newRotate);
-                }
-            }
-        }
-
         foreach (var buff in buffEndTimes)
         {
             var skillId = buff.Key;
