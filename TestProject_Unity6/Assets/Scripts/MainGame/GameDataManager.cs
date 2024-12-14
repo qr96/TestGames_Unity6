@@ -90,6 +90,7 @@ public class GameDataManager : MonoBehaviour
     {
         playerInfo.ModifyExp(exp, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
         Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
+        Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
     }
 
     public long GetPlayerDamage()
