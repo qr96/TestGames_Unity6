@@ -16,9 +16,6 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var popup in uiPopups)
-            popup.gameObject.SetActive(false);
-
         UIUtil.ApplySafeAreaAnchor(ref root);
         UIUtil.ApplyPreserveRatio(root, 0.75f);
 
@@ -29,6 +26,12 @@ public class UIManager : MonoBehaviour
         });
 
         RegisterAllLayoutsAndPopups();
+    }
+
+    private void Start()
+    {
+        foreach (var popup in uiPopups)
+            popup.Hide();
     }
 
     public T GetLayout<T>() where T : UILayout
