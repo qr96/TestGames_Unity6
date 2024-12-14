@@ -30,4 +30,9 @@ public class IconSlot : MonoBehaviour
         coolEndTime = DateTime.Now.AddSeconds(seconds);
         this.onEnd = onEnd;
     }
+
+    public void SetSprite(Sprite sprite)
+    {
+        icon.sprite = sprite;
+    }
 }

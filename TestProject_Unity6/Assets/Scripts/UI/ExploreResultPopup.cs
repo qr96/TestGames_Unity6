@@ -19,6 +19,8 @@ public class ExploreResultPopup : UIPopup
 
     void OnSetItem(int item, GameObject itemSlot)
     {
-        itemSlot.SetActive(true);
+        var iconSlot = itemSlot.GetComponent<IconSlot>();
+        iconSlot.gameObject.SetActive(true);
+        iconSlot.SetSprite(Resources.Load<Sprite>($"Sprites/Items/{item}"));
     }
 }

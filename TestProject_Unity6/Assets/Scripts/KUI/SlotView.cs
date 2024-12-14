@@ -12,6 +12,11 @@ public class SlotView : MonoBehaviour
 
     List<GameObject> slotPool = new List<GameObject>();
 
+    private void Start()
+    {
+        slotPrefab.SetActive(false);
+    }
+
     public void SetInventory<T>(List<T> items, Action<T, GameObject> setSlotFunc0)
     {
         var needSlot = items.Count - slotPool.Count;
