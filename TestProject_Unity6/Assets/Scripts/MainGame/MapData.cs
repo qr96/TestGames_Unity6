@@ -13,6 +13,7 @@ public class MapData : MonoBehaviour
     List<Stat> monsters = new List<Stat>();
 
     DateTime nextSpawnTime;
+    Coroutine reduceHpCo;
 
     private void Update()
     {
@@ -39,12 +40,16 @@ public class MapData : MonoBehaviour
         monsters.Clear();
         Managers.MonsterManager.RemoveAllMonsters();
 
+        if (reduceHpCo != null)
+            StopCoroutine(reduceHpCo);
+
         if (mapId == 1)
         {
             for (int i = 0; i < maxMonster; i++)
                 monsters.Add(new Stat() { maxHp = 50, attack = 2 });
 
-            nextSpawnTime = DateTime.Now;
+            nextSpawnTime = DateTime.Now;    
+            reduceHpCo = StartCoroutine(ReduceHpCo(1f));
         }
     }
 
@@ -90,5 +95,14 @@ public class MapData : MonoBehaviour
     {
         if (Random.Range(0f, 1f) < 0.2f)
             Managers.DropItem.SpawnItem(1, monsterPosition, 1);
+    }
+
+    IEnumerator ReduceHpCo(float delay)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            Managers.GameData.ModifyPlayerHp(-1);
+        }
     }
 }

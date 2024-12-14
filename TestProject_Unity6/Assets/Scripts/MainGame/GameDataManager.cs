@@ -74,6 +74,12 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
+    public void ModifyPlayerHp(long hp)
+    {
+        playerStat.ModifyNowHp(hp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+    }
+
     public void ModifyPlayerMp(long mp)
     {
         playerStat.ModifyNowMp(mp);
