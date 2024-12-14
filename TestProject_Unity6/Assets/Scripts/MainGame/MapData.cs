@@ -82,6 +82,7 @@ public class MapData : MonoBehaviour
                     Managers.MonsterManager.KillMonster(monsterId);
                     Managers.effect.ShowEffect(1, monsterPosition);
                     Managers.DropItem.SpawnItem(0, monsterPosition, 5);
+                    Managers.DropItem.SpawnItem(2, monsterPosition, 1);
                 }
                 else
                 {

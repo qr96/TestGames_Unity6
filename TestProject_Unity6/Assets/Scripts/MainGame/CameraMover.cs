@@ -30,4 +30,10 @@ public class CameraMover : MonoBehaviour
 
         transform.position = calculatedPos;
     }
+
+    public void MoveToTarget()
+    {
+        var targetPos = target.position + cameraPos;
+        transform.position = targetPos;
+    }
 }

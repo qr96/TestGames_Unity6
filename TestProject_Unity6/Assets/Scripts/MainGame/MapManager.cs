@@ -24,6 +24,7 @@ public class MapManager : MonoBehaviour
         DestroyAllMap();
         SpawnPortal(targetMapId);
         Managers.MonsterManager.player.transform.position = GetWarpPoint(targetMapId, nowMapId);
+        Managers.CameraMover.MoveToTarget();
         maps[targetMapId].SetActive(true);
         nowMapId = targetMapId;
     }

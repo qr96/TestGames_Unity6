@@ -29,6 +29,8 @@ public class GameDataManager : MonoBehaviour
     {
         Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
         Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
 
         StartCoroutine(ChargeMpCo(1f));
     }
