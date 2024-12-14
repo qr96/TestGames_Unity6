@@ -51,12 +51,18 @@ public class MapManager : MonoBehaviour
             var portalInfo = portalInfos[i];
 
             portal.gameObject.SetActive(true);
-            portal.Set((col) => MoveMap(portalInfo.Item1), null);
+            portal.Set((col) => OnPortalEnter(col, portalInfo.Item1), null);
             portal.transform.position = portalInfo.Item2;
         }
 
         for (int i = portalInfos.Count; i < portalPool.Count; i++)
             portalPool[i].gameObject.SetActive(false);
+    }
+
+    void OnPortalEnter(Collider col, int targetMapId)
+    {
+        if (col.CompareTag("Player"))
+            MoveMap(targetMapId);
     }
 
     Vector3 GetWarpPoint(int targetMapId, int prevMapId)
