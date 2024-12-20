@@ -14,8 +14,6 @@ public class TableData
         stat.maxHp = 10 + level * 10;
         stat.maxMp = 10 + level * 5;
         stat.attack = 10 + level;
-        stat.speed = 6f;
-        stat.mastery = 0.5f;
 
         return stat;
     }

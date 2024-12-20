@@ -19,7 +19,7 @@ public class GameDataManager : MonoBehaviour
 
     private void Awake()
     {
-        playerInfo = new playerInfo() { level = 1, nowExp = 0, stat = TableData.GetStatPerLevel(1) };
+        playerInfo = new playerInfo(1);
     }
 
     private void Start()
@@ -56,6 +56,20 @@ public class GameDataManager : MonoBehaviour
     {
         playerInfo.stat.ModifyNowMp(mp);
         Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.stat.maxMp, playerInfo.stat.nowMp);
+    }
+
+    public void DamagePlayer(long damage)
+    {
+        if (playerInfo.stat.nowMp < damage)
+        {
+            var remainDamage = damage - playerInfo.stat.nowMp;
+            ModifyPlayerMp(-playerInfo.stat.nowMp);
+            ModifyPlayerHp(-remainDamage);
+        }
+        else
+        {
+            ModifyPlayerMp(-damage);
+        }
     }
 
     public void ModifyPlayerExp(long exp)
@@ -221,6 +235,15 @@ public class playerInfo
     public long nowExp;
     public Stat stat;
 
+    public playerInfo(int level)
+    {
+        this.level = level;
+        stat = new Stat();
+        stat.speed = 6f;
+        stat.mastery = 0.5f;
+        SetLevelStat(TableData.GetStatPerLevel(level));
+    }
+
     public void ModifyExp(long exp, Action onLevelUp)
     {
         nowExp += exp;
@@ -232,11 +255,18 @@ public class playerInfo
             LevelUp(onLevelUp);
     }
 
+    void SetLevelStat(Stat stat)
+    {
+        this.stat.maxHp = stat.maxHp;
+        this.stat.maxMp = stat.maxMp;
+        this.stat.attack = stat.attack;
+    }
+
     void LevelUp(Action onLevelUp)
     {
         nowExp -= TableData.GetMaxExp(level);
         level++;
-        stat = TableData.GetStatPerLevel(level);
+        SetLevelStat(TableData.GetStatPerLevel(level));
         onLevelUp?.Invoke();
     }
 }

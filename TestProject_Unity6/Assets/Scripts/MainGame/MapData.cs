@@ -104,7 +104,7 @@ public class MapData : MonoBehaviour
                 }
                 else
                 {
-                    Managers.GameData.ModifyPlayerMp(-monsters[monsterId].attack);
+                    Managers.GameData.DamagePlayer(monsters[monsterId].attack);
                 }
             }
         }
