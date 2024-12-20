@@ -9,7 +9,6 @@ public class GameDataManager : MonoBehaviour
 {
     public MapData mapData;
 
-    Stat playerStat;
     playerInfo playerInfo;
 
     List<Quest> progressQuests = new List<Quest>();
@@ -20,18 +19,13 @@ public class GameDataManager : MonoBehaviour
 
     private void Awake()
     {
-        playerInfo = new playerInfo() { level = 1, nowExp = 0 };
-        playerStat = new Stat() { maxHp = 20, maxMp = 20, attack = 10, speed = 6f, mastery = 0.5f };
-        playerStat.ReSpawn();
+        playerInfo = new playerInfo() { level = 1, nowExp = 0, stat = TableData.GetStatPerLevel(1) };
     }
 
     private void Start()
     {
-        Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
-        Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
-
+        MakePlayerHpFull();
+        ModifyPlayerExp(0);
         StartCoroutine(ChargeMpCo(1f));
     }
 
@@ -54,14 +48,14 @@ public class GameDataManager : MonoBehaviour
 
     public void ModifyPlayerHp(long hp)
     {
-        playerStat.ModifyNowHp(hp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+        playerInfo.stat.ModifyNowHp(hp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerInfo.stat.maxHp, playerInfo.stat.nowHp);
     }
 
     public void ModifyPlayerMp(long mp)
     {
-        playerStat.ModifyNowMp(mp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
+        playerInfo.stat.ModifyNowMp(mp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.stat.maxMp, playerInfo.stat.nowMp);
     }
 
     public void ModifyPlayerExp(long exp)
@@ -73,13 +67,13 @@ public class GameDataManager : MonoBehaviour
 
     public void MakePlayerHpFull()
     {
-        var needHp = playerStat.maxHp - playerStat.nowHp;
+        var needHp = playerInfo.stat.maxHp - playerInfo.stat.nowHp;
         ModifyPlayerHp(needHp);
     }
 
     public long GetPlayerDamage()
     {
-        return GetDamage(playerStat);
+        return GetDamage(playerInfo.stat);
     }
 
     public void Battle(int monsterId)
@@ -103,9 +97,7 @@ public class GameDataManager : MonoBehaviour
         if (DateTime.Now > itemCoolEnds[itemId])
         {
             itemCoolEnds[itemId] = DateTime.Now.AddSeconds(itemCool);
-            playerStat.ModifyNowHp(10);
-
-            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
+            ModifyPlayerHp(10);
             Managers.UIManager.GetLayout<VirtualButtonLayout>().StartItemCoolTime(itemId, itemCool);
         }
     }
@@ -124,7 +116,7 @@ public class GameDataManager : MonoBehaviour
         buffEndTimes[skillId] = DateTime.Now.AddSeconds(buffTime);
         buffActives[skillId] = true;
 
-        Managers.MonsterManager.player.speed = playerStat.speed + buffStat.speed;
+        Managers.MonsterManager.player.speed = playerInfo.stat.speed + buffStat.speed;
         Managers.UIManager.GetLayout<StateLayout>().SetSkillDutaion(skillId, buffTime);
     }
 
@@ -187,8 +179,7 @@ public class GameDataManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(delay);
-            playerStat.ModifyNowMp(1);
-            Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerStat.maxMp, playerStat.nowMp);
+            ModifyPlayerMp(1);
         }
     }
 }
@@ -228,6 +219,7 @@ public class playerInfo
 {
     public int level;
     public long nowExp;
+    public Stat stat;
 
     public void ModifyExp(long exp, Action onLevelUp)
     {
@@ -237,11 +229,15 @@ public class playerInfo
             nowExp = 0;
 
         while (nowExp >= TableData.GetMaxExp(level))
-        {
-            nowExp -= TableData.GetMaxExp(level);
-            level++;
-            onLevelUp?.Invoke();
-        }
+            LevelUp(onLevelUp);
+    }
+
+    void LevelUp(Action onLevelUp)
+    {
+        nowExp -= TableData.GetMaxExp(level);
+        level++;
+        stat = TableData.GetStatPerLevel(level);
+        onLevelUp?.Invoke();
     }
 }
 

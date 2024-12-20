@@ -4,7 +4,20 @@ public class TableData
 {
     public static long GetMaxExp(int level)
     {
-        return level * 20;
+        return level * 5;
+    }
+
+    public static Stat GetStatPerLevel(int level)
+    {
+        var stat = new Stat();
+        
+        stat.maxHp = 10 + level * 10;
+        stat.maxMp = 10 + level * 5;
+        stat.attack = 10 + level;
+        stat.speed = 6f;
+        stat.mastery = 0.5f;
+
+        return stat;
     }
 
     public static float GetSkillBuffTime(int skillID, int skillLevel)
