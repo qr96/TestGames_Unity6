@@ -25,6 +25,7 @@ public class GameDataManager : MonoBehaviour
     private void Start()
     {
         MakePlayerHpFull();
+        ModifyPlayerMp(0);
         ModifyPlayerExp(0);
         StartCoroutine(ChargeMpCo(1f));
     }
@@ -134,6 +135,21 @@ public class GameDataManager : MonoBehaviour
         Managers.UIManager.GetLayout<StateLayout>().SetSkillDutaion(skillId, buffTime);
     }
 
+    // skillId, skillDamage
+    public List<Tuple<int, long>> UseAttackSkill()
+    {
+        var skillPossibility = new float[] { 0.2f, 0.1f };
+        var usingSkills = new List<Tuple<int, long>>();
+
+        for (int i = 0; i < skillPossibility.Length; i++)
+        {
+            if (Random.Range(0f, 1f) < skillPossibility[i])
+                usingSkills.Add(new Tuple<int, long>(i, GetSkillDamage(i)));
+        }
+
+        return usingSkills;
+    }
+
     public void StartQuest(int questId)
     {
         if (completeQuests.Any((quest) => quest.id == questId))
@@ -186,6 +202,16 @@ public class GameDataManager : MonoBehaviour
     {
         var rand = Random.Range(stat.mastery, 1f);
         return (long)(rand * stat.attack);
+    }
+
+    long GetSkillDamage(int skillId)
+    {
+        if (skillId == 0)
+            return GetPlayerDamage() * 2;
+        else if (skillId == 1)
+            return GetPlayerDamage() * 3;
+
+        return 0;
     }
 
     IEnumerator ChargeMpCo(float delay)

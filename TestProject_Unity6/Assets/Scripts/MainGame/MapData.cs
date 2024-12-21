@@ -84,12 +84,26 @@ public class MapData : MonoBehaviour
             if (Managers.MonsterManager.TryGetMonsterPosition(monsterId, out var monsterPosition))
             {
                 var playerAttackDamage = Managers.GameData.GetPlayerDamage();
+                var playerAttackSkills = Managers.GameData.UseAttackSkill();
+
+                //Managers.effect.ShowEffect(0, monsterPosition);
+                Managers.effect.ShowEffect(6, monsterPosition);
+                Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
+                
+                foreach (var attackSkill in playerAttackSkills)
+                {
+                    playerAttackDamage += attackSkill.Item2;
+
+                    if (attackSkill.Item1 == 0)
+                        Managers.effect.ShowEffect(7, monsterPosition);
+                    else if (attackSkill.Item1 == 1)
+                        Managers.effect.ShowEffect(8, monsterPosition);
+                    
+                    Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
+                }
 
                 monster.ModifyNowHp(-playerAttackDamage);
                 SpawnHpPotion(monsterPosition);
-
-                Managers.effect.ShowEffect(0, monsterPosition);
-                Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
 
                 if (monster.nowHp <= 0)
