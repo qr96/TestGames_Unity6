@@ -8,7 +8,8 @@ public class StateLayout : UILayout
     public GuageBar userMpBar;
     public GuageBar expBar;
     public TMP_Text levelText;
-    
+    public KButton menuButton;
+
     public TMP_Text questPrefab;
 
     public IconSlot skillDurationPrefab;
@@ -21,6 +22,8 @@ public class StateLayout : UILayout
     {
         questPrefab.gameObject.SetActive(false);
         skillDurationPrefab.gameObject.SetActive(false);
+
+        menuButton.onClick.AddListener(() => Managers.UIManager.ShowPopup<InfoPopup>());
     }
 
     public void SetUserHpBar(long maxHp, long nowHp)

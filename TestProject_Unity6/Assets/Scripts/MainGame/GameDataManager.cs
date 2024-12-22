@@ -304,3 +304,9 @@ public class Quest
     public int nowAmount;
     public bool isComplete;
 }
+
+public class ItemData
+{
+    public int itemCode;
+    public int count;
+}

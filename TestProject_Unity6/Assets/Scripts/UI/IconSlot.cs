@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,10 +7,16 @@ public class IconSlot : MonoBehaviour
 {
     public Image cool;
     public Image icon;
+    public TMP_Text count;
 
     float coolTime;
     DateTime coolEndTime;
     Action onEnd;
+
+    private void Awake()
+    {
+        count.gameObject.SetActive(false);
+    }
 
     private void Update()
     {
@@ -34,5 +41,11 @@ public class IconSlot : MonoBehaviour
     public void SetSprite(Sprite sprite)
     {
         icon.sprite = sprite;
+    }
+
+    public void SetItemCount(int count)
+    {
+        this.count.gameObject.SetActive(true);
+        this.count.text = count.ToString();
     }
 }
