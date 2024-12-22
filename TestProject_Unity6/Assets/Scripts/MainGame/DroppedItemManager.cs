@@ -11,8 +11,9 @@ public class DroppedItemManager : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var item in items)
-            item.gameObject.SetActive(false);
+        var prefabs = Resources.LoadAll<DroppedItem>("Prefabs/DroppedItems");
+        foreach (var prefab in prefabs)
+            items.Add(prefab);
 
         for (int i = 0; i < items.Count; i++)
             pool.Add(i, new Stack<DroppedItem>());
