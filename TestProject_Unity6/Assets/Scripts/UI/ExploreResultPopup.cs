@@ -17,11 +17,10 @@ public class ExploreResultPopup : UIPopup
         slotView.SetInventory(items, OnSetItem);
     }
 
-    void OnSetItem(ItemData item, GameObject itemSlot)
+    void OnSetItem(ItemData itemData, GameObject slot)
     {
-        var iconSlot = itemSlot.GetComponent<IconSlot>();
-        iconSlot.gameObject.SetActive(true);
-        iconSlot.SetSprite(Resources.Load<Sprite>($"Sprites/Items/{item.itemCode}"));
-        iconSlot.SetItemCount(item.count);
+        var itemSlot = slot.GetComponent<IconSlot>();
+        itemSlot.gameObject.SetActive(true);
+        itemSlot.SetSlot(Resources.Load<Sprite>($"Sprites/Items/{itemData.itemCode}"), itemData.count);
     }
 }

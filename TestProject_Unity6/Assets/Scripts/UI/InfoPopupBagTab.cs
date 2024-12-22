@@ -29,8 +29,7 @@ public class InfoPopupBagTab : MonoBehaviour
             var itemSlot = slotPool[i];
 
             itemSlot.gameObject.SetActive(true);
-            itemSlot.SetSprite(Resources.Load<Sprite>($"Sprites/Items/{itemData.itemCode}"));
-            itemSlot.SetItemCount(itemData.count);
+            itemSlot.SetSlot(Resources.Load<Sprite>($"Sprites/Items/{itemData.itemCode}"), itemData.count);
         }
     }
 

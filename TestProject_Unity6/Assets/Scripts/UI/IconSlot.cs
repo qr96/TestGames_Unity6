@@ -13,11 +13,6 @@ public class IconSlot : MonoBehaviour
     DateTime coolEndTime;
     Action onEnd;
 
-    private void Awake()
-    {
-        count.gameObject.SetActive(false);
-    }
-
     private void Update()
     {
         if (DateTime.Now < coolEndTime)
@@ -38,14 +33,10 @@ public class IconSlot : MonoBehaviour
         this.onEnd = onEnd;
     }
 
-    public void SetSprite(Sprite sprite)
+    public void SetSlot(Sprite sprite, int count = 0)
     {
         icon.sprite = sprite;
-    }
-
-    public void SetItemCount(int count)
-    {
-        this.count.gameObject.SetActive(true);
         this.count.text = count.ToString();
+        this.count.gameObject.SetActive(count > 0);
     }
 }
