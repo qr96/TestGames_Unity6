@@ -52,6 +52,8 @@ public class MapData : MonoBehaviour
 
             if (nowMapId == 1)
             {
+                foreach (var itemData in acquiredBag.ToList())
+                    Managers.GameData.AddMiscItemToBag(itemData.itemCode, itemData.count);
                 Managers.UIManager.ShowPopup<ExploreResultPopup>().SetItems(acquiredBag.ToList());
                 acquiredBag.Clear();
             }
@@ -109,7 +111,8 @@ public class MapData : MonoBehaviour
 
                     Managers.MonsterManager.KillMonster(monsterId);
                     Managers.effect.ShowEffect(1, monsterPosition);
-                    SpawnItem(2, 1, monsterPosition);
+                    SpawnItem(2, 5, monsterPosition);
+                    SpawnItems(1, 100, monsterPosition, 3);
                 }
                 else
                 {
@@ -138,6 +141,12 @@ public class MapData : MonoBehaviour
         var itemId = spawnedItemId++;
         spawnedItem.Add(itemId, new ItemData(itemCode, count));
         Managers.DropItem.SpawnItem(itemId, itemCode, position);
+    }
+
+    void SpawnItems(int itemCode, int count, Vector3 position, int spawnCount)
+    {
+        for (int i = 0; i < spawnCount; i++)
+            SpawnItem(itemCode, count, position);
     }
 
     IEnumerator ReduceHpCo(float delay)
