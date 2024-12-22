@@ -12,15 +12,16 @@ public class ExploreResultPopup : UIPopup
         yesButton.onClick.AddListener(Hide);
     }
 
-    public void SetItems(List<int> items)
+    public void SetItems(List<ItemData> items)
     {
         slotView.SetInventory(items, OnSetItem);
     }
 
-    void OnSetItem(int item, GameObject itemSlot)
+    void OnSetItem(ItemData item, GameObject itemSlot)
     {
         var iconSlot = itemSlot.GetComponent<IconSlot>();
         iconSlot.gameObject.SetActive(true);
-        iconSlot.SetSprite(Resources.Load<Sprite>($"Sprites/Items/{item}"));
+        iconSlot.SetSprite(Resources.Load<Sprite>($"Sprites/Items/{item.itemCode}"));
+        iconSlot.SetItemCount(item.count);
     }
 }

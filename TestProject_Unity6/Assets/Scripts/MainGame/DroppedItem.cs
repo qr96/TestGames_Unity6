@@ -8,9 +8,10 @@ public class DroppedItem : MonoBehaviour
 
     public float rotateSpeed;
 
-    int id;
+    int itemId;
+    int itemCode;
     float rotateY;
-    Action<int, DroppedItem> onGetItem;
+    Action<int, int, DroppedItem> onGetItem;
 
     private void Update()
     {
@@ -22,13 +23,14 @@ public class DroppedItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            onGetItem?.Invoke(id, this);
+            onGetItem?.Invoke(itemId, itemCode, this);
         }
     }
 
-    public void SpawnItem(int id, Vector3 force, Action<int, DroppedItem> onGetItem)
+    public void SpawnItem(int itemId, int itemCode, Vector3 force, Action<int, int, DroppedItem> onGetItem)
     {
-        this.id = id;
+        this.itemId = itemId;
+        this.itemCode = itemCode;
         gameObject.SetActive(true);
         rigid.AddForce(force, ForceMode.Impulse);
         this.onGetItem = onGetItem;

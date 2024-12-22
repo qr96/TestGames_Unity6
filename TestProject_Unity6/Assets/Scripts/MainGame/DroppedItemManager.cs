@@ -18,28 +18,25 @@ public class DroppedItemManager : MonoBehaviour
             pool.Add(i, new Stack<DroppedItem>());
     }
 
-    public void SpawnItem(int typeId, Vector3 position, int count = 1)
+    public void SpawnItem(int itemId, int itemCode, Vector3 position)
     {
-        for (int i = 0; i < count; i++)
-        {
-            DroppedItem item;
+        DroppedItem item;
 
-            if (pool[typeId].Count > 0)
-                item = pool[typeId].Pop();
-            else
-                item = Instantiate(items[typeId]);
+        if (pool[itemCode].Count > 0)
+            item = pool[itemCode].Pop();
+        else
+            item = Instantiate(items[itemCode]);
 
-            var spwanDirection = new Vector3(Random.Range(-1f, 1f), 1f, Random.Range(-1f, 1f)).normalized;
-            item.transform.position = position;
-            item.SpawnItem(typeId, spwanDirection * spwanPower, OnGetItem);
-        }
+        var spwanDirection = new Vector3(Random.Range(-1f, 1f), 1f, Random.Range(-1f, 1f)).normalized;
+        item.transform.position = position;
+        item.SpawnItem(itemId, itemCode, spwanDirection * spwanPower, OnGetItem);
     }
 
-    void OnGetItem(int typeId, DroppedItem item)
+    void OnGetItem(int itemId, int itemCode, DroppedItem item)
     {
         item.gameObject.SetActive(false);
-        pool[typeId].Push(item);
+        pool[itemCode].Push(item);
         Managers.effect.ShowEffect(3, item.transform.position);
-        Managers.GameData.PickupItem(typeId);
+        Managers.GameData.PickupItem(itemId);
     }
 }

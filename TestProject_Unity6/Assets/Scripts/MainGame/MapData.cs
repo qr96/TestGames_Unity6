@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,12 +10,13 @@ public class MapData : MonoBehaviour
     public float respawnTime = 30f;
 
     List<Stat> monsters = new List<Stat>();
-    List<int> acquiredItems = new List<int>();
+    Dictionary<int, ItemData> spawnedItem = new Dictionary<int, ItemData>();
+    Bag acquiredBag = new Bag(999);
 
     DateTime nextSpawnTime;
     Coroutine reduceHpCo;
-    long acquiredMoney;
     int nowMapId = -1;
+    int spawnedItemId;
 
     private void Update()
     {
@@ -52,11 +52,8 @@ public class MapData : MonoBehaviour
 
             if (nowMapId == 1)
             {
-                Managers.UIManager.GetPopup<ExploreResultPopup>().SetItems(acquiredItems);
-                Managers.UIManager.ShowPopup<ExploreResultPopup>();
-
-                acquiredItems.Clear();
-                acquiredMoney = 0;
+                Managers.UIManager.ShowPopup<ExploreResultPopup>().SetItems(acquiredBag.ToList());
+                acquiredBag.Clear();
             }
         }
         else if (mapId == 1)
@@ -103,7 +100,6 @@ public class MapData : MonoBehaviour
                 }
 
                 monster.ModifyNowHp(-playerAttackDamage);
-                SpawnHpPotion(monsterPosition);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
 
                 if (monster.nowHp <= 0)
@@ -113,8 +109,7 @@ public class MapData : MonoBehaviour
 
                     Managers.MonsterManager.KillMonster(monsterId);
                     Managers.effect.ShowEffect(1, monsterPosition);
-                    Managers.DropItem.SpawnItem(0, monsterPosition, 5);
-                    Managers.DropItem.SpawnItem(2, monsterPosition, 1);
+                    SpawnItem(2, 1, monsterPosition);
                 }
                 else
                 {
@@ -124,18 +119,25 @@ public class MapData : MonoBehaviour
         }
     }
 
-    public void PickupItem(int typeId)
+    public void PickupItem(int itemId)
     {
-        if (typeId == 0)
-            acquiredMoney += 10;
-        else if (typeId != 1)
-            acquiredItems.Add(typeId);
+        if (spawnedItem.ContainsKey(itemId))
+        {
+            var itemData = spawnedItem[itemId];
+            acquiredBag.AddItem(itemData.itemCode, itemData.count);
+            spawnedItem.Remove(itemId);
+        }
+        else
+        {
+            Debug.Log($"PickupItem() Failed to acquire item. itemId={itemId}");
+        }
     }
 
-    void SpawnHpPotion(Vector3 monsterPosition)
+    void SpawnItem(int itemCode, int count, Vector3 position)
     {
-        if (Random.Range(0f, 1f) < 0.2f)
-            Managers.DropItem.SpawnItem(1, monsterPosition, 1);
+        var itemId = spawnedItemId++;
+        spawnedItem.Add(itemId, new ItemData(itemCode, count));
+        Managers.DropItem.SpawnItem(itemId, itemCode, position);
     }
 
     IEnumerator ReduceHpCo(float delay)

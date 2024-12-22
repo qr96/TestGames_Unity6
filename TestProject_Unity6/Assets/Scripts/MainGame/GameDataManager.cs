@@ -192,16 +192,9 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    public void PickupItem(int typeId)
+    public void PickupItem(int itemId)
     {
-        mapData.PickupItem(typeId);
-
-        //if (typeId == 1)
-        //{
-        //    playerStat.ModifyNowHp(5);
-            
-        //    Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerStat.maxHp, playerStat.nowHp);
-        //}
+        mapData.PickupItem(itemId);
     }
 
     public long GetDamage(Stat stat)
@@ -369,6 +362,11 @@ public class Bag
                 remain = 0;
             }
         }
+    }
+
+    public void Clear()
+    {
+        bag.Clear();
     }
 
     public List<ItemData> ToList()
