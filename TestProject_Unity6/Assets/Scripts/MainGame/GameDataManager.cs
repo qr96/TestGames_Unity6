@@ -28,8 +28,6 @@ public class GameDataManager : MonoBehaviour
         ModifyPlayerMp(0);
         ModifyPlayerExp(0);
         StartCoroutine(ChargeMpCo(1f));
-
-        AddMiscItemToBag(1, 3000);
     }
 
     private void Update()
@@ -90,8 +88,8 @@ public class GameDataManager : MonoBehaviour
 
     public void AddMiscItemToBag(int itemCode, int count)
     {
-        playerInfo.AddMiscItemToBag(itemCode, count);
-        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag);
+        playerInfo.miscBag.AddItem(itemCode, count);
+        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
     }
 
     public long GetPlayerDamage()
@@ -268,7 +266,7 @@ public class playerInfo
     public int level;
     public long nowExp;
     public Stat stat;
-    public List<ItemData> miscBag = new List<ItemData>();
+    public Bag miscBag = new Bag(999);
 
     public playerInfo(int level)
     {
@@ -288,41 +286,6 @@ public class playerInfo
 
         while (nowExp >= TableData.GetMaxExp(level))
             LevelUp(onLevelUp);
-    }
-
-    public void AddMiscItemToBag(int itemCode, int count)
-    {
-        var maxItemCount = 999;
-        var remain = count;
-
-        foreach (var itemData in miscBag)
-        {
-            if (remain > 0 && itemData.itemCode == itemCode)
-            {
-                itemData.count += count;
-                remain = 0;
-
-                if (itemData.count > maxItemCount)
-                {
-                    remain = itemData.count - maxItemCount;
-                    itemData.count = maxItemCount;
-                }
-            }
-        }
-
-        while (remain > 0)
-        {
-            if (remain > maxItemCount)
-            {
-                miscBag.Add(new ItemData() { itemCode = itemCode, count = maxItemCount });
-                remain -= maxItemCount;
-            }
-            else
-            {
-                miscBag.Add(new ItemData() { itemCode = itemCode, count = remain });
-                remain = 0;
-            }
-        }
     }
 
     void SetLevelStat(Stat stat)
@@ -353,4 +316,57 @@ public class ItemData
 {
     public int itemCode;
     public int count;
+}
+
+public class Bag
+{
+    public List<ItemData> bag = new List<ItemData>();
+    public int maxItemPerSlot;
+
+    public Bag(int maxItemPerSlot = 1)
+    {
+        this.maxItemPerSlot = maxItemPerSlot;
+    }
+
+    public void AddItem(int itemCode, int count)
+    {
+        if (itemCode == 0 || count <= 0)
+            return;
+
+        var remain = count;
+
+        foreach (var itemData in bag)
+        {
+            if (remain > 0 && itemData.itemCode == itemCode)
+            {
+                itemData.count += count;
+                remain = 0;
+
+                if (itemData.count > maxItemPerSlot)
+                {
+                    remain = itemData.count - maxItemPerSlot;
+                    itemData.count = maxItemPerSlot;
+                }
+            }
+        }
+
+        while (remain > 0)
+        {
+            if (remain > maxItemPerSlot)
+            {
+                bag.Add(new ItemData() { itemCode = itemCode, count = maxItemPerSlot });
+                remain -= maxItemPerSlot;
+            }
+            else
+            {
+                bag.Add(new ItemData() { itemCode = itemCode, count = remain });
+                remain = 0;
+            }
+        }
+    }
+
+    public List<ItemData> ToList()
+    {
+        return bag;
+    }
 }
