@@ -316,6 +316,12 @@ public class ItemData
 {
     public int itemCode;
     public int count;
+
+    public ItemData(int itemCode, int count)
+    {
+        this.itemCode = itemCode;
+        this.count = count;
+    }
 }
 
 public class Bag
@@ -354,12 +360,12 @@ public class Bag
         {
             if (remain > maxItemPerSlot)
             {
-                bag.Add(new ItemData() { itemCode = itemCode, count = maxItemPerSlot });
+                bag.Add(new ItemData(itemCode, maxItemPerSlot));
                 remain -= maxItemPerSlot;
             }
             else
             {
-                bag.Add(new ItemData() { itemCode = itemCode, count = remain });
+                bag.Add(new ItemData(itemCode, remain));
                 remain = 0;
             }
         }
