@@ -27,6 +27,7 @@ public class GameDataManager : MonoBehaviour
         MakePlayerHpFull();
         ModifyPlayerMp(0);
         ModifyPlayerExp(0);
+        ModifyPlayerMoney(0);
         StartCoroutine(ChargeMpCo(1f));
     }
 
@@ -57,6 +58,12 @@ public class GameDataManager : MonoBehaviour
     {
         playerInfo.stat.ModifyNowMp(mp);
         Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.stat.maxMp, playerInfo.stat.nowMp);
+    }
+
+    public void ModifyPlayerMoney(long money)
+    {
+        playerInfo.money += money;
+        Managers.UIManager.GetPopup<InfoPopup>().SetMoney(money);
     }
 
     public void DamagePlayer(long damage)
@@ -121,6 +128,21 @@ public class GameDataManager : MonoBehaviour
             ModifyPlayerHp(10);
             Managers.UIManager.GetLayout<VirtualButtonLayout>().StartItemCoolTime(itemId, itemCool);
         }
+    }
+
+    public void SellAllItems()
+    {
+        var bag = playerInfo.miscBag.ToList();
+        var price = 0L;
+
+        foreach (var itemData in bag)
+            price += TableData.GetSellPrice(itemData.itemCode, itemData.count);
+
+        playerInfo.miscBag.Clear();
+        ModifyPlayerMoney(price);
+
+        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
+        Managers.UIManager.GetPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList());
     }
 
     public void UseBuffSkill(int skillId)
@@ -258,6 +280,7 @@ public class playerInfo
 {
     public int level;
     public long nowExp;
+    public long money;
     public Stat stat;
     public Bag miscBag = new Bag(999);
 

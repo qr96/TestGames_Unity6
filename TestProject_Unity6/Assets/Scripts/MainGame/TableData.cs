@@ -37,4 +37,10 @@ public class TableData
         else
             return default;
     }
+
+    public static long GetSellPrice(int itemCode, int count)
+    {
+        long[] sellPrice = new long[] { 0, 10, 50, 100 };
+        return sellPrice[itemCode] * count;
+    }
 }
