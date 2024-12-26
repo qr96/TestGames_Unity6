@@ -130,6 +130,12 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
+    // Shop
+    public void ShowMiscShop()
+    {
+        Managers.UIManager.ShowPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList());
+    }
+
     public void SellAllItems()
     {
         var bag = playerInfo.miscBag.ToList();

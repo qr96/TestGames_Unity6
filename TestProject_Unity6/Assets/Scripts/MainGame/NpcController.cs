@@ -1,21 +1,32 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NpcController : MonoBehaviour
 {
+    public string npcName;
+    public UnityEvent onEnter;
+
     public List<string> conversations = new List<string>();
 
-    private void Start()
+    private void OnEnable()
     {
-        Managers.UIManager.GetLayout<HudLayout>().AddNameTarget(transform, "촌장");
+        Managers.UIManager.GetLayout<HudLayout>().AddNameTarget(transform, npcName);
+    }
+
+    private void OnDisable()
+    {
+        Managers.UIManager.GetLayout<HudLayout>().RemoveNameTarget(transform);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            Managers.UIManager.GetPopup<ConversationPopup>().SetPopup(conversations, () => StartQuest(0));
-            Managers.UIManager.ShowPopup<ConversationPopup>();
+            onEnter?.Invoke();
+            //Managers.UIManager.GetPopup<ConversationPopup>().SetPopup(conversations, () => StartQuest(0));
+            //Managers.UIManager.ShowPopup<ConversationPopup>();
         }
     }
 
