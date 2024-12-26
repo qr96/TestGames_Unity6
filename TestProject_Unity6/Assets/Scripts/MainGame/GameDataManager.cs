@@ -280,6 +280,17 @@ public class Stat
         if (nowMp > maxMp) nowMp = maxMp;
         else if (nowMp < 0) nowMp = 0;
     }
+
+    public void Add(Stat stat)
+    {
+        maxHp += stat.maxHp;
+        nowHp += stat.nowHp;
+        maxMp += stat.maxMp;
+        nowMp += stat.nowMp;
+        attack += stat.attack;
+        speed += stat.speed;
+        mastery += stat.mastery;
+    }
 }
 
 public class playerInfo
@@ -288,6 +299,7 @@ public class playerInfo
     public long nowExp;
     public long money;
     public Stat stat;
+    public Stat skillStat;
     public Bag miscBag = new Bag(999);
 
     public playerInfo(int level)
@@ -309,6 +321,7 @@ public class playerInfo
         while (nowExp >= TableData.GetMaxExp(level))
             LevelUp(onLevelUp);
     }
+
 
     void SetLevelStat(Stat stat)
     {
@@ -401,5 +414,30 @@ public class Bag
     public List<ItemData> ToList()
     {
         return bag;
+    }
+}
+
+public class SkillData
+{
+    Dictionary<int, int> skillLevels = new Dictionary<int, int>();
+    Stat stat;
+
+    public void SkillLevelUp(int skillCode)
+    {
+        if (!skillLevels.ContainsKey(skillCode))
+            skillLevels.Add(skillCode, 0);
+
+        stat.Add(TableData.GetSkillIncreaseStat(skillCode, skillLevels[skillCode]));
+
+        if (skillLevels[skillCode] < TableData.GetSkillMaxLevel(skillCode))
+            skillLevels[skillCode]++;
+    }
+
+    public int GetSkillLevel(int skillCode)
+    {
+        if (skillLevels.ContainsKey(skillCode))
+            return skillLevels[skillCode];
+        else
+            return default;
     }
 }

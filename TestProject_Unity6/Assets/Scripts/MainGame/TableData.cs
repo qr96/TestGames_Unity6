@@ -38,6 +38,18 @@ public class TableData
             return default;
     }
 
+    public static Stat GetSkillIncreaseStat(int skillCode, int nowLevel)
+    {
+        var stat = new Stat();
+
+        return stat;
+    }
+
+    public static int GetSkillMaxLevel(int skillCode)
+    {
+        return 0;
+    }
+
     public static long GetSellPrice(int itemCode, int count)
     {
         long[] sellPrice = new long[] { 0, 10, 50, 100 };
