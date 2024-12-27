@@ -20,6 +20,9 @@ public class GameDataManager : MonoBehaviour
     private void Awake()
     {
         playerInfo = new playerInfo(1);
+        playerInfo.equipmentBag.Add(new Equipment() { code = 1, upgradeLevel = 4 });
+        playerInfo.equipmentBag.Add(new Equipment() { code = 2, upgradeLevel = 2 });
+        playerInfo.equipmentBag.Add(new Equipment() { code = 4, upgradeLevel = 8 });
     }
 
     private void Start()
@@ -231,6 +234,11 @@ public class GameDataManager : MonoBehaviour
         return (long)(rand * stat.attack);
     }
 
+    public List<Equipment> GetPlayerEquipments()
+    {
+        return playerInfo.equipmentBag.ToList();
+    }
+
     long GetSkillDamage(int skillId)
     {
         if (skillId == 0)
@@ -301,6 +309,7 @@ public class playerInfo
     public Stat stat;
     public Stat skillStat;
     public Bag miscBag = new Bag(999);
+    public EquipmentBag equipmentBag = new EquipmentBag();
 
     public playerInfo(int level)
     {
@@ -321,7 +330,6 @@ public class playerInfo
         while (nowExp >= TableData.GetMaxExp(level))
             LevelUp(onLevelUp);
     }
-
 
     void SetLevelStat(Stat stat)
     {
@@ -439,5 +447,51 @@ public class SkillData
             return skillLevels[skillCode];
         else
             return default;
+    }
+}
+
+public class Equipment
+{
+    public int id;
+    public int code;
+    public int upgradeLevel;
+    public Stat stat;
+}
+
+public class EquipmentBag
+{
+    List<Equipment> bag = new List<Equipment>();
+    int nextId;
+
+    public void Add(Equipment item)
+    {
+        item.id = nextId++;
+        bag.Add(item);
+    }
+
+    public void Remove(int id)
+    {
+        for (int i = 0; i < bag.Count; i++)
+        {
+            if (bag[i].id == id)
+            {
+                bag.RemoveAt(i);
+                break;
+            }
+        }
+    }
+
+    public Equipment GetById(int id)
+    {
+        foreach (var equipment in bag)
+            if (equipment.id == id)
+                return equipment;
+
+        return default;
+    }
+
+    public List<Equipment> ToList()
+    {
+        return bag;
     }
 }
