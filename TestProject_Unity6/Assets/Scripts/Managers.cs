@@ -12,12 +12,12 @@ public class Managers : MonoBehaviour
     public UIManager _uiManager;
     public GameDataManager _gameDataManager;
 
-    public static EffectManager effect { get { return Instance._effect; } }
-    public static CameraMover CameraMover { get { return Instance._cameraMover; } }
-    public static DroppedItemManager DropItem { get { return Instance._dropItem; } }
-    public static MonsterManager MonsterManager { get { return Instance._monsterManager; } }
-    public static UIManager UIManager { get { return Instance._uiManager; } }
-    public static GameDataManager GameData { get { return Instance._gameDataManager; } }
+    public static EffectManager effect { get { return Instance?._effect; } }
+    public static CameraMover CameraMover { get { return Instance?._cameraMover; } }
+    public static DroppedItemManager DropItem { get { return Instance?._dropItem; } }
+    public static MonsterManager MonsterManager { get { return Instance?._monsterManager; } }
+    public static UIManager UIManager { get { return Instance?._uiManager; } }
+    public static GameDataManager GameData { get { return Instance?._gameDataManager; } }
     
     private void Awake()
     {
