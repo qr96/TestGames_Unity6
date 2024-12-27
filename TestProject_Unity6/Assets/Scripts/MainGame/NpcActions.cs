@@ -6,4 +6,9 @@ public class NpcActions : MonoBehaviour
     {
         Managers.GameData.ShowMiscShop();
     }
+
+    public void Anvil()
+    {
+        Managers.UIManager.ShowPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments());
+    }
 }

@@ -1,41 +1,24 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnhancePopup : UIPopup
 {
     public EquipmentSlot equipmentSlot;
     public TMP_Text enhanceInfo;
     public KButton enhanceButton;
-    public KButton closeButton;
-
-    int now = 0;
-    int max = 20;
+    public Button closeButton;
 
     private void Start()
     {
-        enhanceButton.onClick.AddListener(Enhance);
+        //enhanceButton.onClick.AddListener();
         closeButton.onClick.AddListener(Hide);
-
-        SetInfo(now, max, now * 10000, 0.8f, 0f);
     }
 
-    void Enhance()
+    public void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, float destroy)
     {
-        var rand = Random.Range(0f, 1f);
-        var destroy = 0.01f;
-        var success = 0.8f;
-
-        if (rand < destroy)
-        {
-            now = 0;
-        }
-        else if (rand < destroy + success)
-        {
-            now++;
-        }
-
-        SetInfo(now, max, now * 10000, 0.1f, destroy);
-        equipmentSlot.SetUpgrade(now);
+        equipmentSlot.SetSlot(equipIcon, nowUpgrade);
+        SetInfo(nowUpgrade, maxUpgrade, needMoney, success, destroy);
     }
 
     void SetInfo(int nowLevel, int maxLevel, long needMoney, float success, float destroy)

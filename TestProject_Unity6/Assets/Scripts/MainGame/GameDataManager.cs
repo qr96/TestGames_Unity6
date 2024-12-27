@@ -239,6 +239,11 @@ public class GameDataManager : MonoBehaviour
         return playerInfo.equipmentBag.ToList();
     }
 
+    public Equipment GetPlayerEquipment(int id)
+    {
+        return playerInfo.equipmentBag.GetById(id);
+    }
+
     long GetSkillDamage(int skillId)
     {
         if (skillId == 0)
