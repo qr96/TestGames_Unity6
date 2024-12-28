@@ -9,13 +9,26 @@ public class EnhancePopup : UIPopup
     public KButton enhanceButton;
     public Button closeButton;
 
+    int nowEquipmentId;
+
     private void Start()
     {
-        //enhanceButton.onClick.AddListener();
+        enhanceButton.onClick.AddListener(() => Managers.GameData.EnhanceEquipment(nowEquipmentId));
         closeButton.onClick.AddListener(Hide);
     }
 
-    public void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, float destroy)
+    public void SetPopup(int nowEquipmentId)
+    {
+        this.nowEquipmentId = nowEquipmentId;
+        SetPopup(Managers.GameData.GetPlayerEquipment(nowEquipmentId));
+    }
+
+    void SetPopup(Equipment equipment)
+    {
+        SetPopup(Resources.Load<Sprite>($"Sprites/Equipments/{equipment.code}"), equipment.upgradeLevel, 20, 0, 0.5f, 0.01f);
+    }
+
+    void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, float destroy)
     {
         equipmentSlot.SetSlot(equipIcon, nowUpgrade);
         SetInfo(nowUpgrade, maxUpgrade, needMoney, success, destroy);

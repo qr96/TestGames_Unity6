@@ -21,9 +21,6 @@ public class EnhanceSelectPopup : UIPopup
 
     public void SetPopup(List<Equipment> equipments)
     {
-        foreach (var slot in slotPool)
-            slot.gameObject.SetActive(false);
-
         for (int i = slotPool.Count; i < equipments.Count; i++)
             slotPool.Add(Instantiate(slotPrefab, slotPrefab.transform.parent));
 
@@ -39,13 +36,14 @@ public class EnhanceSelectPopup : UIPopup
             toggle.onValueChanged.RemoveAllListeners();
             toggle.onValueChanged.AddListener((isOn) => OnSelected(isOn, itemData.id));
         }
+
+        for (int i = equipments.Count; i < slotPool.Count; i++)
+            slotPool[i].gameObject.SetActive(false);
     }
 
     void OnClickEnhance(int equipmentId)
     {
-        var equipment = Managers.GameData.GetPlayerEquipment(equipmentId);
-        Managers.UIManager.ShowPopup<EnhancePopup>().SetPopup(
-            Resources.Load<Sprite>($"Sprites/Equipments/{equipment.code}"), equipment.upgradeLevel, 20, 0, 0.5f, 0.01f);
+        Managers.UIManager.ShowPopup<EnhancePopup>().SetPopup(equipmentId);
     }
 
     void OnSelected(bool isOn, int equipmentId)

@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 public class GameDataManager : MonoBehaviour
 {
     public MapData mapData;
+    public EquipmentUpgrader equipmentUpgrader;
 
     playerInfo playerInfo;
 
@@ -242,6 +243,15 @@ public class GameDataManager : MonoBehaviour
     public Equipment GetPlayerEquipment(int id)
     {
         return playerInfo.equipmentBag.GetById(id);
+    }
+
+    public void EnhanceEquipment(int id)
+    {
+        var equipment = GetPlayerEquipment(id);
+        equipmentUpgrader.Enhance(equipment);
+
+        Managers.UIManager.GetPopup<EnhancePopup>().SetPopup(id);
+        Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(playerInfo.equipmentBag.ToList());
     }
 
     long GetSkillDamage(int skillId)
