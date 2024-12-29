@@ -252,11 +252,14 @@ public class GameDataManager : MonoBehaviour
 
         Managers.UIManager.GetPopup<EnhancePopup>().SetPopup(id);
         Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(playerInfo.equipmentBag.ToList());
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
     }
 
     public void AddEquipment(int equipmentCode, int upgradeLevel)
     {
         playerInfo.equipmentBag.Add(new Equipment() { code = equipmentCode, upgradeLevel = upgradeLevel });
+        
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
     }
 
     long GetSkillDamage(int skillId)

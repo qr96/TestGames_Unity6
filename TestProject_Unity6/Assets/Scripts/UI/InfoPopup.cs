@@ -6,16 +6,23 @@ public class InfoPopup : UIPopup
 {
     enum Tab
     {
+        Equipment,
         Bag,
     }
 
     public TMP_Text titleText;
     public InfoPopupBagTab bagTab;
+    public InfoPopupEquipmentTab equipTab;
     public KButton exitButton;
+
+    public KButton bagButton;
+    public KButton equipButton;
 
     private void Start()
     {
         exitButton.onClick.AddListener(() => Hide());
+        bagButton.onClick.AddListener(() => ChangeTab(Tab.Bag));
+        equipButton.onClick.AddListener(() => ChangeTab(Tab.Equipment));
 
         ChangeTab(Tab.Bag);
     }
@@ -23,6 +30,11 @@ public class InfoPopup : UIPopup
     public void SetBagTab(List<ItemData> items)
     {
         bagTab.SetTab(items);
+    }
+
+    public void SetEquipTab(List<Equipment> equipments)
+    {
+        equipTab.SetPopup(equipments);
     }
 
     public void SetMoney(long money)
@@ -42,8 +54,12 @@ public class InfoPopup : UIPopup
             case Tab.Bag:
                 titleText.text = "인벤토리";
                 break;
+            case Tab.Equipment:
+                titleText.text = "장비";
+                break;
         }
 
         bagTab.gameObject.SetActive(tab == Tab.Bag);
+        equipTab.gameObject.SetActive(tab == Tab.Equipment);
     }
 }
