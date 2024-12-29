@@ -25,7 +25,11 @@ public class EnhancePopup : UIPopup
 
     void SetPopup(Equipment equipment)
     {
-        SetPopup(Resources.Load<Sprite>($"Sprites/Equipments/{equipment.code}"), equipment.upgradeLevel, 20, 0, 0.5f, 0.01f);
+        var maxEnhance = TableData.GetEquipmentMaxEnhance(equipment.code);
+        var needMoney = TableData.GetEquipmentEnhancePrice(equipment.code);
+        var success = TableData.GetEquipmentEnhancePossibilty(equipment.code, equipment.upgradeLevel);
+
+        SetPopup(Resources.Load<Sprite>($"Sprites/Equipments/{equipment.code}"), equipment.upgradeLevel, maxEnhance, needMoney, success, 0.01f);
     }
 
     void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, float destroy)

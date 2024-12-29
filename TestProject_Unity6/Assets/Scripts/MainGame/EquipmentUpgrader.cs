@@ -2,18 +2,20 @@ using UnityEngine;
 
 public class EquipmentUpgrader : MonoBehaviour
 {
-    const int MAX_UPGRADE = 20;
-
     public void Enhance(Equipment equipment)
     {
-        var success = 0.5f;
+        var maxEnhance = TableData.GetEquipmentMaxEnhance(equipment.code);
+        var success = TableData.GetEquipmentEnhancePossibilty(equipment.code, equipment.upgradeLevel);
         var destroy = 0.01f;
         var random = Random.Range(0f, 1f);
 
-        if (random < success)
-            UpgradeEquipment(equipment);
-        else if (random < success + destroy)
-            DestroyEquipment(equipment);
+        if (equipment.upgradeLevel < maxEnhance)
+        {
+            if (random < success)
+                UpgradeEquipment(equipment);
+            else if (random < success + destroy)
+                DestroyEquipment(equipment);
+        }
     }
 
     void DestroyEquipment(Equipment equipment)
@@ -23,7 +25,6 @@ public class EquipmentUpgrader : MonoBehaviour
 
     void UpgradeEquipment(Equipment equipment)
     {
-        if (equipment.upgradeLevel < MAX_UPGRADE)
-            equipment.upgradeLevel++;
+        equipment.upgradeLevel++;
     }
 }

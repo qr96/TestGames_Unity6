@@ -11,4 +11,9 @@ public class NpcActions : MonoBehaviour
     {
         Managers.UIManager.ShowPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments());
     }
+
+    public void EquipmentShop()
+    {
+        Managers.UIManager.ShowPopup<EquipmentShopPopup>();
+    }
 }

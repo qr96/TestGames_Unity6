@@ -12,12 +12,12 @@ public class NpcController : MonoBehaviour
 
     private void OnEnable()
     {
-        Managers.UIManager.GetLayout<HudLayout>().AddNameTarget(transform, npcName);
+        Managers.UIManager?.GetLayout<HudLayout>().AddNameTarget(transform, npcName);
     }
 
     private void OnDisable()
     {
-        Managers.UIManager.GetLayout<HudLayout>().RemoveNameTarget(transform);
+        Managers.UIManager?.GetLayout<HudLayout>().RemoveNameTarget(transform);
     }
 
     private void OnTriggerEnter(Collider other)
