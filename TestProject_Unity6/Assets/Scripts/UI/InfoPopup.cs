@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InfoPopup : UIPopup
 {
@@ -13,14 +14,14 @@ public class InfoPopup : UIPopup
     public TMP_Text titleText;
     public InfoPopupBagTab bagTab;
     public InfoPopupEquipmentTab equipTab;
-    public KButton exitButton;
+    public Button closeButton;
 
     public KButton bagButton;
     public KButton equipButton;
 
     private void Start()
     {
-        exitButton.onClick.AddListener(() => Hide());
+        closeButton.onClick.AddListener(() => Hide());
         bagButton.onClick.AddListener(() => ChangeTab(Tab.Bag));
         equipButton.onClick.AddListener(() => ChangeTab(Tab.Equipment));
 

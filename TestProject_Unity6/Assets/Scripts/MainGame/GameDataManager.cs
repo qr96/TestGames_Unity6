@@ -260,6 +260,7 @@ public class GameDataManager : MonoBehaviour
         playerInfo.equipmentBag.Add(new Equipment() { code = equipmentCode, upgradeLevel = upgradeLevel });
         
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
+        Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{TableData.GetEquipmentName(equipmentCode)}이(가) 구매 완료되었습니다.");
     }
 
     long GetSkillDamage(int skillId)
