@@ -31,7 +31,7 @@ public class GameDataManager : MonoBehaviour
         MakePlayerHpFull();
         ModifyPlayerMp(0);
         ModifyPlayerExp(0);
-        ModifyPlayerMoney(0);
+        ModifyPlayerMoney(1000000);
         StartCoroutine(ChargeMpCo(1f));
     }
 
@@ -250,7 +250,7 @@ public class GameDataManager : MonoBehaviour
         var equipment = GetPlayerEquipment(id);
         equipmentUpgrader.Enhance(equipment);
 
-        Managers.UIManager.GetPopup<EnhancePopup>().SetPopup(id);
+        Managers.UIManager.GetPopup<EnhancePopup>().SetPopup(id, playerInfo.money);
         Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(playerInfo.equipmentBag.ToList());
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
     }
@@ -261,6 +261,11 @@ public class GameDataManager : MonoBehaviour
         
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{TableData.GetEquipmentName(equipmentCode)}이(가) 구매 완료되었습니다.");
+    }
+
+    public long GetPlayerMoney()
+    {
+        return playerInfo.money;
     }
 
     long GetSkillDamage(int skillId)

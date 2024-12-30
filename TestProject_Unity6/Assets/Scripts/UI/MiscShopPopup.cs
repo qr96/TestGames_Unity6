@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
+using UnityEngine.UI;
 
 public class MiscShopPopup : UIPopup
 {
     public IconSlot slotPrefab;
     public KButton sellButton;
-    public KButton closeButton;
+    public Button closeButton;
 
     List<IconSlot> slotPool = new List<IconSlot>();
 

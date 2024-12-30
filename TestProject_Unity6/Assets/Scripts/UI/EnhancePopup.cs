@@ -53,6 +53,6 @@ public class EnhancePopup : UIPopup
         }
 
         enhanceInfo.text = info;
-        money.text = playerMoney.ToString();
+        money.text = playerMoney.ToFormat();
     }
 }

@@ -68,19 +68,39 @@ public class TableData
 
     public static int GetEquipmentMaxEnhance(int itemCode)
     {
-        return 20;
+        return 99;
     }
 
     public static long GetEquipmentEnhancePrice(int itemCode)
     {
-        return (long)(Mathf.Pow(2, itemCode) * 500);
+        return 1000;
+        //return (long)(Mathf.Pow(2, itemCode) * 500);
     }
 
-    public static float GetEquipmentEnhancePossibilty(int itemCode, int upgradeLevel)
+    public static float GetEquipmentEnhancePossibilty(int itemCode, int enhanceLevel)
     {
-        var possibility = 1f - itemCode * 0.05f;
-        if (possibility < 0.1f)
-            possibility = 0.1f;
+        var possibility = 0f;
+
+        if (enhanceLevel < 10)
+            possibility = 0.95f;
+        else if (enhanceLevel < 20)
+            possibility = 0.9f;
+        else if (enhanceLevel < 30)
+            possibility = 0.85f;
+        else if (enhanceLevel < 40)
+            possibility = 0.8f;
+        else if (enhanceLevel < 50)
+            possibility = 0.75f;
+        else if (enhanceLevel < 60)
+            possibility = 0.7f;
+        else if (enhanceLevel < 70)
+            possibility = 0.65f;
+        else if (enhanceLevel < 80)
+            possibility = 0.6f;
+        else if (enhanceLevel < 90)
+            possibility = 0.55f;
+        else
+            possibility = 0.5f;
 
         return possibility;
     }

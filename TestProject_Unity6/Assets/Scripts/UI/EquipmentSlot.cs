@@ -17,6 +17,5 @@ public class EquipmentSlot : MonoBehaviour
     public void SetUpgrade(int upgrade = 0)
     {
         this.upgrade.text = $"+{upgrade}";
-        this.upgrade.gameObject.SetActive(upgrade > 0);
     }
 }

@@ -6,19 +6,27 @@ public class EquipmentUpgrader : MonoBehaviour
     {
         var maxEnhance = TableData.GetEquipmentMaxEnhance(equipment.code);
         var success = TableData.GetEquipmentEnhancePossibilty(equipment.code, equipment.upgradeLevel);
-        var destroy = 0.01f;
+        var needMoney = TableData.GetEquipmentEnhancePrice(equipment.code);
         var random = Random.Range(0f, 1f);
+
+        Managers.GameData.ModifyPlayerMoney(-needMoney);
 
         if (equipment.upgradeLevel < maxEnhance)
         {
             if (random < success)
+            {
                 UpgradeEquipment(equipment);
-            else if (random < success + destroy)
-                DestroyEquipment(equipment);
+                Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 성공", "강화 레벨이 올랐습니다.");
+            }
+            else
+            {
+                ResetEquipment(equipment);
+                Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 실패", "강화 레벨이 초기화 되었습니다.");
+            }
         }
     }
 
-    void DestroyEquipment(Equipment equipment)
+    void ResetEquipment(Equipment equipment)
     {
         equipment.upgradeLevel = 0;
     }

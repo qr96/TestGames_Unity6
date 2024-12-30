@@ -35,7 +35,7 @@ public class InfoPopupBagTab : MonoBehaviour
 
     public void SetMoney(long money)
     {
-        moneyText.text = money.ToString();
+        moneyText.text = money.ToFormat();
     }
 
     public void SetWeightGuage(long max, long now)

@@ -14,8 +14,8 @@ public class InfoPopup : UIPopup
     public TMP_Text titleText;
     public InfoPopupBagTab bagTab;
     public InfoPopupEquipmentTab equipTab;
-    public Button closeButton;
-
+    
+    public KButton closeButton;
     public KButton bagButton;
     public KButton equipButton;
 
