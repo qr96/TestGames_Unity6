@@ -6,6 +6,7 @@ public class EnhancePopup : UIPopup
 {
     public EquipmentSlot equipmentSlot;
     public TMP_Text enhanceInfo;
+    public TMP_Text money;
     public KButton enhanceButton;
     public Button closeButton;
 
@@ -17,28 +18,28 @@ public class EnhancePopup : UIPopup
         closeButton.onClick.AddListener(Hide);
     }
 
-    public void SetPopup(int nowEquipmentId)
+    public void SetPopup(int nowEquipmentId, long playerMoney)
     {
         this.nowEquipmentId = nowEquipmentId;
-        SetPopup(Managers.GameData.GetPlayerEquipment(nowEquipmentId));
+        SetPopup(Managers.GameData.GetPlayerEquipment(nowEquipmentId), playerMoney);
     }
 
-    void SetPopup(Equipment equipment)
+    void SetPopup(Equipment equipment, long playerMoney)
     {
         var maxEnhance = TableData.GetEquipmentMaxEnhance(equipment.code);
         var needMoney = TableData.GetEquipmentEnhancePrice(equipment.code);
         var success = TableData.GetEquipmentEnhancePossibilty(equipment.code, equipment.upgradeLevel);
 
-        SetPopup(Resources.Load<Sprite>($"Sprites/Equipments/{equipment.code}"), equipment.upgradeLevel, maxEnhance, needMoney, success, 0.01f);
+        SetPopup(Resources.Load<Sprite>($"Sprites/Equipments/{equipment.code}"), equipment.upgradeLevel, maxEnhance, needMoney, success, playerMoney);
     }
 
-    void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, float destroy)
+    void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
     {
         equipmentSlot.SetSlot(equipIcon, nowUpgrade);
-        SetInfo(nowUpgrade, maxUpgrade, needMoney, success, destroy);
+        SetInfo(nowUpgrade, maxUpgrade, needMoney, success, playerMoney);
     }
 
-    void SetInfo(int nowLevel, int maxLevel, long needMoney, float success, float destroy)
+    void SetInfo(int nowLevel, int maxLevel, long needMoney, float success, long playerMoney)
     {
         var info = "";
         
@@ -48,10 +49,10 @@ public class EnhancePopup : UIPopup
         {
             info += $"강화 레벨 : +{nowLevel} > +{nowLevel + 1}\n";
             info += $"소모 비용 : {needMoney}\n";
-            info += $"성공 확률 : {success * 100}%\n";
-            info += $"파괴 확률 : {destroy * 100}%";
+            info += $"성공 확률 : {success * 100}%";
         }
 
         enhanceInfo.text = info;
+        money.text = playerMoney.ToString();
     }
 }

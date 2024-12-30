@@ -43,7 +43,7 @@ public class EnhanceSelectPopup : UIPopup
 
     void OnClickEnhance(int equipmentId)
     {
-        Managers.UIManager.ShowPopup<EnhancePopup>().SetPopup(equipmentId);
+        Managers.UIManager.ShowPopup<EnhancePopup>().SetPopup(equipmentId, Managers.GameData.GetPlayerMoney());
     }
 
     void OnSelected(bool isOn, int equipmentId)
