@@ -17,12 +17,11 @@ public class EquipmentShopPopup : UIPopup
         itemPrefab.gameObject.SetActive(false);
         SetPopup(new List<Tuple<int, int>>() {
             new Tuple<int, int>(1, 0),
+            new Tuple<int, int>(1, 20),
+            new Tuple<int, int>(1, 40),
+            new Tuple<int, int>(1, 60),
             new Tuple<int, int>(2, 0),
-            new Tuple<int, int>(3, 0),
-            new Tuple<int, int>(4, 0),
-            new Tuple<int, int>(4, 5),
-            new Tuple<int, int>(5, 0),
-            new Tuple<int, int>(5, 5),
+            new Tuple<int, int>(2, 20),
         });
     }
 
@@ -48,6 +47,10 @@ public class EquipmentShopPopup : UIPopup
     void OnBuyButton(int equipmentCode, int upgradeLevel)
     {
         var message = $"정말로 {TableData.GetEquipmentName(equipmentCode)}을(를) 구매하시겠습니까?\n구매 가격 : {TableData.GetEquipmentBuyPrice(equipmentCode)}";
-        Managers.UIManager.ShowPopup<ConfirmPopup>().SetPopup("안내", message, () => Managers.GameData.AddEquipment(equipmentCode, upgradeLevel), null);
+        Managers.UIManager.ShowPopup<ConfirmPopup>().SetPopup("안내", message, () =>
+        {
+            Managers.GameData.ModifyPlayerMoney(-TableData.GetEquipmentBuyPrice(equipmentCode));
+            Managers.GameData.AddEquipment(equipmentCode, upgradeLevel);
+        }, null);
     }
 }
