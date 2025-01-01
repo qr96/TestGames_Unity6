@@ -67,7 +67,8 @@ public class GameDataManager : MonoBehaviour
     public void ModifyPlayerMoney(long money)
     {
         playerInfo.money += money;
-        Managers.UIManager.GetPopup<InfoPopup>().SetMoney(money);
+        Managers.UIManager.GetPopup<InfoPopup>().SetMoney(playerInfo.money);
+        Managers.UIManager.GetPopup<EquipmentShopPopup>().SetMoney(playerInfo.money);
     }
 
     public void DamagePlayer(long damage)
