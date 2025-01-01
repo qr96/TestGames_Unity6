@@ -19,7 +19,7 @@ public class EnhanceSelectPopup : UIPopup
         closeButton.onClick.AddListener(Hide);
     }
 
-    public void SetPopup(List<Equipment> equipments)
+    public void SetPopup(List<Equipment> equipments, int selectedId = -1)
     {
         for (int i = slotPool.Count; i < equipments.Count; i++)
             slotPool.Add(Instantiate(slotPrefab, slotPrefab.transform.parent));
@@ -35,6 +35,17 @@ public class EnhanceSelectPopup : UIPopup
 
             toggle.onValueChanged.RemoveAllListeners();
             toggle.onValueChanged.AddListener((isOn) => OnSelected(isOn, itemData.id));
+
+            if (selectedId < 0)
+            {
+                if (i == 0)
+                    toggle.SetToggle(true);
+            }
+            else
+            {
+                if (itemData.id == selectedId)
+                    toggle.SetToggle(true);
+            }
         }
 
         for (int i = equipments.Count; i < slotPool.Count; i++)

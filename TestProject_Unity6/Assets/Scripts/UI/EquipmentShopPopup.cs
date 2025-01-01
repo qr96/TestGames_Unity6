@@ -1,6 +1,6 @@
-using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +8,7 @@ public class EquipmentShopPopup : UIPopup
 {
     public Button closeButton;
     public EquipmentShopItem itemPrefab;
+    public TMP_Text moneyText;
 
     List<EquipmentShopItem> itemPool = new List<EquipmentShopItem>();
 
@@ -23,6 +24,11 @@ public class EquipmentShopPopup : UIPopup
             new Tuple<int, int>(2, 0),
             new Tuple<int, int>(2, 20),
         });
+    }
+
+    public void SetMoney(long money)
+    {
+        moneyText.text = money.ToFormat();
     }
 
     void SetPopup(List<Tuple<int, int>> equipments)

@@ -17,11 +17,15 @@ public class EquipmentUpgrader : MonoBehaviour
             {
                 UpgradeEquipment(equipment);
                 Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 성공", "강화 레벨이 올랐습니다.");
+                Managers.UIManager.GetPopup<EnhancePopup>().SetPopup(equipment.id, Managers.GameData.GetPlayerMoney());
+                Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments(), equipment.id);
             }
             else
             {
-                ResetEquipment(equipment);
-                Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 실패", "강화 레벨이 초기화 되었습니다.");
+                Managers.GameData.RemoveEquipment(equipment.id);
+                Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 실패", "장비가 파괴되었습니다.");
+                Managers.UIManager.HidePopup<EnhancePopup>();
+                Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments());
             }
         }
     }
