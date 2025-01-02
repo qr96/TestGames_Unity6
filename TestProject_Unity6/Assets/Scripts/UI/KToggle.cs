@@ -61,9 +61,6 @@ public class KToggle : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IP
     
     public void SetToggle(bool isOn)
     {
-        if (this.isOn == isOn)
-            return;
-
         this.isOn = isOn;
         onGraphic.SetActive(isOn);
         onValueChanged?.Invoke(isOn);
