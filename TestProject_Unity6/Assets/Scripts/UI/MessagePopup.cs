@@ -6,11 +6,11 @@ public class MessagePopup : UIPopup
 {
     public TMP_Text title;
     public TMP_Text content;
-    public Button closeButton;
+    public KButton okButton;
 
     private void Start()
     {
-        closeButton.onClick.AddListener(Hide);
+        okButton.onClick.AddListener(Hide);
     }
 
     public void SetPopup(string title, string content)
