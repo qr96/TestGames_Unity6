@@ -22,6 +22,15 @@ public class EnhancePopup : UIPopup
     {
         this.nowEquipmentId = nowEquipmentId;
         SetPopup(Managers.GameData.GetPlayerEquipment(nowEquipmentId), playerMoney);
+        enhanceButton.enabled = true;
+    }
+
+    public void SetDestroyPopup(long playerMoney)
+    {
+        equipmentSlot.SetSlot(Resources.Load<Sprite>($"Sprites/Etc/1"), 0);
+        enhanceInfo.text = "장비 파괴됨";
+        money.text = playerMoney.ToFormat();
+        enhanceButton.enabled = false;
     }
 
     void SetPopup(Equipment equipment, long playerMoney)

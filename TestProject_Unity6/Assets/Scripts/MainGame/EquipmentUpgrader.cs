@@ -24,7 +24,7 @@ public class EquipmentUpgrader : MonoBehaviour
             {
                 Managers.GameData.RemoveEquipment(equipment.id);
                 Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 실패", "장비가 파괴되었습니다.");
-                Managers.UIManager.HidePopup<EnhancePopup>();
+                Managers.UIManager.GetPopup<EnhancePopup>().SetDestroyPopup(Managers.GameData.GetPlayerMoney());
                 Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments());
             }
         }
