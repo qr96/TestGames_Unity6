@@ -16,15 +16,17 @@ public class EquipmentUpgrader : MonoBehaviour
             if (random < success)
             {
                 UpgradeEquipment(equipment);
-                Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 성공", "강화 레벨이 올랐습니다.");
+                //Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 성공", "강화 레벨이 올랐습니다.");
                 Managers.UIManager.GetPopup<EnhancePopup>().SetPopup(equipment.id, Managers.GameData.GetPlayerMoney());
+                Managers.UIManager.GetPopup<EnhancePopup>().ShowEffect(true);
                 Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments(), equipment.id);
             }
             else
             {
                 Managers.GameData.RemoveEquipment(equipment.id);
-                Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 실패", "장비가 파괴되었습니다.");
+                //Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("강화 실패", "장비가 파괴되었습니다.");
                 Managers.UIManager.GetPopup<EnhancePopup>().SetDestroyPopup(Managers.GameData.GetPlayerMoney());
+                Managers.UIManager.GetPopup<EnhancePopup>().ShowEffect(false);
                 Managers.UIManager.GetPopup<EnhanceSelectPopup>().SetPopup(Managers.GameData.GetPlayerEquipments());
             }
         }
