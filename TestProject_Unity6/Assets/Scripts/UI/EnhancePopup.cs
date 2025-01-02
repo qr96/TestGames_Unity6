@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,9 @@ public class EnhancePopup : UIPopup
     public TMP_Text money;
     public KButton enhanceButton;
     public Button closeButton;
+
+    public RectTransform successEffect;
+    public RectTransform failureEffect;
 
     int nowEquipmentId;
 
@@ -31,6 +35,24 @@ public class EnhancePopup : UIPopup
         enhanceInfo.text = "장비 파괴됨";
         money.text = playerMoney.ToFormat();
         enhanceButton.enabled = false;
+    }
+
+    public void ShowEffect(bool success)
+    {
+        if (success)
+        {
+            successEffect.gameObject.SetActive(true);
+            successEffect.localScale = Vector3.one;
+            successEffect.DOPunchScale(Vector3.one * 1.1f, 0.2f, 1)
+                .OnComplete(() => successEffect.gameObject.SetActive(false));
+        }
+        else
+        {
+            failureEffect.gameObject.SetActive(true);
+            successEffect.localScale = Vector3.one;
+            failureEffect.DOPunchScale(Vector3.one * 1.1f, 0.2f, 1)
+                .OnComplete(() => failureEffect.gameObject.SetActive(false));
+        }
     }
 
     void SetPopup(Equipment equipment, long playerMoney)
