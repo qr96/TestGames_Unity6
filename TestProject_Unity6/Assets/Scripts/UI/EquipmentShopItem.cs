@@ -10,9 +10,9 @@ public class EquipmentShopItem : MonoBehaviour
     public TMP_Text priceText;
     public KButton buyButton;
 
-    public void SetItem(int itemCode, int upgradeLevel, UnityAction onBuy)
+    public void SetItem(int itemCode, int upgradeLevel, Equipment.Part part, UnityAction onBuy)
     {
-        var itemSprite = Resources.Load<Sprite>($"Sprites/Equipments/{itemCode}");
+        var itemSprite = TableData.GetEquipmentSprite(itemCode, part);
         var itemName = TableData.GetEquipmentName(itemCode);
         var itemPrice = TableData.GetEquipmentBuyPrice(itemCode);
 

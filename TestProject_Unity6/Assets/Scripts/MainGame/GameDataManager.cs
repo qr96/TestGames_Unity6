@@ -21,9 +21,9 @@ public class GameDataManager : MonoBehaviour
     private void Awake()
     {
         playerInfo = new playerInfo(1);
-        playerInfo.equipmentBag.Add(new Equipment() { code = 1, upgradeLevel = 4 });
-        playerInfo.equipmentBag.Add(new Equipment() { code = 2, upgradeLevel = 2 });
-        playerInfo.equipmentBag.Add(new Equipment() { code = 4, upgradeLevel = 8 });
+        playerInfo.equipmentBag.Add(new Equipment(1, 4, Equipment.Part.Weapon));
+        playerInfo.equipmentBag.Add(new Equipment(2, 6, Equipment.Part.Weapon));
+        playerInfo.equipmentBag.Add(new Equipment(4, 8, Equipment.Part.Weapon));
     }
 
     private void Start()
@@ -254,9 +254,9 @@ public class GameDataManager : MonoBehaviour
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
     }
 
-    public void AddEquipment(int equipmentCode, int upgradeLevel)
+    public void AddEquipment(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
-        playerInfo.equipmentBag.Add(new Equipment() { code = equipmentCode, upgradeLevel = upgradeLevel });
+        playerInfo.equipmentBag.Add(new Equipment(equipmentCode, upgradeLevel, part));
         
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{TableData.GetEquipmentName(equipmentCode)}이(가) 구매 완료되었습니다.");
@@ -489,6 +489,25 @@ public class Equipment
     public int code;
     public int upgradeLevel;
     public Stat stat;
+    public Part part;
+
+    public Equipment(int code, int upgradeLevel, Part part)
+    {
+        this.code = code;
+        this.upgradeLevel = upgradeLevel;
+        this.part = part;
+    }
+
+    public enum Part
+    {
+        None = 0,
+        Weapon = 1,
+        Necklace = 2,
+        Gloves = 3,
+        Hat = 4,
+        Armor = 5,
+        Shoes = 6
+    }
 }
 
 public class EquipmentBag

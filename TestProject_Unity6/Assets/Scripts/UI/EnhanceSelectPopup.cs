@@ -31,7 +31,7 @@ public class EnhanceSelectPopup : UIPopup
             var toggle = itemSlot.GetComponent<KToggle>();
 
             itemSlot.gameObject.SetActive(true);
-            itemSlot.SetSlot(Resources.Load<Sprite>($"Sprites/Equipments/{itemData.code}"), itemData.upgradeLevel);
+            itemSlot.SetSlot(TableData.GetEquipmentSprite(itemData.code, itemData.part), itemData.upgradeLevel);
 
             toggle.onValueChanged.RemoveAllListeners();
             toggle.onValueChanged.AddListener((isOn) => OnSelected(isOn, itemData.id));

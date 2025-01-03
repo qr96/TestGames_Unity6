@@ -104,4 +104,30 @@ public class TableData
 
         return possibility;
     }
+
+    public static void GetEquipmentStat(Equipment equipment)
+    {
+
+    }
+
+    public static string GetEquipmentSpritePath(int code, Equipment.Part part)
+    {
+        var partPath = part switch
+        {
+            Equipment.Part.Weapon => "Weapon",
+            Equipment.Part.Necklace => "Necklace",
+            Equipment.Part.Gloves => "Gloves",
+            Equipment.Part.Hat => "Hat",
+            Equipment.Part.Armor => "Armor",
+            Equipment.Part.Shoes => "Shoes",
+            _ => ""
+        };
+
+        return $"Sprites/Equipments/{partPath}/{code}";
+    }
+
+    public static Sprite GetEquipmentSprite(int code, Equipment.Part part)
+    {
+        return Resources.Load<Sprite>(GetEquipmentSpritePath(code, part));
+    }
 }
