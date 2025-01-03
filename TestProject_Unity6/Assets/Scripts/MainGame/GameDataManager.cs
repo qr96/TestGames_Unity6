@@ -21,9 +21,6 @@ public class GameDataManager : MonoBehaviour
     private void Awake()
     {
         playerInfo = new playerInfo(1);
-        playerInfo.equipmentBag.Add(new Equipment(1, 4, Equipment.Part.Weapon));
-        playerInfo.equipmentBag.Add(new Equipment(2, 6, Equipment.Part.Weapon));
-        playerInfo.equipmentBag.Add(new Equipment(4, 8, Equipment.Part.Weapon));
     }
 
     private void Start()
@@ -251,20 +248,43 @@ public class GameDataManager : MonoBehaviour
         var equipment = GetPlayerEquipment(id);
         equipmentUpgrader.Enhance(equipment);
 
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
     }
 
     public void AddEquipment(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
         playerInfo.equipmentBag.Add(new Equipment(equipmentCode, upgradeLevel, part));
-        
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList());
+
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{TableData.GetEquipmentName(equipmentCode)}이(가) 구매 완료되었습니다.");
     }
 
     public void RemoveEquipment(int equipmentId)
     {
         playerInfo.equipmentBag.Remove(equipmentId);
+    }
+
+    public void Equip(int equipmentId)
+    {
+        var equipment = playerInfo.equipmentBag.GetById(equipmentId);
+
+        if (playerInfo.equipped.HasPart(equipment.part))
+            UnEquip(equipment.part);
+
+        if (playerInfo.equipped.Equip(equipment))
+            playerInfo.equipmentBag.Remove(equipmentId);
+
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+    }
+
+    public void UnEquip(Equipment.Part part)
+    {
+        var equipment = playerInfo.equipped.UnEquip(part);
+
+        if (equipment != null)
+            playerInfo.equipmentBag.Add(equipment);
+
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
     }
 
     public long GetPlayerMoney()
@@ -342,7 +362,8 @@ public class playerInfo
     public Stat stat;
     public Stat skillStat;
     public Bag miscBag = new Bag(999);
-    public EquipmentBag equipmentBag = new EquipmentBag();
+    public EquipmentBag equipmentBag = new();
+    public EquippedEquipments equipped = new();
 
     public playerInfo(int level)
     {
@@ -545,5 +566,62 @@ public class EquipmentBag
     public List<Equipment> ToList()
     {
         return bag;
+    }
+}
+
+public class EquippedEquipments
+{
+    List<Equipment> equipped = new List<Equipment>();
+    
+    public bool Equip(Equipment equipment)
+    {
+        if (HasPart(equipment.part))
+            return false;
+        else
+        {
+            equipped.Add(equipment);
+            return true;
+        }
+    }
+
+    public Equipment UnEquip(Equipment.Part part)
+    {
+        if (HasPart(part))
+        {
+            var equipment = GetPart(part);
+            equipped.Remove(equipment);
+            return equipment;
+        }
+        return null;
+    }
+
+    public bool HasPart(Equipment.Part part)
+    {
+        foreach (var equipment in equipped)
+        {
+            if (equipment.part == part)
+                return true;
+        }
+
+        return false;
+    }
+
+    public Equipment GetPart(Equipment.Part part)
+    {
+        if (HasPart(part))
+        {
+            foreach (var equipment in equipped)
+            {
+                if (equipment.part == part)
+                    return equipment;
+            }
+        }
+
+        return null;
+    }
+
+    public List<Equipment> ToList()
+    {
+        return equipped;
     }
 }

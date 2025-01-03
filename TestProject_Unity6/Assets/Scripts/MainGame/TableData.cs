@@ -130,4 +130,9 @@ public class TableData
     {
         return Resources.Load<Sprite>(GetEquipmentSpritePath(code, part));
     }
+
+    public static Sprite GetSpriteNone()
+    {
+        return Resources.Load<Sprite>("Sprites/None");
+    }
 }

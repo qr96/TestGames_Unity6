@@ -33,9 +33,9 @@ public class InfoPopup : UIPopup
         bagTab.SetTab(items);
     }
 
-    public void SetEquipTab(List<Equipment> equipments)
+    public void SetEquipTab(List<Equipment> equipments, List<Equipment> equipped)
     {
-        equipTab.SetPopup(equipments);
+        equipTab.SetPopup(equipments, equipped);
     }
 
     public void SetMoney(long money)
