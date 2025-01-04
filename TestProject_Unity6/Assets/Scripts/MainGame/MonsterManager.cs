@@ -31,7 +31,7 @@ public class MonsterManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Monster's id is already using");
+            Debug.LogError($"Monster's id is already using. id={id}");
         }
     }
 

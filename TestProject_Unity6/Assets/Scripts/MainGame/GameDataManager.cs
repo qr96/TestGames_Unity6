@@ -312,7 +312,7 @@ public class GameDataManager : MonoBehaviour
     }
 }
 
-public class Stat
+public struct Stat
 {
     public long maxHp;
     public long nowHp;
@@ -623,5 +623,38 @@ public class EquippedEquipments
     public List<Equipment> ToList()
     {
         return equipped;
+    }
+}
+
+public class Monster
+{
+    public int id;
+    public Stat stat;
+
+    public Monster(int id, long maxHp, long attack)
+    {
+        this.id = id;
+        stat.maxHp = maxHp;
+        stat.attack = attack;
+    }
+
+    public void ReSpawn()
+    {
+        stat.ReSpawn();
+    }
+
+    public bool IsDead()
+    {
+        return stat.nowHp <= 0;
+    }
+
+    public void TakeDamage(long damage)
+    {
+        stat.ModifyNowHp(-damage);
+    }
+
+    public long GetDamge()
+    {
+        return stat.attack;
     }
 }

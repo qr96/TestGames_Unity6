@@ -9,7 +9,7 @@ public class MapData : MonoBehaviour
     public int maxMonster = 5;
     public float respawnTime = 30f;
 
-    List<Stat> monsters = new List<Stat>();
+    List<Monster> monsters = new List<Monster>();
     Dictionary<int, ItemData> spawnedItem = new Dictionary<int, ItemData>();
     Bag acquiredBag = new Bag(999);
 
@@ -24,15 +24,14 @@ public class MapData : MonoBehaviour
         {
             nextSpawnTime = DateTime.Now.AddSeconds(respawnTime);
 
-            for (int i = 0; i < monsters.Count; i++)
+            foreach (var monster in monsters)
             {
-                var monster = monsters[i];
-                if (monster.nowHp <= 0)
+                if (monster.IsDead())
                 {
                     var newPos = new Vector3(Random.Range(-10f, 10f), 1f, Random.Range(-10f, 10f));
                     var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
                     monster.ReSpawn();
-                    Managers.MonsterManager.SpawnMonster(i, newPos, newRotate);
+                    Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
                 }
             }
         }
@@ -61,7 +60,7 @@ public class MapData : MonoBehaviour
         else if (mapId == 1)
         {
             for (int i = 0; i < maxMonster; i++)
-                monsters.Add(new Stat() { maxHp = 50, attack = 2 });
+                monsters.Add(new Monster(i, 50, 2));
 
             nextSpawnTime = DateTime.Now;    
             reduceHpCo = StartCoroutine(ReduceHpCo(1f));
@@ -74,7 +73,7 @@ public class MapData : MonoBehaviour
     {
         var monster = monsters[monsterId];
 
-        if (monster.nowHp <= 0)
+        if (monster.IsDead())
         {
             Debug.LogError($"Attack dead monster. id={monsterId}");
         }
@@ -85,7 +84,6 @@ public class MapData : MonoBehaviour
                 var playerAttackDamage = Managers.GameData.GetPlayerDamage();
                 var playerAttackSkills = Managers.GameData.UseAttackSkill();
 
-                //Managers.effect.ShowEffect(0, monsterPosition);
                 Managers.effect.ShowEffect(6, monsterPosition);
                 Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
                 
@@ -101,10 +99,10 @@ public class MapData : MonoBehaviour
                     Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
                 }
 
-                monster.ModifyNowHp(-playerAttackDamage);
-                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxHp, monster.nowHp);
+                monster.TakeDamage(playerAttackDamage);
+                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.stat.maxHp, monster.stat.nowHp);
 
-                if (monster.nowHp <= 0)
+                if (monster.IsDead())
                 {
                     Managers.GameData.ModifyPlayerExp(10);
                     Managers.GameData.UseBuffSkill(0);
@@ -116,7 +114,7 @@ public class MapData : MonoBehaviour
                 }
                 else
                 {
-                    Managers.GameData.DamagePlayer(monsters[monsterId].attack);
+                    Managers.GameData.DamagePlayer(monsters[monsterId].GetDamge());
                 }
             }
         }
