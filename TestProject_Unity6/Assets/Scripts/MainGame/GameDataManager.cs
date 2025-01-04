@@ -167,6 +167,7 @@ public class GameDataManager : MonoBehaviour
 
         playerInfo.UpdateStat();
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+        mapData.UpdatePlayerStat();
     }
 
     public void UnEquip(Equipment.Part part)
@@ -178,6 +179,7 @@ public class GameDataManager : MonoBehaviour
 
         playerInfo.UpdateStat();
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+        mapData.UpdatePlayerStat();
     }
 
     public long GetPlayerMoney()

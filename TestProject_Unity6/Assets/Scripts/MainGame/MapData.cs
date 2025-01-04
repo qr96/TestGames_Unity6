@@ -38,11 +38,6 @@ public class MapData : MonoBehaviour
                 Managers.UIManager.ShowPopup<ExploreResultPopup>().SetItems(acquiredBag.ToList());
                 acquiredBag.Clear();
             }
-            
-            playerUnit.SetStat(Managers.GameData.GetPlayerStat());
-            playerUnit.Respawn();
-            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
-            Managers.MonsterManager.player.speed = playerUnit.NowStat.speed;
         }
         else
         {
@@ -51,6 +46,7 @@ public class MapData : MonoBehaviour
         }
 
         nowMapId = mapId;
+        UpdatePlayerStat();
     }
 
     public void SpawnMonsters()
@@ -137,6 +133,18 @@ public class MapData : MonoBehaviour
         else
         {
             Debug.Log($"PickupItem() Failed to acquire item. itemId={itemId}");
+        }
+    }
+
+    public void UpdatePlayerStat()
+    {
+        if (TableData.IsTown(nowMapId))
+        {
+            playerUnit.SetStat(Managers.GameData.GetPlayerStat());
+            playerUnit.Respawn();
+            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
+            Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerUnit.MaxStat.mp, playerUnit.NowStat.mp);
+            Managers.MonsterManager.player.speed = playerUnit.NowStat.speed;
         }
     }
 
