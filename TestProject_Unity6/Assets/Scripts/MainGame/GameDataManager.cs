@@ -51,14 +51,14 @@ public class GameDataManager : MonoBehaviour
 
     public void ModifyPlayerHp(long hp)
     {
-        playerInfo.stat.ModifyNowHp(hp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerInfo.stat.maxHp, playerInfo.stat.nowHp);
+        playerInfo.nowStat.ModifyNowHp(hp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerInfo.nowStat.maxHp, playerInfo.nowStat.nowHp);
     }
 
     public void ModifyPlayerMp(long mp)
     {
-        playerInfo.stat.ModifyNowMp(mp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.stat.maxMp, playerInfo.stat.nowMp);
+        playerInfo.nowStat.ModifyNowMp(mp);
+        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.nowStat.maxMp, playerInfo.nowStat.nowMp);
     }
 
     public void ModifyPlayerMoney(long money)
@@ -70,10 +70,10 @@ public class GameDataManager : MonoBehaviour
 
     public void DamagePlayer(long damage)
     {
-        if (playerInfo.stat.nowMp < damage)
+        if (playerInfo.nowStat.nowMp < damage)
         {
-            var remainDamage = damage - playerInfo.stat.nowMp;
-            ModifyPlayerMp(-playerInfo.stat.nowMp);
+            var remainDamage = damage - playerInfo.nowStat.nowMp;
+            ModifyPlayerMp(-playerInfo.nowStat.nowMp);
             ModifyPlayerHp(-remainDamage);
         }
         else
@@ -91,7 +91,7 @@ public class GameDataManager : MonoBehaviour
 
     public void MakePlayerHpFull()
     {
-        var needHp = playerInfo.stat.maxHp - playerInfo.stat.nowHp;
+        var needHp = playerInfo.nowStat.maxHp - playerInfo.nowStat.nowHp;
         ModifyPlayerHp(needHp);
     }
 
@@ -103,7 +103,7 @@ public class GameDataManager : MonoBehaviour
 
     public long GetPlayerDamage()
     {
-        return GetDamage(playerInfo.stat);
+        return GetDamage(playerInfo.nowStat);
     }
 
     public void Battle(int monsterId)
@@ -167,7 +167,7 @@ public class GameDataManager : MonoBehaviour
         buffEndTimes[skillId] = DateTime.Now.AddSeconds(buffTime);
         buffActives[skillId] = true;
 
-        Managers.MonsterManager.player.speed = playerInfo.stat.speed + buffStat.speed;
+        Managers.MonsterManager.player.speed = playerInfo.nowStat.speed + buffStat.speed;
         Managers.UIManager.GetLayout<StateLayout>().SetSkillDutaion(skillId, buffTime);
     }
 
@@ -274,6 +274,7 @@ public class GameDataManager : MonoBehaviour
         if (playerInfo.equipped.Equip(equipment))
             playerInfo.equipmentBag.Remove(equipmentId);
 
+        playerInfo.UpdateStat();
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
     }
 
@@ -284,6 +285,7 @@ public class GameDataManager : MonoBehaviour
         if (equipment != null)
             playerInfo.equipmentBag.Add(equipment);
 
+        playerInfo.UpdateStat();
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
     }
 
@@ -318,6 +320,8 @@ public struct Stat
     public long nowHp;
     public long maxMp;
     public long nowMp;
+    public long hp;
+    public long mp;
     public long attack;
     public float speed;
     public float mastery;
@@ -359,8 +363,8 @@ public class playerInfo
     public int level;
     public long nowExp;
     public long money;
-    public Stat stat;
-    public Stat skillStat;
+    Stat pureStat;
+    public Stat nowStat;
     public Bag miscBag = new Bag(999);
     public EquipmentBag equipmentBag = new();
     public EquippedEquipments equipped = new();
@@ -368,10 +372,11 @@ public class playerInfo
     public playerInfo(int level)
     {
         this.level = level;
-        stat = new Stat();
-        stat.speed = 6f;
-        stat.mastery = 0.5f;
+        pureStat = new Stat();
+        pureStat.speed = 6f;
+        pureStat.mastery = 0.5f;
         SetLevelStat(TableData.GetStatPerLevel(level));
+        UpdateStat();
     }
 
     public void ModifyExp(long exp, Action onLevelUp)
@@ -385,11 +390,20 @@ public class playerInfo
             LevelUp(onLevelUp);
     }
 
+    public void UpdateStat()
+    {
+        nowStat = new Stat();
+        nowStat.Add(pureStat);
+        nowStat.Add(equipped.GetStat());
+    }
+
     void SetLevelStat(Stat stat)
     {
-        this.stat.maxHp = stat.maxHp;
-        this.stat.maxMp = stat.maxMp;
-        this.stat.attack = stat.attack;
+        pureStat.maxHp = stat.maxHp;
+        pureStat.maxMp = stat.maxMp;
+        pureStat.attack = stat.attack;
+
+        UpdateStat();
     }
 
     void LevelUp(Action onLevelUp)
@@ -572,7 +586,7 @@ public class EquipmentBag
 public class EquippedEquipments
 {
     List<Equipment> equipped = new List<Equipment>();
-    
+
     public bool Equip(Equipment equipment)
     {
         if (HasPart(equipment.part))
@@ -623,6 +637,16 @@ public class EquippedEquipments
     public List<Equipment> ToList()
     {
         return equipped;
+    }
+
+    public Stat GetStat()
+    {
+        var stat = new Stat();
+
+        foreach (var equipment in equipped)
+            stat.Add(TableData.GetEquipmentStat(equipment));
+
+        return stat;
     }
 }
 

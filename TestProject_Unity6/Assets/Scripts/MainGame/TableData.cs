@@ -111,9 +111,9 @@ public class TableData
         return possibility;
     }
 
-    public static void GetEquipmentStat(Equipment equipment)
+    public static Stat GetEquipmentStat(Equipment equipment)
     {
-
+        return new Stat() { attack = equipment.upgradeLevel, maxHp = equipment.upgradeLevel * 5 };
     }
 
     public static string GetEquipmentSpritePath(int code, Equipment.Part part)
