@@ -48,27 +48,27 @@ public class InfoPopupEquipmentTab : UIPopup
             else if (equip.part == Equipment.Part.Necklace)
             {
                 necklaceSlot.SetSlot(TableData.GetEquipmentSprite(equip.code, equip.part), equip.upgradeLevel);
-                necklaceSlot.GetComponent<KButton>().enabled = false;
+                necklaceSlot.GetComponent<KButton>().enabled = true;
             }
             else if (equip.part == Equipment.Part.Gloves)
             {
                 glovesSlot.SetSlot(TableData.GetEquipmentSprite(equip.code, equip.part), equip.upgradeLevel);
-                glovesSlot.GetComponent<KButton>().enabled = false;
+                glovesSlot.GetComponent<KButton>().enabled = true;
             }
             else if (equip.part == Equipment.Part.Hat)
             {
                 hatSlot.SetSlot(TableData.GetEquipmentSprite(equip.code, equip.part), equip.upgradeLevel);
-                hatSlot.GetComponent<KButton>().enabled = false;
+                hatSlot.GetComponent<KButton>().enabled = true;
             }
             else if (equip.part == Equipment.Part.Armor)
             {
                 armorSlot.SetSlot(TableData.GetEquipmentSprite(equip.code, equip.part), equip.upgradeLevel);
-                armorSlot.GetComponent<KButton>().enabled = false;
+                armorSlot.GetComponent<KButton>().enabled = true;
             }
             else if (equip.part == Equipment.Part.Shoes)
             {
                 shoesSlot.SetSlot(TableData.GetEquipmentSprite(equip.code, equip.part), equip.upgradeLevel);
-                shoesSlot.GetComponent<KButton>().enabled = false;
+                shoesSlot.GetComponent<KButton>().enabled = true;
             }
         }
     }
