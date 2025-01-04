@@ -628,27 +628,24 @@ public class EquippedEquipments
     }
 }
 
-public class Monster
+public class BattleUnit
 {
-    public int id;
-    public Stat maxStat;
-    public Stat nowStat;
+    public int id { get; private set; }
+    public Stat MaxStat => maxStat;
+    public Stat NowStat => nowStat;
 
-    public Monster(int id, long maxHp, long attack)
+    Stat maxStat;
+    Stat nowStat;
+
+    public BattleUnit(int id, Stat stat)
     {
         this.id = id;
-        maxStat.hp = maxHp;
-        maxStat.attack = attack;
+        maxStat = stat;
     }
 
-    public void ReSpawn()
+    public void Respawn()
     {
         nowStat = maxStat;
-    }
-
-    public bool IsDead()
-    {
-        return nowStat.hp <= 0;
     }
 
     public void TakeDamage(long damage)
@@ -658,8 +655,27 @@ public class Monster
             nowStat.hp = 0;
     }
 
-    public long GetDamge()
+    public void HealHp(long hp)
+    {
+        nowStat.hp += hp;
+        if (nowStat.hp > maxStat.hp)
+            nowStat.hp = maxStat.hp;
+    }
+
+    public void HealMp(long mp)
+    {
+        nowStat.mp += mp;
+        if (nowStat.mp > maxStat.mp)
+            nowStat.mp = maxStat.mp;
+    }
+
+    public long GetAttack()
     {
         return nowStat.attack;
+    }
+
+    public bool IsDead()
+    {
+        return nowStat.hp <= 0;
     }
 }

@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class MapData : MonoBehaviour
 {
-    List<Monster> monsters = new List<Monster>();
+    List<BattleUnit> monsters = new List<BattleUnit>();
     Dictionary<int, ItemData> spawnedItem = new Dictionary<int, ItemData>();
     Bag acquiredBag = new Bag(999);
 
@@ -45,7 +45,7 @@ public class MapData : MonoBehaviour
     public void SpawnMonsters()
     {
         for (int i = 0; i < 5; i++)
-            monsters.Add(new Monster(i, 50, 2));
+            monsters.Add(new BattleUnit(i, new Stat() { hp = 50, attack = 2 }));
 
         foreach (var monster in monsters)
         {
@@ -53,7 +53,7 @@ public class MapData : MonoBehaviour
             {
                 var newPos = new Vector3(Random.Range(-10f, 10f), 1f, Random.Range(-10f, 10f));
                 var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-                monster.ReSpawn();
+                monster.Respawn();
                 Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
             }
         }
@@ -96,7 +96,7 @@ public class MapData : MonoBehaviour
                 }
 
                 monster.TakeDamage(playerAttackDamage);
-                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxStat.hp, monster.nowStat.hp);
+                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.MaxStat.hp, monster.NowStat.hp);
 
                 if (monster.IsDead())
                 {
@@ -110,7 +110,7 @@ public class MapData : MonoBehaviour
                 }
                 else
                 {
-                    Managers.GameData.DamagePlayer(monsters[monsterId].GetDamge());
+                    Managers.GameData.DamagePlayer(monsters[monsterId].GetAttack());
                 }
             }
         }
