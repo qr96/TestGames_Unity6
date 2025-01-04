@@ -96,7 +96,7 @@ public class MapData : MonoBehaviour
                 }
 
                 monster.TakeDamage(playerAttackDamage);
-                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.stat.maxHp, monster.stat.nowHp);
+                Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.maxStat.hp, monster.nowStat.hp);
 
                 if (monster.IsDead())
                 {

@@ -16,10 +16,11 @@ public class TableData
     public static Stat GetStatPerLevel(int level)
     {
         var stat = new Stat();
-        
-        stat.maxHp = 10 + level * 10;
-        stat.maxMp = 10 + level * 5;
+        stat.hp = 10 + level * 2;
+        stat.mp = 10 + level * 1;
         stat.attack = 10 + level;
+        stat.speed = 6f;
+        stat.mastery = 0.5f;
 
         return stat;
     }
@@ -113,7 +114,7 @@ public class TableData
 
     public static Stat GetEquipmentStat(Equipment equipment)
     {
-        return new Stat() { attack = equipment.upgradeLevel, maxHp = equipment.upgradeLevel * 5 };
+        return new Stat() { attack = equipment.upgradeLevel, hp = equipment.upgradeLevel * 5 };
     }
 
     public static string GetEquipmentSpritePath(int code, Equipment.Part part)

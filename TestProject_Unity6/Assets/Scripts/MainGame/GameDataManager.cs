@@ -51,14 +51,20 @@ public class GameDataManager : MonoBehaviour
 
     public void ModifyPlayerHp(long hp)
     {
-        playerInfo.nowStat.ModifyNowHp(hp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerInfo.nowStat.maxHp, playerInfo.nowStat.nowHp);
+        playerInfo.nowStat.hp += hp;
+        if (playerInfo.nowStat.hp < 0) playerInfo.nowStat.hp = 0;
+        else if (playerInfo.nowStat.hp > playerInfo.maxStat.hp) playerInfo.nowStat.hp = playerInfo.maxStat.hp;
+
+        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerInfo.maxStat.hp, playerInfo.nowStat.hp);
     }
 
     public void ModifyPlayerMp(long mp)
     {
-        playerInfo.nowStat.ModifyNowMp(mp);
-        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.nowStat.maxMp, playerInfo.nowStat.nowMp);
+        playerInfo.nowStat.mp += mp;
+        if (playerInfo.nowStat.mp < 0) playerInfo.nowStat.mp = 0;
+        else if (playerInfo.nowStat.mp > playerInfo.maxStat.mp) playerInfo.nowStat.mp = playerInfo.maxStat.mp;
+
+        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.maxStat.mp, playerInfo.nowStat.mp);
     }
 
     public void ModifyPlayerMoney(long money)
@@ -70,10 +76,10 @@ public class GameDataManager : MonoBehaviour
 
     public void DamagePlayer(long damage)
     {
-        if (playerInfo.nowStat.nowMp < damage)
+        if (playerInfo.nowStat.mp < damage)
         {
-            var remainDamage = damage - playerInfo.nowStat.nowMp;
-            ModifyPlayerMp(-playerInfo.nowStat.nowMp);
+            var remainDamage = damage - playerInfo.nowStat.mp;
+            ModifyPlayerMp(-playerInfo.nowStat.mp);
             ModifyPlayerHp(-remainDamage);
         }
         else
@@ -91,7 +97,7 @@ public class GameDataManager : MonoBehaviour
 
     public void MakePlayerHpFull()
     {
-        var needHp = playerInfo.nowStat.maxHp - playerInfo.nowStat.nowHp;
+        var needHp = playerInfo.maxStat.hp - playerInfo.nowStat.hp;
         ModifyPlayerHp(needHp);
     }
 
@@ -316,42 +322,16 @@ public class GameDataManager : MonoBehaviour
 
 public struct Stat
 {
-    public long maxHp;
-    public long nowHp;
-    public long maxMp;
-    public long nowMp;
     public long hp;
     public long mp;
     public long attack;
     public float speed;
     public float mastery;
 
-    public void ReSpawn()
-    {
-        nowHp = maxHp;
-        nowMp = maxMp;
-    }
-
-    public void ModifyNowHp(long hp)
-    {
-        nowHp += hp;
-        if (nowHp > maxHp) nowHp = maxHp;
-        else if (nowHp < 0) nowHp = 0;
-    }
-
-    public void ModifyNowMp(long mp)
-    {
-        nowMp += mp;
-        if (nowMp > maxMp) nowMp = maxMp;
-        else if (nowMp < 0) nowMp = 0;
-    }
-
     public void Add(Stat stat)
     {
-        maxHp += stat.maxHp;
-        nowHp += stat.nowHp;
-        maxMp += stat.maxMp;
-        nowMp += stat.nowMp;
+        hp += stat.hp;
+        mp += stat.mp;
         attack += stat.attack;
         speed += stat.speed;
         mastery += stat.mastery;
@@ -364,6 +344,7 @@ public class playerInfo
     public long nowExp;
     public long money;
     Stat pureStat;
+    public Stat maxStat;
     public Stat nowStat;
     public Bag miscBag = new Bag(999);
     public EquipmentBag equipmentBag = new();
@@ -392,17 +373,16 @@ public class playerInfo
 
     public void UpdateStat()
     {
-        nowStat = new Stat();
-        nowStat.Add(pureStat);
-        nowStat.Add(equipped.GetStat());
+        maxStat = new Stat();
+        maxStat.Add(pureStat);
+        maxStat.Add(equipped.GetStat());
+
+        nowStat = maxStat;
     }
 
     void SetLevelStat(Stat stat)
     {
-        pureStat.maxHp = stat.maxHp;
-        pureStat.maxMp = stat.maxMp;
-        pureStat.attack = stat.attack;
-
+        pureStat = stat;
         UpdateStat();
     }
 
@@ -653,32 +633,35 @@ public class EquippedEquipments
 public class Monster
 {
     public int id;
-    public Stat stat;
+    public Stat maxStat;
+    public Stat nowStat;
 
     public Monster(int id, long maxHp, long attack)
     {
         this.id = id;
-        stat.maxHp = maxHp;
-        stat.attack = attack;
+        maxStat.hp = maxHp;
+        maxStat.attack = attack;
     }
 
     public void ReSpawn()
     {
-        stat.ReSpawn();
+        nowStat = maxStat;
     }
 
     public bool IsDead()
     {
-        return stat.nowHp <= 0;
+        return nowStat.hp <= 0;
     }
 
     public void TakeDamage(long damage)
     {
-        stat.ModifyNowHp(-damage);
+        nowStat.hp -= damage;
+        if (nowStat.hp < 0)
+            nowStat.hp = 0;
     }
 
     public long GetDamge()
     {
-        return stat.attack;
+        return nowStat.attack;
     }
 }
