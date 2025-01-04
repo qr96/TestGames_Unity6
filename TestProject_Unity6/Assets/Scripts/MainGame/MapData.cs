@@ -21,19 +21,19 @@ public class MapData : MonoBehaviour
         if (reduceHpCo != null)
             StopCoroutine(reduceHpCo);
 
-        if (TableData.IsTown(mapId) && !TableData.IsTown(nowMapId))
+        if (TableData.IsTown(mapId))
         {
-            Managers.GameData.MakePlayerHpFull();
-
-            if (nowMapId == 1)
+            if (!TableData.IsTown(nowMapId))
             {
+                Managers.GameData.MakePlayerHpFull();
+
                 foreach (var itemData in acquiredBag.ToList())
                     Managers.GameData.AddMiscItemToBag(itemData.itemCode, itemData.count);
                 Managers.UIManager.ShowPopup<ExploreResultPopup>().SetItems(acquiredBag.ToList());
                 acquiredBag.Clear();
             }
         }
-        else if (!TableData.IsTown(mapId))
+        else
         {
             SpawnMonsters();
             reduceHpCo = StartCoroutine(ReduceHpCo(1f));
