@@ -57,6 +57,18 @@ public class TableData
         return 0;
     }
 
+    public static long GetSkillDamage(int skillId, int skillLevel, long attack)
+    {
+        if (skillId == 0)
+            return attack;
+        else if (skillId == 1)
+            return attack * 2;
+        else if (skillId == 2)
+            return attack * 3;
+
+        return 0;
+    }
+
     public static long GetSellPrice(int itemCode, int count)
     {
         long[] sellPrice = new long[] { 0, 10, 50, 100 };

@@ -14,9 +14,6 @@ public class GameDataManager : MonoBehaviour
 
     List<Quest> progressQuests = new List<Quest>();
     List<Quest> completeQuests = new List<Quest>();
-    Dictionary<int, DateTime> itemCoolEnds = new Dictionary<int, DateTime>();
-    Dictionary<int, DateTime> buffEndTimes = new Dictionary<int, DateTime>();
-    Dictionary<int, bool> buffActives = new Dictionary<int, bool>();
 
     private void Awake()
     {
@@ -25,46 +22,13 @@ public class GameDataManager : MonoBehaviour
 
     private void Start()
     {
-        MakePlayerHpFull();
-        ModifyPlayerMp(0);
         ModifyPlayerExp(0);
         ModifyPlayerMoney(1000000);
-        StartCoroutine(ChargeMpCo(1f));
     }
 
-    private void Update()
+    public Stat GetPlayerStat()
     {
-        foreach (var buff in buffEndTimes)
-        {
-            var skillId = buff.Key;
-
-            if (buffActives[skillId] == true)
-            {
-                if (buffEndTimes[skillId] < DateTime.Now)
-                {
-                    buffActives[skillId] = false;
-                    Managers.MonsterManager.player.speed -= TableData.GetSkillBuffStat(skillId, 1).speed;
-                }
-            }
-        }
-    }
-
-    public void ModifyPlayerHp(long hp)
-    {
-        playerInfo.nowStat.hp += hp;
-        if (playerInfo.nowStat.hp < 0) playerInfo.nowStat.hp = 0;
-        else if (playerInfo.nowStat.hp > playerInfo.maxStat.hp) playerInfo.nowStat.hp = playerInfo.maxStat.hp;
-
-        Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerInfo.maxStat.hp, playerInfo.nowStat.hp);
-    }
-
-    public void ModifyPlayerMp(long mp)
-    {
-        playerInfo.nowStat.mp += mp;
-        if (playerInfo.nowStat.mp < 0) playerInfo.nowStat.mp = 0;
-        else if (playerInfo.nowStat.mp > playerInfo.maxStat.mp) playerInfo.nowStat.mp = playerInfo.maxStat.mp;
-
-        Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerInfo.maxStat.mp, playerInfo.nowStat.mp);
+        return playerInfo.maxStat;
     }
 
     public void ModifyPlayerMoney(long money)
@@ -74,20 +38,6 @@ public class GameDataManager : MonoBehaviour
         Managers.UIManager.GetPopup<EquipmentShopPopup>().SetMoney(playerInfo.money);
     }
 
-    public void DamagePlayer(long damage)
-    {
-        if (playerInfo.nowStat.mp < damage)
-        {
-            var remainDamage = damage - playerInfo.nowStat.mp;
-            ModifyPlayerMp(-playerInfo.nowStat.mp);
-            ModifyPlayerHp(-remainDamage);
-        }
-        else
-        {
-            ModifyPlayerMp(-damage);
-        }
-    }
-
     public void ModifyPlayerExp(long exp)
     {
         playerInfo.ModifyExp(exp, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
@@ -95,21 +45,10 @@ public class GameDataManager : MonoBehaviour
         Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
     }
 
-    public void MakePlayerHpFull()
-    {
-        var needHp = playerInfo.maxStat.hp - playerInfo.nowStat.hp;
-        ModifyPlayerHp(needHp);
-    }
-
     public void AddMiscItemToBag(int itemCode, int count)
     {
         playerInfo.miscBag.AddItem(itemCode, count);
         Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
-    }
-
-    public long GetPlayerDamage()
-    {
-        return GetDamage(playerInfo.nowStat);
     }
 
     public void Battle(int monsterId)
@@ -121,21 +60,6 @@ public class GameDataManager : MonoBehaviour
     {
         Managers.UIManager.GetLayout<HudLayout>().ClearLayout();
         mapData.EnterMap(mapId);
-    }
-
-    public void UseItem(int itemId)
-    {
-        var itemCool = 5f;
-
-        if (!itemCoolEnds.ContainsKey(itemId))
-            itemCoolEnds.Add(itemId, DateTime.MinValue);
-
-        if (DateTime.Now > itemCoolEnds[itemId])
-        {
-            itemCoolEnds[itemId] = DateTime.Now.AddSeconds(itemCool);
-            ModifyPlayerHp(10);
-            Managers.UIManager.GetLayout<VirtualButtonLayout>().StartItemCoolTime(itemId, itemCool);
-        }
     }
 
     // Shop
@@ -157,39 +81,6 @@ public class GameDataManager : MonoBehaviour
 
         Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
         Managers.UIManager.GetPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList());
-    }
-
-    public void UseBuffSkill(int skillId)
-    {
-        var buffTime = TableData.GetSkillBuffTime(skillId, 1);
-        var buffStat = TableData.GetSkillBuffStat(skillId, 1);
-
-        if (!buffEndTimes.ContainsKey(skillId))
-            buffEndTimes.Add(skillId, DateTime.MinValue);
-
-        if (!buffActives.ContainsKey(skillId))
-            buffActives.Add(skillId, false);
-
-        buffEndTimes[skillId] = DateTime.Now.AddSeconds(buffTime);
-        buffActives[skillId] = true;
-
-        Managers.MonsterManager.player.speed = playerInfo.nowStat.speed + buffStat.speed;
-        Managers.UIManager.GetLayout<StateLayout>().SetSkillDutaion(skillId, buffTime);
-    }
-
-    // skillId, skillDamage
-    public List<Tuple<int, long>> UseAttackSkill()
-    {
-        var skillPossibility = new float[] { 0.2f, 0.1f };
-        var usingSkills = new List<Tuple<int, long>>();
-
-        for (int i = 0; i < skillPossibility.Length; i++)
-        {
-            if (Random.Range(0f, 1f) < skillPossibility[i])
-                usingSkills.Add(new Tuple<int, long>(i, GetSkillDamage(i)));
-        }
-
-        return usingSkills;
     }
 
     public void StartQuest(int questId)
@@ -231,12 +122,6 @@ public class GameDataManager : MonoBehaviour
     public void PickupItem(int itemId)
     {
         mapData.PickupItem(itemId);
-    }
-
-    public long GetDamage(Stat stat)
-    {
-        var rand = Random.Range(stat.mastery, 1f);
-        return (long)(rand * stat.attack);
     }
 
     public List<Equipment> GetPlayerEquipments()
@@ -298,25 +183,6 @@ public class GameDataManager : MonoBehaviour
     public long GetPlayerMoney()
     {
         return playerInfo.money;
-    }
-
-    long GetSkillDamage(int skillId)
-    {
-        if (skillId == 0)
-            return GetPlayerDamage() * 2;
-        else if (skillId == 1)
-            return GetPlayerDamage() * 3;
-
-        return 0;
-    }
-
-    IEnumerator ChargeMpCo(float delay)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(delay);
-            ModifyPlayerMp(1);
-        }
     }
 }
 
@@ -648,11 +514,30 @@ public class BattleUnit
         nowStat = maxStat;
     }
 
-    public void TakeDamage(long damage)
+    public void SetStat(Stat stat)
     {
-        nowStat.hp -= damage;
+        maxStat = stat;
+    }
+
+    public void ReduceHp(long hp)
+    {
+        nowStat.hp -= hp;
         if (nowStat.hp < 0)
             nowStat.hp = 0;
+    }
+
+    public void TakeDamage(long damage)
+    {
+        nowStat.mp -= damage;
+
+        if(nowStat.mp < 0)
+        {
+            nowStat.hp += nowStat.mp;
+            nowStat.mp = 0;
+
+            if (nowStat.hp < 0)
+                nowStat.hp = 0;
+        }
     }
 
     public void HealHp(long hp)

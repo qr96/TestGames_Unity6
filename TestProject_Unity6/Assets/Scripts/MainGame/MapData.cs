@@ -9,10 +9,18 @@ public class MapData : MonoBehaviour
     List<BattleUnit> monsters = new List<BattleUnit>();
     Dictionary<int, ItemData> spawnedItem = new Dictionary<int, ItemData>();
     Bag acquiredBag = new Bag(999);
+    BattleUnit playerUnit;
 
     Coroutine reduceHpCo;
     int nowMapId = -1;
     int spawnedItemId;
+
+    private void Start()
+    {
+        playerUnit = new BattleUnit(1, Managers.GameData.GetPlayerStat());
+        
+        StartCoroutine(ChargeMpCo(1));
+    }
 
     public void EnterMap(int mapId)
     {
@@ -25,13 +33,16 @@ public class MapData : MonoBehaviour
         {
             if (!TableData.IsTown(nowMapId))
             {
-                Managers.GameData.MakePlayerHpFull();
-
                 foreach (var itemData in acquiredBag.ToList())
                     Managers.GameData.AddMiscItemToBag(itemData.itemCode, itemData.count);
                 Managers.UIManager.ShowPopup<ExploreResultPopup>().SetItems(acquiredBag.ToList());
                 acquiredBag.Clear();
             }
+            
+            playerUnit.SetStat(Managers.GameData.GetPlayerStat());
+            playerUnit.Respawn();
+            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
+            Managers.MonsterManager.player.speed = playerUnit.NowStat.speed;
         }
         else
         {
@@ -77,31 +88,28 @@ public class MapData : MonoBehaviour
         {
             if (Managers.MonsterManager.TryGetMonsterPosition(monsterId, out var monsterPosition))
             {
-                var playerAttackDamage = Managers.GameData.GetPlayerDamage();
-                var playerAttackSkills = Managers.GameData.UseAttackSkill();
+                var playerAttackSkills = GetPlayerAttackInfos();
 
-                Managers.effect.ShowEffect(6, monsterPosition);
-                Managers.UIManager.GetLayout<HudLayout>().ShowDamage(playerAttackDamage, monsterPosition + Vector3.up * 1f);
-                
                 foreach (var attackSkill in playerAttackSkills)
                 {
-                    playerAttackDamage += attackSkill.Item2;
+                    var playerAttackDamage = attackSkill.Item2;
+                    monster.TakeDamage(playerAttackDamage);
 
                     if (attackSkill.Item1 == 0)
-                        Managers.effect.ShowEffect(7, monsterPosition);
+                        Managers.effect.ShowEffect(6, monsterPosition);
                     else if (attackSkill.Item1 == 1)
+                        Managers.effect.ShowEffect(7, monsterPosition);
+                    else if (attackSkill.Item1 == 2)
                         Managers.effect.ShowEffect(8, monsterPosition);
-                    
+
                     Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
                 }
 
-                monster.TakeDamage(playerAttackDamage);
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.MaxStat.hp, monster.NowStat.hp);
 
                 if (monster.IsDead())
                 {
                     Managers.GameData.ModifyPlayerExp(10);
-                    Managers.GameData.UseBuffSkill(0);
 
                     Managers.MonsterManager.KillMonster(monsterId);
                     Managers.effect.ShowEffect(1, monsterPosition);
@@ -110,7 +118,9 @@ public class MapData : MonoBehaviour
                 }
                 else
                 {
-                    Managers.GameData.DamagePlayer(monsters[monsterId].GetAttack());
+                    playerUnit.TakeDamage(monster.GetAttack());
+                    Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
+                    Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerUnit.MaxStat.mp, playerUnit.NowStat.mp);
                 }
             }
         }
@@ -148,7 +158,32 @@ public class MapData : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(delay);
-            Managers.GameData.ModifyPlayerHp(-1);
+            playerUnit.ReduceHp(1);
+            Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
         }
+    }
+
+    IEnumerator ChargeMpCo(float delay)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            playerUnit.HealMp(1);
+            Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerUnit.MaxStat.mp, playerUnit.NowStat.mp);
+        }
+    }
+
+    List<Tuple<int, long>> GetPlayerAttackInfos()
+    {
+        var skillPossibility = new int[] { 1000, 200, 100 };
+        var usingSkills = new List<Tuple<int, long>>();
+
+        for (int i = 0; i < skillPossibility.Length; i++)
+        {
+            if (Random.Range(0, 1000) < skillPossibility[i])
+                usingSkills.Add(new Tuple<int, long>(i, TableData.GetSkillDamage(i, 1, playerUnit.GetAttack())));
+        }
+
+        return usingSkills;
     }
 }
