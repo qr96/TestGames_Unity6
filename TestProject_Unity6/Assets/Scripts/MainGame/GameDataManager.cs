@@ -354,8 +354,6 @@ public class playerInfo
     {
         this.level = level;
         pureStat = new Stat();
-        pureStat.speed = 6f;
-        pureStat.mastery = 0.5f;
         SetLevelStat(TableData.GetStatPerLevel(level));
         UpdateStat();
     }
