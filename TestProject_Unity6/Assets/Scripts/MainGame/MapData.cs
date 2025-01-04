@@ -21,7 +21,7 @@ public class MapData : MonoBehaviour
         if (reduceHpCo != null)
             StopCoroutine(reduceHpCo);
 
-        if (mapId == 0 && nowMapId == 1)
+        if (TableData.IsTown(mapId) && !TableData.IsTown(nowMapId))
         {
             Managers.GameData.MakePlayerHpFull();
 
@@ -33,7 +33,7 @@ public class MapData : MonoBehaviour
                 acquiredBag.Clear();
             }
         }
-        else if (mapId == 1)
+        else if (!TableData.IsTown(mapId))
         {
             SpawnMonsters();
             reduceHpCo = StartCoroutine(ReduceHpCo(1f));

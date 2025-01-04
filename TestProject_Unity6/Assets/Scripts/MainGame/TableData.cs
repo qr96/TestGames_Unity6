@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class TableData
 {
+    public static bool IsTown(int mapId)
+    {
+        if (mapId == 0) return true;
+        return false;
+    }
+
     public static long GetMaxExp(int level)
     {
         return level * 5;
