@@ -6,41 +6,17 @@ using Random = UnityEngine.Random;
 
 public class MapData : MonoBehaviour
 {
-    public int maxMonster = 5;
-    public float respawnTime = 30f;
-
     List<Monster> monsters = new List<Monster>();
     Dictionary<int, ItemData> spawnedItem = new Dictionary<int, ItemData>();
     Bag acquiredBag = new Bag(999);
 
-    DateTime nextSpawnTime;
     Coroutine reduceHpCo;
     int nowMapId = -1;
     int spawnedItemId;
 
-    private void Update()
-    {
-        if (DateTime.Now > nextSpawnTime)
-        {
-            nextSpawnTime = DateTime.Now.AddSeconds(respawnTime);
-
-            foreach (var monster in monsters)
-            {
-                if (monster.IsDead())
-                {
-                    var newPos = new Vector3(Random.Range(-10f, 10f), 1f, Random.Range(-10f, 10f));
-                    var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-                    monster.ReSpawn();
-                    Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
-                }
-            }
-        }
-    }
-
     public void EnterMap(int mapId)
     {
-        monsters.Clear();
-        Managers.MonsterManager.RemoveAllMonsters();
+        RemoveAllMonsters();
 
         if (reduceHpCo != null)
             StopCoroutine(reduceHpCo);
@@ -59,14 +35,34 @@ public class MapData : MonoBehaviour
         }
         else if (mapId == 1)
         {
-            for (int i = 0; i < maxMonster; i++)
-                monsters.Add(new Monster(i, 50, 2));
-
-            nextSpawnTime = DateTime.Now;    
+            SpawnMonsters();
             reduceHpCo = StartCoroutine(ReduceHpCo(1f));
         }
 
         nowMapId = mapId;
+    }
+
+    public void SpawnMonsters()
+    {
+        for (int i = 0; i < 5; i++)
+            monsters.Add(new Monster(i, 50, 2));
+
+        foreach (var monster in monsters)
+        {
+            if (monster.IsDead())
+            {
+                var newPos = new Vector3(Random.Range(-10f, 10f), 1f, Random.Range(-10f, 10f));
+                var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+                monster.ReSpawn();
+                Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
+            }
+        }
+    }
+
+    public void RemoveAllMonsters()
+    {
+        monsters.Clear();
+        Managers.MonsterManager.RemoveAllMonsters();
     }
 
     public void Battle(int monsterId)
