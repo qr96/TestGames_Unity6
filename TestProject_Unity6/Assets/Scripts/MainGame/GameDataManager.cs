@@ -139,14 +139,14 @@ public class GameDataManager : MonoBehaviour
         var equipment = GetPlayerEquipment(id);
         equipmentUpgrader.Enhance(equipment);
 
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
     }
 
     public void AddEquipment(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
         playerInfo.equipmentBag.Add(new Equipment(equipmentCode, upgradeLevel, part));
 
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})이(가) 구매 완료되었습니다.");
     }
 
@@ -166,7 +166,7 @@ public class GameDataManager : MonoBehaviour
             playerInfo.equipmentBag.Remove(equipmentId);
 
         playerInfo.UpdateStat();
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
         mapData.UpdatePlayerStat();
     }
 
@@ -178,7 +178,7 @@ public class GameDataManager : MonoBehaviour
             playerInfo.equipmentBag.Add(equipment);
 
         playerInfo.UpdateStat();
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
         mapData.UpdatePlayerStat();
     }
 
@@ -213,7 +213,6 @@ public class playerInfo
     public long money;
     Stat pureStat;
     public Stat maxStat;
-    public Stat nowStat;
     public Bag miscBag = new Bag(999);
     public EquipmentBag equipmentBag = new();
     public EquippedEquipments equipped = new();
@@ -242,8 +241,6 @@ public class playerInfo
         maxStat = new Stat();
         maxStat.Add(pureStat);
         maxStat.Add(equipped.GetStat());
-
-        nowStat = maxStat;
     }
 
     void SetLevelStat(Stat stat)

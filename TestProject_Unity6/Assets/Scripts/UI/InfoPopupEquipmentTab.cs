@@ -1,5 +1,6 @@
 using NUnit.Framework.Interfaces;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class InfoPopupEquipmentTab : UIPopup
@@ -12,6 +13,8 @@ public class InfoPopupEquipmentTab : UIPopup
     public EquipmentSlot hatSlot;
     public EquipmentSlot armorSlot;
     public EquipmentSlot shoesSlot;
+
+    public TMP_Text statInfo;
 
     List<EquipmentSlot> slotPool = new List<EquipmentSlot>();
 
@@ -28,10 +31,24 @@ public class InfoPopupEquipmentTab : UIPopup
         shoesSlot.GetComponent<KButton>().onClick.AddListener(() => OnClickUnEquip(Equipment.Part.Shoes));
     }
 
-    public void SetPopup(List<Equipment> equipments, List<Equipment> equipped)
+    public void SetPopup(List<Equipment> equipments, List<Equipment> equipped, Stat stat)
     {
         SetEquipments(equipments);
         SetEquipped(equipped);
+        SetStatInfo(stat);
+    }
+
+    public void SetStatInfo(Stat stat)
+    {
+        var text = "";
+
+        text += $"공격력 : {stat.attack}\n";
+        text += $"체력 : {stat.hp}\n";
+        text += $"기력 : {stat.mp}\n";
+        text += $"이동속도 : {stat.speed * 10}\n";
+        text += $"무기숙련 : {stat.mastery * 100}%";
+
+        statInfo.text = text;
     }
 
     void SetEquipped(List<Equipment> equipments)

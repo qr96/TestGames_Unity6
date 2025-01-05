@@ -25,7 +25,7 @@ public class InfoPopup : UIPopup
         bagButton.onClick.AddListener(() => ChangeTab(Tab.Bag));
         equipButton.onClick.AddListener(() => ChangeTab(Tab.Equipment));
 
-        ChangeTab(Tab.Bag);
+        ChangeTab(Tab.Equipment);
     }
 
     public void SetBagTab(List<ItemData> items)
@@ -33,9 +33,9 @@ public class InfoPopup : UIPopup
         bagTab.SetTab(items);
     }
 
-    public void SetEquipTab(List<Equipment> equipments, List<Equipment> equipped)
+    public void SetEquipTab(List<Equipment> equipments, List<Equipment> equipped, Stat stat)
     {
-        equipTab.SetPopup(equipments, equipped);
+        equipTab.SetPopup(equipments, equipped, stat);
     }
 
     public void SetMoney(long money)
