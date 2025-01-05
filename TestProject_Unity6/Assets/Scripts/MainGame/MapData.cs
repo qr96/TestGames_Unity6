@@ -152,7 +152,7 @@ public class MapData : MonoBehaviour
     {
         var itemId = spawnedItemId++;
         spawnedItem.Add(itemId, new ItemData(itemCode, count));
-        Managers.DropItem.SpawnItem(itemId, itemCode, position);
+        Managers.DropItem.SpawnItem(itemId, itemCode == 1 ? 1 : 4, position);
     }
 
     void SpawnItems(int itemCode, int count, Vector3 position, int spawnCount)

@@ -136,11 +136,11 @@ public class TableData : MonoBehaviour
         var price = 1000L;
 
         if (upgradeLevel == 20)
-            price = 600000;
+            price = 60000;
         else if (upgradeLevel == 40)
-            price = 32500000;
+            price = 3250000;
         else if (upgradeLevel == 60)
-            price = 210000000;
+            price = 2100000000;
 
         return price;
     }

@@ -41,17 +41,29 @@ public class EnhancePopup : UIPopup
     {
         if (success)
         {
-            successEffect.gameObject.SetActive(true);
-            successEffect.localScale = Vector3.one;
-            successEffect.DOPunchScale(Vector3.one * 1.1f, 0.2f, 1)
-                .OnComplete(() => successEffect.gameObject.SetActive(false));
+            var successEffectSequence = DOTween.Sequence()
+            .OnStart(() =>
+            {
+                enhanceButton.enabled = false;
+                successEffect.localScale = Vector3.one * 0.5f;
+                successEffect.gameObject.SetActive(true);
+            })
+            .Append(successEffect.DOScale(Vector3.one * 0.75f, 0.1f).OnComplete(() => enhanceButton.enabled = true))
+            .Append(successEffect.DOScale(Vector3.one, 0.1f))
+            .OnComplete(() => successEffect.gameObject.SetActive(false));
         }
         else
         {
-            failureEffect.gameObject.SetActive(true);
-            successEffect.localScale = Vector3.one;
-            failureEffect.DOPunchScale(Vector3.one * 1.1f, 0.2f, 1)
-                .OnComplete(() => failureEffect.gameObject.SetActive(false));
+            var failureEffectSequence = DOTween.Sequence()
+            .OnStart(() =>
+            {
+                enhanceButton.enabled = false;
+                failureEffect.localScale = Vector3.one * 0.5f;
+                failureEffect.gameObject.SetActive(true);
+            })
+            .Append(failureEffect.DOScale(Vector3.one * 0.75f, 0.1f))
+            .Append(failureEffect.DOScale(Vector3.one, 0.1f))
+            .OnComplete(() => failureEffect.gameObject.SetActive(false));
         }
     }
 
