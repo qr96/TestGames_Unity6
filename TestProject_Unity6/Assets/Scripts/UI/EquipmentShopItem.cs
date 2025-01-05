@@ -14,7 +14,7 @@ public class EquipmentShopItem : MonoBehaviour
     {
         var itemSprite = TableData.GetEquipmentSprite(itemCode, part);
         var itemName = Managers.TableData.GetEquipmentName(part, itemCode);
-        var itemPrice = TableData.GetEquipmentBuyPrice(itemCode);
+        var itemPrice = Managers.TableData.GetEquipmentBuyPrice(part, itemCode, upgradeLevel);
 
         SetItem(itemSprite, upgradeLevel, itemName, itemPrice, onBuy);
     }
@@ -23,7 +23,7 @@ public class EquipmentShopItem : MonoBehaviour
     {
         slot.SetSlot(icon, upgradeLevel);
         itemNameText.text = itemName;
-        priceText.text = price.ToString();
+        priceText.text = price.ToFormat();
         buyButton.onClick.RemoveAllListeners();
         if (buy != null)
             buyButton.onClick.AddListener(buy);

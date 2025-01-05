@@ -25,6 +25,14 @@ public class EquipmentShopPopup : UIPopup
             new Equipment(1, 20, Equipment.Part.Armor),
             new Equipment(1, 40, Equipment.Part.Armor),
             new Equipment(1, 60, Equipment.Part.Armor),
+            new Equipment(1, 0, Equipment.Part.Necklace),
+            new Equipment(1, 20, Equipment.Part.Necklace),
+            new Equipment(1, 40, Equipment.Part.Necklace),
+            new Equipment(1, 60, Equipment.Part.Necklace),
+            new Equipment(1, 0, Equipment.Part.Gloves),
+            new Equipment(1, 20, Equipment.Part.Gloves),
+            new Equipment(1, 40, Equipment.Part.Gloves),
+            new Equipment(1, 60, Equipment.Part.Gloves),
         });
     }
 
@@ -53,10 +61,12 @@ public class EquipmentShopPopup : UIPopup
 
     void OnBuyButton(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
-        var message = $"정말로 {Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})을(를) 구매하시겠습니까?\n구매 가격 : {TableData.GetEquipmentBuyPrice(equipmentCode)}";
+        var equipmentName = Managers.TableData.GetEquipmentName(part, equipmentCode);
+        var equipmentPrice = Managers.TableData.GetEquipmentBuyPrice(part, equipmentCode, upgradeLevel);
+        var message = $"정말로 {equipmentName} (+{upgradeLevel})을(를) 구매하시겠습니까?\n구매 가격 : {equipmentPrice.ToFormat()}";
         Managers.UIManager.ShowPopup<ConfirmPopup>().SetPopup("안내", message, () =>
         {
-            Managers.GameData.ModifyPlayerMoney(-TableData.GetEquipmentBuyPrice(equipmentCode));
+            Managers.GameData.ModifyPlayerMoney(-equipmentPrice);
             Managers.GameData.AddEquipment(equipmentCode, upgradeLevel, part);
         }, null);
     }

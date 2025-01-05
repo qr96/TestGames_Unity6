@@ -35,27 +35,6 @@ public class TableData : MonoBehaviour
                     equipmentData[part].Add(data.code, data);
             });
         }
-        //foreach (var fileName in EquipmentJsonFileNames)
-        //{
-        //    var json = Resources.Load<TextAsset>($"{EquipmentJsonPath}/{fileName}");
-        //    if (json != null)
-        //    {
-        //        try
-        //        {
-        //            var dataList = JsonConvert.DeserializeObject<List<EquipmentData>>(json.text);
-        //            foreach (var data in dataList)
-        //                equipmentData.Add(data.code, data);
-        //        }
-        //        catch(Exception e)
-        //        {
-        //            Debug.LogError(e);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Debug.LogError($"Json file not exist. fileName = {fileName}");
-        //    }
-        //}
     }
 
     void ParseJson<T>(string jsonPath, Action<T> onDesrialize)
@@ -152,9 +131,18 @@ public class TableData : MonoBehaviour
         return sellPrice[itemCode] * count;
     }
 
-    public static long GetEquipmentBuyPrice(int itemCode)
+    public long GetEquipmentBuyPrice(Equipment.Part part, int itemCode, int upgradeLevel)
     {
-        return itemCode * 1000;
+        var price = 1000L;
+
+        if (upgradeLevel == 20)
+            price = 600000;
+        else if (upgradeLevel == 40)
+            price = 32500000;
+        else if (upgradeLevel == 60)
+            price = 210000000;
+
+        return price;
     }
 
     public string GetEquipmentName(Equipment.Part part, int itemCode)
