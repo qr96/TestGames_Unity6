@@ -53,7 +53,7 @@ public class EquipmentShopPopup : UIPopup
 
     void OnBuyButton(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
-        var message = $"정말로 {TableData.GetEquipmentName(equipmentCode)}을(를) 구매하시겠습니까?\n구매 가격 : {TableData.GetEquipmentBuyPrice(equipmentCode)}";
+        var message = $"정말로 {Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})을(를) 구매하시겠습니까?\n구매 가격 : {TableData.GetEquipmentBuyPrice(equipmentCode)}";
         Managers.UIManager.ShowPopup<ConfirmPopup>().SetPopup("안내", message, () =>
         {
             Managers.GameData.ModifyPlayerMoney(-TableData.GetEquipmentBuyPrice(equipmentCode));

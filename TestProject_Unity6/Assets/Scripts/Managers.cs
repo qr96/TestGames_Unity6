@@ -11,6 +11,7 @@ public class Managers : MonoBehaviour
     public MonsterManager _monsterManager;
     public UIManager _uiManager;
     public GameDataManager _gameDataManager;
+    public TableData _tableData;
 
     public static EffectManager effect { get { return Instance?._effect; } }
     public static CameraMover CameraMover { get { return Instance?._cameraMover; } }
@@ -18,7 +19,8 @@ public class Managers : MonoBehaviour
     public static MonsterManager MonsterManager { get { return Instance?._monsterManager; } }
     public static UIManager UIManager { get { return Instance?._uiManager; } }
     public static GameDataManager GameData { get { return Instance?._gameDataManager; } }
-    
+    public static TableData TableData { get { return Instance?._tableData; } }
+
     private void Awake()
     {
         Instance = this;

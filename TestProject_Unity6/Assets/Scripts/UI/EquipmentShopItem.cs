@@ -13,7 +13,7 @@ public class EquipmentShopItem : MonoBehaviour
     public void SetItem(int itemCode, int upgradeLevel, Equipment.Part part, UnityAction onBuy)
     {
         var itemSprite = TableData.GetEquipmentSprite(itemCode, part);
-        var itemName = TableData.GetEquipmentName(itemCode);
+        var itemName = Managers.TableData.GetEquipmentName(part, itemCode);
         var itemPrice = TableData.GetEquipmentBuyPrice(itemCode);
 
         SetItem(itemSprite, upgradeLevel, itemName, itemPrice, onBuy);

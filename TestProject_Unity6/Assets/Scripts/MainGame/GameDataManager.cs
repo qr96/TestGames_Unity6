@@ -147,7 +147,7 @@ public class GameDataManager : MonoBehaviour
         playerInfo.equipmentBag.Add(new Equipment(equipmentCode, upgradeLevel, part));
 
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList());
-        Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{TableData.GetEquipmentName(equipmentCode)}이(가) 구매 완료되었습니다.");
+        Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})이(가) 구매 완료되었습니다.");
     }
 
     public void RemoveEquipment(int equipmentId)

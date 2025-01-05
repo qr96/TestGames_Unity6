@@ -1,7 +1,84 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class TableData
+public class TableData : MonoBehaviour
 {
+    readonly string EquipmentJsonPath = "Jsons/Equipments";
+
+    Dictionary<Equipment.Part, Dictionary<int, EquipmentData>> equipmentData = new Dictionary<Equipment.Part, Dictionary<int, EquipmentData>>();
+    
+    class EquipmentData
+    {
+        public int code;
+        public string name;
+    }
+
+    private void Start()
+    {
+        var equipmentParts = Enum.GetValues(typeof(Equipment.Part));
+        foreach (var partObject in equipmentParts)
+        {
+            var part = (Equipment.Part)partObject;
+            var fileName = partObject.ToString();
+
+            if (part == Equipment.Part.None)
+                continue;
+
+            ParseJson<List<EquipmentData>>($"{EquipmentJsonPath}/{fileName}", (dataList) =>
+            {
+                if (!equipmentData.ContainsKey(part))
+                    equipmentData.Add(part, new Dictionary<int, EquipmentData>());
+
+                foreach (var data in dataList)
+                    equipmentData[part].Add(data.code, data);
+            });
+        }
+        //foreach (var fileName in EquipmentJsonFileNames)
+        //{
+        //    var json = Resources.Load<TextAsset>($"{EquipmentJsonPath}/{fileName}");
+        //    if (json != null)
+        //    {
+        //        try
+        //        {
+        //            var dataList = JsonConvert.DeserializeObject<List<EquipmentData>>(json.text);
+        //            foreach (var data in dataList)
+        //                equipmentData.Add(data.code, data);
+        //        }
+        //        catch(Exception e)
+        //        {
+        //            Debug.LogError(e);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Debug.LogError($"Json file not exist. fileName = {fileName}");
+        //    }
+        //}
+    }
+
+    void ParseJson<T>(string jsonPath, Action<T> onDesrialize)
+    {
+        var json = Resources.Load<TextAsset>(jsonPath);
+        if (json != null)
+        {
+            try
+            {
+                var dataList = JsonConvert.DeserializeObject<T>(json.text);
+                onDesrialize(dataList);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+        else
+        {
+            Debug.LogError($"Json file not exist. jsonPath = {jsonPath}");
+        }
+    }
+
     public static bool IsTown(int mapId)
     {
         if (mapId == 0) return true;
@@ -80,9 +157,15 @@ public class TableData
         return itemCode * 1000;
     }
 
-    public static string GetEquipmentName(int itemCode)
+    public string GetEquipmentName(Equipment.Part part, int itemCode)
     {
-        return $"병사의 검 {itemCode}";
+        if (equipmentData.ContainsKey(part))
+        {
+            if (equipmentData[part].ContainsKey(itemCode) && equipmentData[part][itemCode] != null)
+                return equipmentData[part][itemCode].name;
+        }
+        
+        return "Error";
     }
 
     public static int GetEquipmentMaxEnhance(int itemCode)
