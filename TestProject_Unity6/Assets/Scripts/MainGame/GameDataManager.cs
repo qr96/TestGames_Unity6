@@ -65,7 +65,7 @@ public class GameDataManager : MonoBehaviour
     // Shop
     public void ShowMiscShop()
     {
-        Managers.UIManager.ShowPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList());
+        Managers.UIManager.ShowPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList(), GetPlayerMoney());
     }
 
     public void SellAllItems()
@@ -80,7 +80,7 @@ public class GameDataManager : MonoBehaviour
         ModifyPlayerMoney(price);
 
         Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
-        Managers.UIManager.GetPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList());
+        Managers.UIManager.GetPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList(), GetPlayerMoney());
     }
 
     public void StartQuest(int questId)
