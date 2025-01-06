@@ -14,7 +14,7 @@ public class EquipmentShopItem : MonoBehaviour
     {
         var itemSprite = TableData.GetEquipmentSprite(itemCode, part);
         var itemName = Managers.TableData.GetEquipmentName(part, itemCode);
-        var itemPrice = Managers.TableData.GetEquipmentBuyPrice(part, itemCode, upgradeLevel);
+        var itemPrice = Managers.TableData.GetEquipmentPrice(part, itemCode, upgradeLevel);
 
         SetItem(itemSprite, upgradeLevel, itemName, itemPrice, onBuy);
     }

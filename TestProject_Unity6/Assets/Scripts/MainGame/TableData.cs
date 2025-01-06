@@ -6,13 +6,22 @@ using UnityEngine;
 public class TableData : MonoBehaviour
 {
     readonly string EquipmentJsonPath = "Jsons/Equipments";
+    readonly string MiscItemJsonPath = "Jsons/MiscItem";
 
     Dictionary<Equipment.Part, Dictionary<int, EquipmentData>> equipmentData = new Dictionary<Equipment.Part, Dictionary<int, EquipmentData>>();
-    
+    Dictionary<int, MiscItemData> miscItems = new Dictionary<int, MiscItemData>();
+
     class EquipmentData
     {
         public int code;
         public string name;
+    }
+
+    class MiscItemData
+    {
+        public int code;
+        public string name;
+        public long price;
     }
 
     private void Start()
@@ -35,6 +44,12 @@ public class TableData : MonoBehaviour
                     equipmentData[part].Add(data.code, data);
             });
         }
+
+        ParseJson<List<MiscItemData>>(MiscItemJsonPath, (dataList) =>
+        {
+            foreach (var data in dataList)
+                miscItems.Add(data.code, data);
+        });
     }
 
     void ParseJson<T>(string jsonPath, Action<T> onDesrialize)
@@ -125,13 +140,22 @@ public class TableData : MonoBehaviour
         return 0;
     }
 
-    public static long GetSellPrice(int itemCode, int count)
+    public long GetMiscItemPrice(int itemCode, int count)
     {
-        long[] sellPrice = new long[] { 0, 10, 50, 100 };
-        return sellPrice[itemCode] * count;
+        if (miscItems.ContainsKey(itemCode))
+            return miscItems[itemCode].price * count;
+
+        return 1000;
     }
 
-    public long GetEquipmentBuyPrice(Equipment.Part part, int itemCode, int upgradeLevel)
+    public string GetMiscItemName(int itemCode)
+    {
+        if (miscItems.ContainsKey(itemCode))
+            return miscItems[itemCode].name;
+        return "Error";
+    }
+
+    public long GetEquipmentPrice(Equipment.Part part, int itemCode, int upgradeLevel)
     {
         var expectPrice = 1000L;
         var upgradePrice = 1000L;

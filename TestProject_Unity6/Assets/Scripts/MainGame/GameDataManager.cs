@@ -74,7 +74,7 @@ public class GameDataManager : MonoBehaviour
         var price = 0L;
 
         foreach (var itemData in bag)
-            price += TableData.GetSellPrice(itemData.itemCode, itemData.count);
+            price += Managers.TableData.GetMiscItemPrice(itemData.itemCode, itemData.count);
 
         playerInfo.miscBag.Clear();
         ModifyPlayerMoney(price);
