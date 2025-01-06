@@ -133,16 +133,18 @@ public class TableData : MonoBehaviour
 
     public long GetEquipmentBuyPrice(Equipment.Part part, int itemCode, int upgradeLevel)
     {
-        var price = 1000L;
+        var expectPrice = 1000L;
+        var upgradePrice = 1000L;
+        var originPrice = 2000L;
 
-        if (upgradeLevel == 20)
-            price = 60000;
-        else if (upgradeLevel == 40)
-            price = 3250000;
-        else if (upgradeLevel == 60)
-            price = 2100000000;
+        expectPrice = originPrice / 100;
 
-        return price;
+        for (int i = 1; i <= upgradeLevel; i++)
+            expectPrice = (long)((expectPrice + upgradePrice) / (double)GetEquipmentEnhancePossibilty(itemCode, i));
+
+        expectPrice *= 100;
+
+        return expectPrice;
     }
 
     public string GetEquipmentName(Equipment.Part part, int itemCode)
@@ -176,21 +178,21 @@ public class TableData : MonoBehaviour
         else if (enhanceLevel < 20)
             possibility = 0.9f;
         else if (enhanceLevel < 30)
-            possibility = 0.85f;
+            possibility = 0.9f;
         else if (enhanceLevel < 40)
-            possibility = 0.8f;
+            possibility = 0.85f;
         else if (enhanceLevel < 50)
-            possibility = 0.75f;
+            possibility = 0.8f;
         else if (enhanceLevel < 60)
-            possibility = 0.7f;
+            possibility = 0.8f;
         else if (enhanceLevel < 70)
-            possibility = 0.65f;
+            possibility = 0.75f;
         else if (enhanceLevel < 80)
-            possibility = 0.6f;
+            possibility = 0.7f;
         else if (enhanceLevel < 90)
-            possibility = 0.55f;
+            possibility = 0.7f;
         else
-            possibility = 0.5f;
+            possibility = 0.6f;
 
         return possibility;
     }
