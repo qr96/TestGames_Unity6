@@ -58,7 +58,7 @@ public class MapData : MonoBehaviour
         {
             if (monster.IsDead())
             {
-                var newPos = new Vector3(Random.Range(-10f, 10f), 1f, Random.Range(-10f, 10f));
+                var newPos = new Vector3(Random.Range(0f, 20f), 1f, Random.Range(-10f, 10f));
                 var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
                 monster.Respawn();
                 Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
@@ -109,7 +109,7 @@ public class MapData : MonoBehaviour
 
                     Managers.MonsterManager.KillMonster(monsterId);
                     Managers.effect.ShowEffect(1, monsterPosition);
-                    SpawnItem(2, 5, monsterPosition);
+                    SpawnItem(3, 5, monsterPosition);
                     SpawnItems(1, 100, monsterPosition, 3);
                 }
                 else
