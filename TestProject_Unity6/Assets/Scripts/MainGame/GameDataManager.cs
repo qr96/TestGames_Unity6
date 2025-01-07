@@ -417,6 +417,7 @@ public class EquipmentBag
             if (equipment.id == id)
                 return equipment;
 
+        Debug.LogError($"Equipment GetById() Can't find id = {id}");
         return default;
     }
 

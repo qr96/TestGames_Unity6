@@ -10,7 +10,7 @@ public class EnhanceSelectPopup : UIPopup
     public Button closeButton;
 
     List<EquipmentSlot> slotPool = new List<EquipmentSlot>();
-    int selectedId = 0;
+    int selectedId = -1;
 
     private void Start()
     {
@@ -21,6 +21,8 @@ public class EnhanceSelectPopup : UIPopup
 
     public void SetPopup(List<Equipment> equipments, int selectedId = -1)
     {
+        this.selectedId = selectedId;
+
         for (int i = slotPool.Count; i < equipments.Count; i++)
             slotPool.Add(Instantiate(slotPrefab, slotPrefab.transform.parent));
 
@@ -36,16 +38,7 @@ public class EnhanceSelectPopup : UIPopup
             toggle.onValueChanged.RemoveAllListeners();
             toggle.onValueChanged.AddListener((isOn) => OnSelected(isOn, itemData.id));
 
-            if (selectedId < 0)
-            {
-                if (i == 0)
-                    toggle.SetToggle(true);
-            }
-            else
-            {
-                if (itemData.id == selectedId)
-                    toggle.SetToggle(true);
-            }
+            toggle.SetToggle(itemData.id == selectedId);
         }
 
         for (int i = equipments.Count; i < slotPool.Count; i++)
@@ -54,7 +47,8 @@ public class EnhanceSelectPopup : UIPopup
 
     void OnClickEnhance(int equipmentId)
     {
-        Managers.UIManager.ShowPopup<EnhancePopup>().SetPopup(equipmentId, Managers.GameData.GetPlayerMoney());
+        if (equipmentId >= 0)
+            Managers.UIManager.ShowPopup<EnhancePopup>().SetPopup(equipmentId, Managers.GameData.GetPlayerMoney());
     }
 
     void OnSelected(bool isOn, int equipmentId)

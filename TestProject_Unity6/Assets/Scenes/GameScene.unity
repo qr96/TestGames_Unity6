@@ -1155,7 +1155,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &72631439
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4492,7 +4492,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_AnchorMin.x
@@ -4500,15 +4500,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 130
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 130
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4540,11 +4540,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892689545920873458, guid: a426a73d3ed63824c811d5859c3ce1f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7728,7 +7728,7 @@ GameObject:
   m_Component:
   - component: {fileID: 595624729}
   m_Layer: 5
-  m_Name: Root
+  m_Name: SafeArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12920,7 +12920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6438069901924661726, guid: 1ba888f0227db2943ab8693b8ad2491c, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6438069901924661726, guid: 1ba888f0227db2943ab8693b8ad2491c, type: 3}
       propertyPath: m_AnchorMax.y
@@ -12928,7 +12928,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6438069901924661726, guid: 1ba888f0227db2943ab8693b8ad2491c, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6438069901924661726, guid: 1ba888f0227db2943ab8693b8ad2491c, type: 3}
       propertyPath: m_AnchorMin.y
@@ -12972,7 +12972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6438069901924661726, guid: 1ba888f0227db2943ab8693b8ad2491c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 288
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6438069901924661726, guid: 1ba888f0227db2943ab8693b8ad2491c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -20426,7 +20426,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 150}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1584087772
 MonoBehaviour:
@@ -20464,7 +20464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea634240f5203046b31cec853511df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowSwitchOff: 0
+  allowSwitchOff: 1
 --- !u!114 &1584087774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25270,7 +25270,7 @@ MonoBehaviour:
   uiLayouts: []
   uiPopups: []
   canvas: {fileID: 1559769535}
-  root: {fileID: 595624729}
+  safeArea: {fileID: 595624729}
   layoutParent: {fileID: 10367081}
   popupParent: {fileID: 1751497382}
 --- !u!1 &1948484588
