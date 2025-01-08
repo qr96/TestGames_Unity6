@@ -220,9 +220,17 @@ public class TableData : MonoBehaviour
         return possibility;
     }
 
-    public static Stat GetEquipmentStat(Equipment equipment)
+    public Stat GetEquipmentStat(Equipment equipment)
     {
-        return new Stat() { attack = equipment.upgradeLevel, hp = equipment.upgradeLevel * 5 };
+        var stat = new Stat();
+
+        if (TryGetEquipmentData(equipment.part, equipment.code, out var equipmentData))
+        {
+            stat.Add(equipmentData.stat);
+            stat.Add(new Stat() { attack = equipment.upgradeLevel, hp = equipment.upgradeLevel * 5 });
+        }
+
+        return stat;
     }
 
     public static string GetEquipmentSpritePath(int code, Equipment.Part part)

@@ -488,7 +488,7 @@ public class EquippedEquipments
         var stat = new Stat();
 
         foreach (var equipment in equipped)
-            stat.Add(TableData.GetEquipmentStat(equipment));
+            stat.Add(Managers.TableData.GetEquipmentStat(equipment));
 
         return stat;
     }
