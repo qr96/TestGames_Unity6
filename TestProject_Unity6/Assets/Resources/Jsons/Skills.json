@@ -1,0 +1,56 @@
+[
+  {
+    "code": 1,
+    "name": "일반 공격",
+    "procChance": 100,
+    "attackCount": 1,
+    "maxLevel": 10,
+    "effectCode": 6,
+    "damage": [ 100, 120, 140, 160, 180, 200, 220, 240, 260, 280 ]
+  },
+  {
+    "code": 2,
+    "name": "이중 공격",
+    "procChance": 100,
+    "attackCount": 2,
+    "maxLevel": 10,
+    "effectCode": 6,
+    "damage": [ 40, 60, 80, 100, 120, 140, 160, 180, 200, 220 ]
+  },
+  {
+    "code": 3,
+    "name": "삼중 공격",
+    "procChance": 100,
+    "attackCount": 3,
+    "maxLevel": 10,
+    "effectCode": 6,
+    "damage": [ 40, 60, 80, 100, 120, 140, 160, 180, 200, 220 ]
+  },
+  {
+    "code": 4,
+    "name": "혈월참",
+    "procChance": 30,
+    "attackCount": 6,
+    "maxLevel": 10,
+    "effectCode": 10,
+    "damage": [ 400, 500, 600, 700, 800, 900, 950, 1000, 1050, 1100 ]
+  },
+  {
+    "code": 5,
+    "name": "열산붕괴",
+    "procChance": 20,
+    "attackCount": 3,
+    "maxLevel": 10,
+    "effectCode": 7,
+    "damage": [ 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100 ]
+  },
+  {
+    "code": 6,
+    "name": "매화만리향",
+    "procChance": 20,
+    "attackCount": 5,
+    "maxLevel": 10,
+    "effectCode": 8,
+    "damage": [ 150, 200, 250, 300, 350, 400, 600, 800, 1000, 1400 ]
+  }
+]

@@ -7,8 +7,10 @@ public class TableData : MonoBehaviour
 {
     readonly string EquipmentJsonPath = "Jsons/Equipments";
     readonly string MiscItemJsonPath = "Jsons/MiscItem";
+    readonly string SkillDataJsonPath = "Jsons/SKills";
 
     Dictionary<Equipment.Part, Dictionary<int, EquipmentData>> equipmentDataDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentData>>();
+    Dictionary<int, SkillData> skillDataDic = new Dictionary<int, SkillData>();
     Dictionary<int, MiscItemData> miscItems = new Dictionary<int, MiscItemData>();
 
     class EquipmentData
@@ -17,6 +19,17 @@ public class TableData : MonoBehaviour
         public string name;
         public long price;
         public Stat stat;
+    }
+
+    class SkillData
+    {
+        public int code;
+        public string name;
+        public int procChance;
+        public int attackCount;
+        public int maxLevel;
+        public int effectCode;
+        public int[] damage;
     }
 
     class MiscItemData
@@ -51,6 +64,12 @@ public class TableData : MonoBehaviour
         {
             foreach (var data in dataList)
                 miscItems.Add(data.code, data);
+        });
+
+        ParseJson<List<SkillData>>(SkillDataJsonPath, (dataList) =>
+        {
+            foreach (var data in dataList)
+                skillDataDic.Add(data.code, data);
         });
     }
 
@@ -130,18 +149,41 @@ public class TableData : MonoBehaviour
         return 0;
     }
 
-    public static long GetSkillDamage(int skillId, int skillLevel, long attack)
+    public int GetSkillProcChange(int skillCode)
     {
-        if (skillId == 0)
-            return attack;
-        else if (skillId == 1)
-            return attack * 2;
-        else if (skillId == 2)
-            return attack * 3;
+        if (TryGetSkillData(skillCode, out var skillData))
+            return skillData.procChance;
 
         return 0;
     }
 
+    public long GetSkillDamage(int skillCode, int skillLevel, long attack)
+    {
+        if (TryGetSkillData(skillCode, out var skillData))
+        {
+            if (skillLevel <= skillData.maxLevel)
+            {
+                if (skillLevel - 1 < skillData.damage.Length)
+                    return attack * skillData.damage[skillLevel - 1] / 100;
+                else
+                    Debug.LogError($"GetSkillDamage(). skillLevel is larger than skillData. skillCode={skillCode}, skillLevel={skillLevel}, damage.Length={skillData.damage.Length}");
+            }
+            else
+            {
+                Debug.LogError($"GetSkillDamage(). skillLevel is larger than maxLevel. skillCode={skillCode}, skillLevel={skillLevel}, maxLevel={skillData.maxLevel}");
+            }
+        }
+
+        return 0;
+    }
+
+    public int GetSkillEffectCode(int skillCode)
+    {
+        if (TryGetSkillData(skillCode, out var skillData))
+            return skillData.effectCode;
+
+        return 0;
+    }
     public long GetMiscItemPrice(int itemCode, int count)
     {
         if (miscItems.ContainsKey(itemCode))
@@ -279,6 +321,18 @@ public class TableData : MonoBehaviour
         }
 
         equipmentData = default;
+        return false;
+    }
+
+    bool TryGetSkillData(int skillCode, out SkillData skillData)
+    {
+        if (skillDataDic.ContainsKey(skillCode))
+        {
+            skillData = skillDataDic[skillCode];
+            return true;
+        }
+
+        skillData = default;
         return false;
     }
 }

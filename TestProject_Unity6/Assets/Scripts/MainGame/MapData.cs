@@ -88,16 +88,13 @@ public class MapData : MonoBehaviour
 
                 foreach (var attackSkill in playerAttackSkills)
                 {
+                    var skillCode = attackSkill.Item1;
                     var playerAttackDamage = attackSkill.Item2;
+                    var skillEffectCode = Managers.TableData.GetSkillEffectCode(skillCode);
+
                     monster.TakeDamage(playerAttackDamage);
 
-                    if (attackSkill.Item1 == 0)
-                        Managers.effect.ShowEffect(6, monsterPosition);
-                    else if (attackSkill.Item1 == 1)
-                        Managers.effect.ShowEffect(7, monsterPosition);
-                    else if (attackSkill.Item1 == 2)
-                        Managers.effect.ShowEffect(8, monsterPosition);
-
+                    Managers.effect.ShowEffect(skillEffectCode, monsterPosition);
                     Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
                 }
 
@@ -183,13 +180,16 @@ public class MapData : MonoBehaviour
 
     List<Tuple<int, long>> GetPlayerAttackInfos()
     {
-        var skillPossibility = new int[] { 1000, 200, 100 };
+        var skills = new int[] { 1, 4, 6 };
         var usingSkills = new List<Tuple<int, long>>();
 
-        for (int i = 0; i < skillPossibility.Length; i++)
+        foreach (var skillCode in skills)
         {
-            if (Random.Range(0, 1000) < skillPossibility[i])
-                usingSkills.Add(new Tuple<int, long>(i, TableData.GetSkillDamage(i, 1, playerUnit.GetAttack())));
+            var procChance = Managers.TableData.GetSkillProcChange(skillCode);
+            var skillLevel = 1;
+
+            if (Random.Range(0, 100) < procChance)
+                usingSkills.Add(new Tuple<int, long>(skillCode, Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack())));
         }
 
         return usingSkills;

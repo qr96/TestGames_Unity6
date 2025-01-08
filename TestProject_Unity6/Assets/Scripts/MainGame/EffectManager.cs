@@ -24,6 +24,9 @@ public class EffectManager : MonoBehaviour
     {
         GameObject newEffect;
 
+        if (id == 0)
+            return;
+
         if (effectPool[id].Count < maxEffect)
             newEffect = Instantiate(effects[id]);
         else
