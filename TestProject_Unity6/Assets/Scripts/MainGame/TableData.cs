@@ -8,13 +8,15 @@ public class TableData : MonoBehaviour
     readonly string EquipmentJsonPath = "Jsons/Equipments";
     readonly string MiscItemJsonPath = "Jsons/MiscItem";
 
-    Dictionary<Equipment.Part, Dictionary<int, EquipmentData>> equipmentData = new Dictionary<Equipment.Part, Dictionary<int, EquipmentData>>();
+    Dictionary<Equipment.Part, Dictionary<int, EquipmentData>> equipmentDataDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentData>>();
     Dictionary<int, MiscItemData> miscItems = new Dictionary<int, MiscItemData>();
 
     class EquipmentData
     {
         public int code;
         public string name;
+        public long price;
+        public Stat stat;
     }
 
     class MiscItemData
@@ -37,11 +39,11 @@ public class TableData : MonoBehaviour
 
             ParseJson<List<EquipmentData>>($"{EquipmentJsonPath}/{fileName}", (dataList) =>
             {
-                if (!equipmentData.ContainsKey(part))
-                    equipmentData.Add(part, new Dictionary<int, EquipmentData>());
+                if (!equipmentDataDic.ContainsKey(part))
+                    equipmentDataDic.Add(part, new Dictionary<int, EquipmentData>());
 
                 foreach (var data in dataList)
-                    equipmentData[part].Add(data.code, data);
+                    equipmentDataDic[part].Add(data.code, data);
             });
         }
 
@@ -159,7 +161,7 @@ public class TableData : MonoBehaviour
     {
         var expectPrice = 1000L;
         var upgradePrice = 1000L;
-        var originPrice = 2000L;
+        var originPrice = GetEquipmentOriginPrice(part, itemCode);
 
         expectPrice = originPrice / 100;
 
@@ -173,12 +175,9 @@ public class TableData : MonoBehaviour
 
     public string GetEquipmentName(Equipment.Part part, int itemCode)
     {
-        if (equipmentData.ContainsKey(part))
-        {
-            if (equipmentData[part].ContainsKey(itemCode) && equipmentData[part][itemCode] != null)
-                return equipmentData[part][itemCode].name;
-        }
-        
+        if (TryGetEquipmentData(part, itemCode, out var equipmentData))
+            return equipmentData.name;
+
         return "Error";
     }
 
@@ -250,5 +249,28 @@ public class TableData : MonoBehaviour
     public static Sprite GetSpriteNone()
     {
         return Resources.Load<Sprite>("Sprites/None");
+    }
+
+    long GetEquipmentOriginPrice(Equipment.Part part, int itemCode)
+    {
+        if (TryGetEquipmentData(part, itemCode, out var equipmentData))
+            return equipmentData.price;
+
+        return 0;
+    }
+
+    bool TryGetEquipmentData(Equipment.Part part, int itemCode, out EquipmentData equipmentData)
+    {
+        if (equipmentDataDic.ContainsKey(part))
+        {
+            if (equipmentDataDic[part].ContainsKey(itemCode))
+            {
+                equipmentData = equipmentDataDic[part][itemCode];
+                return true;
+            }
+        }
+
+        equipmentData = default;
+        return false;
     }
 }
