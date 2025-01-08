@@ -9,20 +9,20 @@ public class UIManager : MonoBehaviour
     public List<UIPopup> uiPopups = new List<UIPopup>();
 
     public RectTransform canvas;
-    public RectTransform root;
+    public RectTransform safeArea;
 
     public RectTransform layoutParent;
     public RectTransform popupParent;
 
     private void Awake()
     {
-        UIUtil.ApplySafeAreaAnchor(ref root);
-        UIUtil.ApplyPreserveRatio(root, 0.75f);
+        UIUtil.ApplySafeAreaAnchor(ref safeArea);
+        UIUtil.ApplyPreserveRatio(safeArea, 0.75f);
 
         var canvasChangeCallback = canvas.GetComponent<CanvasDimensionsChangeCallback>();
         canvasChangeCallback.SetDimensionsChangeCallback(() =>
         {
-            UIUtil.ApplySafeAreaAnchor(ref root);
+            UIUtil.ApplySafeAreaAnchor(ref safeArea);
         });
 
         RegisterAllLayoutsAndPopups();
