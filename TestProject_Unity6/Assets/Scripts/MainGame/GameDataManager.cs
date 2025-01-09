@@ -15,15 +15,13 @@ public class GameDataManager : MonoBehaviour
     List<Quest> progressQuests = new List<Quest>();
     List<Quest> completeQuests = new List<Quest>();
 
-    private void Awake()
-    {
-        playerInfo = new playerInfo(1);
-    }
-
     private void Start()
     {
+        playerInfo = new playerInfo(1);
         ModifyPlayerExp(0);
         ModifyPlayerMoney(1000000);
+        SkillLevelUp(1);
+        EquipSkill(1);
     }
 
     public Stat GetPlayerStat()
@@ -186,6 +184,23 @@ public class GameDataManager : MonoBehaviour
     {
         return playerInfo.money;
     }
+
+    public List<SkillData> GetEquippedSkillDatas()
+    {
+        return playerInfo.skillData.GetEquippedSkills();
+    }
+
+    public void SkillLevelUp(int skillCode)
+    {
+        var nowLevel = playerInfo.skillData.GetSkillLevel(skillCode);
+        if (nowLevel < Managers.TableData.GetSkillMaxLevel(skillCode))
+            playerInfo.skillData.SkillLevelUp(skillCode);
+    }
+
+    public void EquipSkill(int skillCode)
+    {
+        playerInfo.skillData.EquipSkill(skillCode);
+    }
 }
 
 public struct Stat
@@ -216,6 +231,7 @@ public class playerInfo
     public Bag miscBag = new Bag(999);
     public EquipmentBag equipmentBag = new();
     public EquippedEquipments equipped = new();
+    public SkillDataSet skillData = new SkillDataSet();
 
     public playerInfo(int level)
     {
@@ -338,26 +354,77 @@ public class Bag
 
 public class SkillData
 {
-    Dictionary<int, int> skillLevels = new Dictionary<int, int>();
-    Stat stat;
+    public int code { get; private set; }
+    public int level { get; private set; }
+
+    public SkillData(int code)
+    {
+        this.code = code;
+        level = 0;
+    }
+
+    public void LevelUp()
+    {
+        level++;
+    }
+}
+
+public class SkillDataSet
+{
+    Dictionary<int, SkillData> skillDataDic = new Dictionary<int, SkillData>();
+    List<int> equipSkills = new List<int>();
+    int maxSkill = 3;
 
     public void SkillLevelUp(int skillCode)
     {
-        if (!skillLevels.ContainsKey(skillCode))
-            skillLevels.Add(skillCode, 0);
+        if (!skillDataDic.ContainsKey(skillCode))
+            skillDataDic.Add(skillCode, new SkillData(skillCode));
 
-        stat.Add(TableData.GetSkillIncreaseStat(skillCode, skillLevels[skillCode]));
-
-        if (skillLevels[skillCode] < TableData.GetSkillMaxLevel(skillCode))
-            skillLevels[skillCode]++;
+        skillDataDic[skillCode].LevelUp();
     }
 
     public int GetSkillLevel(int skillCode)
     {
-        if (skillLevels.ContainsKey(skillCode))
-            return skillLevels[skillCode];
+        if (skillDataDic.ContainsKey(skillCode))
+            return skillDataDic[skillCode].level;
         else
-            return default;
+            return 0;
+    }
+
+    public void EquipSkill(int skillCode)
+    {
+        if (equipSkills.Contains(skillCode))
+            return;
+
+        if (equipSkills.Count >= maxSkill)
+            return;
+
+        if (skillDataDic.ContainsKey(skillCode) && skillDataDic[skillCode].level > 0)
+            equipSkills.Add(skillCode);
+    }
+
+    public void UnEquipSkill(int skillCode)
+    {
+        if (equipSkills.Contains(skillCode))
+            equipSkills.Remove(skillCode);
+    }
+
+    public List<int> GetSkills()
+    {
+        return skillDataDic.Keys.ToList();
+    }
+
+    public List<SkillData> GetEquippedSkills()
+    {
+        var skills = new List<SkillData>();
+
+        foreach (var skillCode in equipSkills)
+        {
+            if (skillDataDic.ContainsKey(skillCode))
+                skills.Add(skillDataDic[skillCode]);
+        }
+        
+        return skills;
     }
 }
 

@@ -84,7 +84,7 @@ public class MapData : MonoBehaviour
         {
             if (Managers.MonsterManager.TryGetMonsterPosition(monsterId, out var monsterPosition))
             {
-                var playerAttackSkills = GetPlayerAttackInfos();
+                var playerAttackSkills = GetSkillDamageList();
 
                 foreach (var attackSkill in playerAttackSkills)
                 {
@@ -178,16 +178,17 @@ public class MapData : MonoBehaviour
         }
     }
 
-    List<Tuple<int, long>> GetPlayerAttackInfos()
+    List<Tuple<int, long>> GetSkillDamageList()
     {
-        var skills = new int[] { 1, 4, 6 };
+        var skillDatas = Managers.GameData.GetEquippedSkillDatas();
         var usingSkills = new List<Tuple<int, long>>();
 
-        foreach (var skillCode in skills)
+        foreach (var skillData in skillDatas)
         {
+            var skillCode = skillData.code;
+            var skillLevel = skillData.level;
             var procChance = Managers.TableData.GetSkillProcChange(skillCode);
-            var skillLevel = 1;
-
+            
             if (Random.Range(0, 100) < procChance)
                 usingSkills.Add(new Tuple<int, long>(skillCode, Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack())));
         }

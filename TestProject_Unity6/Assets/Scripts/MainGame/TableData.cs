@@ -39,7 +39,7 @@ public class TableData : MonoBehaviour
         public long price;
     }
 
-    private void Start()
+    private void Awake()
     {
         var equipmentParts = Enum.GetValues(typeof(Equipment.Part));
         foreach (var partObject in equipmentParts)
@@ -144,8 +144,11 @@ public class TableData : MonoBehaviour
         return stat;
     }
 
-    public static int GetSkillMaxLevel(int skillCode)
+    public int GetSkillMaxLevel(int skillCode)
     {
+        if (TryGetSkillData(skillCode, out var skillData))
+            return skillData.maxLevel;
+
         return 0;
     }
 
