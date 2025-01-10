@@ -187,6 +187,12 @@ public class TableData : MonoBehaviour
 
         return 0;
     }
+
+    public static Sprite GetSkillImage(int skillCode)
+    {
+        return Resources.Load<Sprite>($"Sprites/Skills/{skillCode}");
+    }
+
     public long GetMiscItemPrice(int itemCode, int count)
     {
         if (miscItems.ContainsKey(itemCode))

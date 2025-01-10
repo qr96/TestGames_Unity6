@@ -21,7 +21,11 @@ public class GameDataManager : MonoBehaviour
         ModifyPlayerExp(0);
         ModifyPlayerMoney(1000000);
         SkillLevelUp(1);
+        SkillLevelUp(4);
+        SkillLevelUp(6);
         EquipSkill(1);
+        EquipSkill(4);
+        EquipSkill(6);
     }
 
     public Stat GetPlayerStat()
@@ -200,6 +204,8 @@ public class GameDataManager : MonoBehaviour
     public void EquipSkill(int skillCode)
     {
         playerInfo.skillData.EquipSkill(skillCode);
+
+        Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerInfo.skillData.GetSkills(), GetEquippedSkillDatas());
     }
 }
 
@@ -409,9 +415,9 @@ public class SkillDataSet
             equipSkills.Remove(skillCode);
     }
 
-    public List<int> GetSkills()
+    public List<SkillData> GetSkills()
     {
-        return skillDataDic.Keys.ToList();
+        return skillDataDic.Values.ToList();
     }
 
     public List<SkillData> GetEquippedSkills()
