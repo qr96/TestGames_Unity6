@@ -84,15 +84,16 @@ public class MapData : MonoBehaviour
         {
             if (Managers.MonsterManager.TryGetMonsterPosition(monsterId, out var monsterPosition))
             {
-                var playerAttackSkills = GetSkillDamageList();
+                var playerAttackSkills = GetSkillDamageList2();
 
                 foreach (var attackSkill in playerAttackSkills)
                 {
                     var skillCode = attackSkill.Item1;
-                    var playerAttackDamage = attackSkill.Item2;
+                    var damages = attackSkill.Item2;
                     var skillEffectCode = Managers.TableData.GetSkillEffectCode(skillCode);
 
-                    monster.TakeDamage(playerAttackDamage);
+                    foreach (var damage in damages)
+                        monster.TakeDamage(damage);
 
                     Managers.effect.ShowEffect(skillEffectCode, monsterPosition);
                     Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
@@ -178,19 +179,26 @@ public class MapData : MonoBehaviour
         }
     }
 
-    List<Tuple<int, long>> GetSkillDamageList()
+    List<Tuple<int, long[]>> GetSkillDamageList2()
     {
         var skillDatas = Managers.GameData.GetEquippedSkillDatas();
-        var usingSkills = new List<Tuple<int, long>>();
+        var usingSkills = new List<Tuple<int, long[]>>();
 
         foreach (var skillData in skillDatas)
         {
             var skillCode = skillData.code;
             var skillLevel = skillData.level;
             var procChance = Managers.TableData.GetSkillProcChange(skillCode);
+            var attackCount = Managers.TableData.GetSkillAttackCount(skillCode);
             
             if (Random.Range(0, 100) < procChance)
-                usingSkills.Add(new Tuple<int, long>(skillCode, Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack())));
+            {
+                var damages = new long[attackCount];
+                for (int i = 0; i < attackCount; i++)
+                    damages[i] = Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack());
+
+                usingSkills.Add(new Tuple<int, long[]>(skillCode, damages));
+            }
         }
 
         return usingSkills;

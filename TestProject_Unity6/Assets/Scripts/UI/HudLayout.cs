@@ -144,9 +144,9 @@ public class HudLayout : UILayout
             .OnComplete(() => damagePool.Push(damageIns));
     }
 
-    public void ShowDamage(List<long> damages, Vector3 position)
+    public void ShowDamage(long[] damages, Vector3 position)
     {
-        for (int i = damages.Count - 1; i >= 0; i--)
+        for (int i = damages.Length - 1; i >= 0; i--)
             ShowDamage(damages[i], position + Vector3.up * DAMAGE_TEXT_SPACE * i);
     }
 }

@@ -160,6 +160,14 @@ public class TableData : MonoBehaviour
         return 0;
     }
 
+    public int GetSkillAttackCount(int skillCode)
+    {
+        if (TryGetSkillData(skillCode, out var skillData))
+            return skillData.attackCount;
+
+        return 0;
+    }
+
     public long GetSkillDamage(int skillCode, int skillLevel, long attack)
     {
         if (TryGetSkillData(skillCode, out var skillData))
