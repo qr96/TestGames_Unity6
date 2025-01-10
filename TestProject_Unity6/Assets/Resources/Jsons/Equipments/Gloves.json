@@ -2,31 +2,49 @@
   {
     "code": 1,
     "name": "가죽 장갑",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 2,
     "name": "사냥꾼의 장갑",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 3,
     "name": "서리의 장갑",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 4,
     "name": "용병의 장갑",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 5,
     "name": "도적의 장갑",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 6,
     "name": "사제의 장갑",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   }
 ]

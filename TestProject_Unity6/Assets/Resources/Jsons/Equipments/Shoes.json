@@ -2,31 +2,49 @@
   {
     "code": 1,
     "name": "초심자 신발",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 2,
     "name": "견습 신발",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 3,
     "name": "강화된 견습 신발",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 4,
     "name": "하급 모험가 신발",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 5,
     "name": "중급 모험가 신발",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 6,
     "name": "상급 모험가 신발",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   }
 ]

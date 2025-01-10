@@ -2,22 +2,34 @@
   {
     "code": 1,
     "name": "초심자 투구",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 2,
     "name": "견습 암살자 투구",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 3,
     "name": "하급 암살자 투구",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 4,
     "name": "성기사단 투구",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 5,

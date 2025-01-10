@@ -2,31 +2,49 @@
   {
     "code": 1,
     "name": "초심자옷",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 10
+    }
   },
   {
     "code": 2,
     "name": "숙련자옷",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 20
+    }
   },
   {
     "code": 3,
     "name": "요리사옷",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 30
+    }
   },
   {
     "code": 4,
     "name": "중급 가죽옷",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 40
+    }
   },
   {
     "code": 5,
     "name": "상급 가죽옷",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 50
+    }
   },
   {
     "code": 6,
     "name": "붉은 늑대단 옷",
-    "price": 2000
+    "price": 2000,
+    "stat": {
+      "hp": 60
+    }
   }
 ]
