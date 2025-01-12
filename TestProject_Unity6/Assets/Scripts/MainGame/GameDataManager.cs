@@ -204,7 +204,12 @@ public class GameDataManager : MonoBehaviour
     public void EquipSkill(int skillCode)
     {
         playerInfo.skillData.EquipSkill(skillCode);
+        Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerInfo.skillData.GetSkills(), GetEquippedSkillDatas());
+    }
 
+    public void UnEquipSkill(int skillCode)
+    {
+        playerInfo.skillData.UnEquipSkill(skillCode);
         Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerInfo.skillData.GetSkills(), GetEquippedSkillDatas());
     }
 }

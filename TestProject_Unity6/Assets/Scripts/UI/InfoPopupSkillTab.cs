@@ -33,9 +33,13 @@ public class InfoPopupSkillTab : MonoBehaviour
         {
             var slot = havePool[i];
             var skillData = skills[i];
+            var slotButton = slot.GetComponent<KButton>();
 
-            slot.SetSlot(TableData.GetSkillImage(skillData.code), skillData.level, Managers.TableData.GetSkillMaxLevel(skillData.code));
+            slot.SetSlot(TableData.GetSkillSprite(skillData.code), skillData.level, Managers.TableData.GetSkillMaxLevel(skillData.code));
             slot.gameObject.SetActive(true);
+
+            slotButton.onClick.RemoveAllListeners();
+            slotButton.onClick.AddListener(() => Managers.UIManager.ShowPopup<SkillDetailPopup>().SetPopup(skillData.code, false, skillData.level));
         }
 
         for (int i = skills.Count; i < havePool.Count; i++)
@@ -54,9 +58,13 @@ public class InfoPopupSkillTab : MonoBehaviour
         {
             var slot = equippedPool[i];
             var skillData = skills[i];
+            var slotButton = slot.GetComponent<KButton>();
 
-            slot.SetSlot(TableData.GetSkillImage(skillData.code), skillData.level, Managers.TableData.GetSkillMaxLevel(skillData.code));
+            slot.SetSlot(TableData.GetSkillSprite(skillData.code), skillData.level, Managers.TableData.GetSkillMaxLevel(skillData.code));
             slot.gameObject.SetActive(true);
+
+            slotButton.onClick.RemoveAllListeners();
+            slotButton.onClick.AddListener(() => Managers.UIManager.ShowPopup<SkillDetailPopup>().SetPopup(skillData.code, true, skillData.level));
         }
     }
 }

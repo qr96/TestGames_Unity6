@@ -152,7 +152,7 @@ public class TableData : MonoBehaviour
         return 0;
     }
 
-    public int GetSkillProcChange(int skillCode)
+    public int GetSkillProcChance(int skillCode)
     {
         if (TryGetSkillData(skillCode, out var skillData))
             return skillData.procChance;
@@ -196,9 +196,17 @@ public class TableData : MonoBehaviour
         return 0;
     }
 
-    public static Sprite GetSkillImage(int skillCode)
+    public static Sprite GetSkillSprite(int skillCode)
     {
         return Resources.Load<Sprite>($"Sprites/Skills/{skillCode}");
+    }
+
+    public string GetSkillName(int skillCode)
+    {
+        if (TryGetSkillData(skillCode, out var skillData))
+            return skillData.name;
+
+        return "에러";
     }
 
     public long GetMiscItemPrice(int itemCode, int count)
