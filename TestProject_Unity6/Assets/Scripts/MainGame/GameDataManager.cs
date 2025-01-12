@@ -280,7 +280,7 @@ public class playerInfo
     {
         nowExp -= TableData.GetMaxExp(level);
         level++;
-        SetLevelStat(TableData.GetStatPerLevel(level));
+        //SetLevelStat(TableData.GetStatPerLevel(level));
         onLevelUp?.Invoke();
     }
 }
