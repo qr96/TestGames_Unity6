@@ -73,26 +73,35 @@ public class EnhancePopup : UIPopup
         var needMoney = TableData.GetEquipmentEnhancePrice(equipment.code);
         var success = TableData.GetEquipmentEnhancePossibilty(equipment.code, equipment.upgradeLevel);
 
-        SetPopup(TableData.GetEquipmentSprite(equipment.code, equipment.part), equipment.upgradeLevel, maxEnhance, needMoney, success, playerMoney);
+        SetPopup(TableData.GetEquipmentSprite(equipment.code, equipment.part), equipment.part, equipment.upgradeLevel, maxEnhance, needMoney, success, playerMoney);
     }
 
-    void SetPopup(Sprite equipIcon, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
+    void SetPopup(Sprite equipIcon, Equipment.Part part, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
     {
         equipmentSlot.SetSlot(equipIcon, nowUpgrade);
-        SetInfo(nowUpgrade, maxUpgrade, needMoney, success, playerMoney);
+        SetInfo(part, nowUpgrade, maxUpgrade, needMoney, success, playerMoney);
     }
 
-    void SetInfo(int nowLevel, int maxLevel, long needMoney, float success, long playerMoney)
+    void SetInfo(Equipment.Part part, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
     {
         var info = "";
-        
-        if (nowLevel == maxLevel)
+        var enhanceStat = Managers.TableData.GetEquipmentEnhanceIncrease(part, nowUpgrade);
+
+        if (nowUpgrade == maxUpgrade)
             info = "강화 완료";
         else
         {
-            info += $"강화 레벨 : +{nowLevel} > +{nowLevel + 1}\n";
+            info += "[강화 정보]\n";
+            info += $"강화 레벨 : +{nowUpgrade} > +{nowUpgrade + 1}\n";
             info += $"소모 비용 : {needMoney}\n";
-            info += $"성공 확률 : {success * 100}%";
+            info += $"성공 확률 : {success * 100}%\n";
+            info += "\n";
+            info += "[강화 능력치]\n";
+            info += enhanceStat.attack > 0 ? $"공격력 : +{enhanceStat.attack}\n" : "";
+            info += enhanceStat.hp > 0 ? $"체력 : +{enhanceStat.hp}\n" : "";
+            info += enhanceStat.mp > 0 ? $"기력 : +{enhanceStat.mp}\n" : "";
+            info += enhanceStat.speed > 0 ? $"이동속도 : +{enhanceStat.speed * 10}\n" : "";
+            info += enhanceStat.mastery > 0 ? $"무기숙련 : +{enhanceStat.mastery * 100}\n" : "";
         }
 
         enhanceInfo.text = info;
