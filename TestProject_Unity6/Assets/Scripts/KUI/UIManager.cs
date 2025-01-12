@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +15,14 @@ public class UIManager : MonoBehaviour
     public RectTransform layoutParent;
     public RectTransform popupParent;
 
+    CanvasDimensionsChangeCallback canvasChangeCallback;
+
     private void Awake()
     {
         UIUtil.ApplySafeAreaAnchor(ref safeArea);
         UIUtil.ApplyPreserveRatio(safeArea, 0.75f);
 
-        var canvasChangeCallback = canvas.GetComponent<CanvasDimensionsChangeCallback>();
+        canvasChangeCallback = canvas.GetComponent<CanvasDimensionsChangeCallback>();
         canvasChangeCallback.SetDimensionsChangeCallback(() =>
         {
             UIUtil.ApplySafeAreaAnchor(ref safeArea);
@@ -88,6 +91,11 @@ public class UIManager : MonoBehaviour
         }
 
         Debug.LogError($"[{GetType().Name}] GetPopup(). Can't find popup {typeof(T)}");
+    }
+
+    public void AddCanvasChangeCallback(Action onChange)
+    {
+        canvasChangeCallback.SetDimensionsChangeCallback(onChange);
     }
 
     void RegisterAllLayoutsAndPopups()

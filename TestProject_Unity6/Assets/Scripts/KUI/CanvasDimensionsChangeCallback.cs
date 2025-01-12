@@ -14,6 +14,6 @@ public class CanvasDimensionsChangeCallback : MonoBehaviour
 
     public void SetDimensionsChangeCallback(Action onCanvasDimensionsChange)
     {
-        this.onCanvasDimensionsChange = onCanvasDimensionsChange;
+        this.onCanvasDimensionsChange += onCanvasDimensionsChange;
     }
 }
