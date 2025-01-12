@@ -146,7 +146,8 @@ public class GameDataManager : MonoBehaviour
 
     public void AddEquipment(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
-        playerInfo.equipmentBag.Add(new Equipment(equipmentCode, upgradeLevel, part));
+        var newEquipment = new Equipment(equipmentCode, upgradeLevel, part, Managers.TableData.GetEquipmentPureStat(part, equipmentCode));
+        playerInfo.equipmentBag.Add(newEquipment);
 
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})이(가) 구매 완료되었습니다.");
@@ -447,11 +448,12 @@ public class Equipment
     public Stat stat;
     public Part part;
 
-    public Equipment(int code, int upgradeLevel, Part part)
+    public Equipment(int code, int upgradeLevel, Part part, Stat stat)
     {
         this.code = code;
         this.upgradeLevel = upgradeLevel;
         this.part = part;
+        this.stat = stat;
     }
 
     public enum Part
@@ -566,7 +568,7 @@ public class EquippedEquipments
         var stat = new Stat();
 
         foreach (var equipment in equipped)
-            stat.Add(Managers.TableData.GetEquipmentStat(equipment));
+            stat.Add(equipment.stat);
 
         return stat;
     }

@@ -35,10 +35,12 @@ public class EquipmentUpgrader : MonoBehaviour
     void ResetEquipment(Equipment equipment)
     {
         equipment.upgradeLevel = 0;
+        equipment.stat = Managers.TableData.GetEquipmentPureStat(equipment.part, equipment.code);
     }
 
     void UpgradeEquipment(Equipment equipment)
     {
         equipment.upgradeLevel++;
+        equipment.stat.Add(Managers.TableData.GetEquipmentEnhanceIncrease(equipment.part, equipment.upgradeLevel));
     }
 }

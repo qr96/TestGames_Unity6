@@ -287,29 +287,24 @@ public class TableData : MonoBehaviour
         return possibility;
     }
 
-    public Stat GetEquipmentStat(Equipment equipment)
+    public Stat GetEquipmentPureStat(Equipment.Part part, int equipmentCode)
     {
-        var stat = new Stat();
-
-        if (TryGetEquipmentData(equipment.part, equipment.code, out var equipmentData))
-        {
-            stat.Add(equipmentData.stat);
-            stat.Add(GetEquipmentEnhanceIncrease(equipment.part, equipment.upgradeLevel));
-        }
-
-        return stat;
+        if (TryGetEquipmentData(part, equipmentCode, out var equipmentData))
+            return equipmentData.stat;
+        else
+            return default;
     }
 
-    public Stat GetEquipmentEnhanceIncrease(Equipment.Part part, int upgradeLevel)
+    public Stat GetEquipmentEnhanceIncrease(Equipment.Part part, int nowUpgrade)
     {
         return part switch
         {
-            Equipment.Part.Weapon => new Stat() { attack = upgradeLevel * 4 },
-            Equipment.Part.Necklace => new Stat() { attack = upgradeLevel * 2 },
-            Equipment.Part.Gloves => new Stat() { mp = upgradeLevel * 10 },
-            Equipment.Part.Hat => new Stat() { hp = upgradeLevel * 5 },
-            Equipment.Part.Armor => new Stat() { hp = upgradeLevel * 10 },
-            Equipment.Part.Shoes => new Stat() { mp = upgradeLevel * 5 },
+            Equipment.Part.Weapon => new Stat() { attack = 4 },
+            Equipment.Part.Necklace => new Stat() { attack = 2 },
+            Equipment.Part.Gloves => new Stat() { mp = 10 },
+            Equipment.Part.Hat => new Stat() { hp = 5 },
+            Equipment.Part.Armor => new Stat() { hp = 10 },
+            Equipment.Part.Shoes => new Stat() { mp = 5 },
             _ => new Stat()
         };
     }
