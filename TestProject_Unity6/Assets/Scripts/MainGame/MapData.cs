@@ -18,7 +18,7 @@ public class MapData : MonoBehaviour
     private void Start()
     {
         playerUnit = new BattleUnit(1, Managers.GameData.GetPlayerStat());
-        
+
         StartCoroutine(ChargeMpCo(1));
     }
 
@@ -183,6 +183,7 @@ public class MapData : MonoBehaviour
     {
         var skillDatas = Managers.GameData.GetEquippedSkillDatas();
         var usingSkills = new List<Tuple<int, long[]>>();
+        var mastery = playerUnit.MaxStat.mastery;
 
         foreach (var skillData in skillDatas)
         {
@@ -195,7 +196,12 @@ public class MapData : MonoBehaviour
             {
                 var damages = new long[attackCount];
                 for (int i = 0; i < attackCount; i++)
-                    damages[i] = Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack());
+                {
+                    var damage = Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack());
+                    var factor = Random.Range((int)(mastery * 100), 100);
+                    damage = damage * factor / 100;
+                    damages[i] = damage;
+                }
 
                 usingSkills.Add(new Tuple<int, long[]>(skillCode, damages));
             }
