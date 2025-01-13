@@ -108,9 +108,9 @@ public class TableData : MonoBehaviour
     public static Stat GetStatPerLevel(int level)
     {
         var stat = new Stat();
-        stat.hp = 10 + level * 2;
-        stat.mp = 10 + level * 1;
-        stat.attack = 10 + level;
+        stat.hp = 50;
+        stat.mp = 20;
+        stat.attack = 20;
         stat.speed = 6f;
         stat.mastery = 0.5f;
 
