@@ -101,6 +101,10 @@ public class MapData : MonoBehaviour
 
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.MaxStat.hp, monster.NowStat.hp);
 
+                playerUnit.TakeDamage(monster.GetAttack());
+                Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
+                Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerUnit.MaxStat.mp, playerUnit.NowStat.mp);
+
                 if (monster.IsDead())
                 {
                     Managers.GameData.ModifyPlayerExp(10);
@@ -109,12 +113,6 @@ public class MapData : MonoBehaviour
                     Managers.effect.ShowEffect(1, monsterPosition);
                     SpawnItem(3, 5, monsterPosition);
                     SpawnItems(1, 100, monsterPosition, 3);
-                }
-                else
-                {
-                    playerUnit.TakeDamage(monster.GetAttack());
-                    Managers.UIManager.GetLayout<StateLayout>().SetUserHpBar(playerUnit.MaxStat.hp, playerUnit.NowStat.hp);
-                    Managers.UIManager.GetLayout<StateLayout>().SetUserMpBar(playerUnit.MaxStat.mp, playerUnit.NowStat.mp);
                 }
             }
         }
