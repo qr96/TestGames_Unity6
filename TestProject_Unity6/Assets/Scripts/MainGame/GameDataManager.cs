@@ -19,7 +19,16 @@ public class GameDataManager : MonoBehaviour
 
     private void Start()
     {
-        if (!Managers.File.TryLoadData($"{PlayerDataDirectoryPath}/{PlayerDataFilePath}", out playerData))
+        if (Managers.File.TryLoadData($"{PlayerDataDirectoryPath}/{PlayerDataFilePath}", out playerData))
+        {
+            Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerData.level), playerData.nowExp);
+            Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerData.level);
+            Managers.UIManager.GetPopup<InfoPopup>().SetMoney(playerData.money);
+            Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
+            Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerData.miscBag.ToList());
+            Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerData.skillData.GetSkills(), GetEquippedSkillDatas());
+        }
+        else
         {
             playerData = new PlayerData(1);
             ModifyPlayerExp(0);
