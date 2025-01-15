@@ -46,7 +46,7 @@ public class StateLayout : UILayout
         levelText.text = level.ToString();
     }
 
-    public void SetQuestList(List<Quest> quests)
+    public void SetQuestList(List<QuestData> quests)
     {
         for (int i = 0; i < quests.Count; i++)
         {

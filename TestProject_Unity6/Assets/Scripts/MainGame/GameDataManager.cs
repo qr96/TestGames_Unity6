@@ -1,23 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class GameDataManager : MonoBehaviour
 {
     public MapData mapData;
     public EquipmentUpgrader equipmentUpgrader;
 
-    playerInfo playerInfo;
+    PlayerData playerInfo;
 
-    List<Quest> progressQuests = new List<Quest>();
-    List<Quest> completeQuests = new List<Quest>();
+    List<QuestData> progressQuests = new List<QuestData>();
+    List<QuestData> completeQuests = new List<QuestData>();
 
     private void Start()
     {
-        playerInfo = new playerInfo(1);
+        playerInfo = new PlayerData(1);
         ModifyPlayerExp(0);
         ModifyPlayerMoney(1000000);
         SkillLevelUp(1);
@@ -97,7 +95,7 @@ public class GameDataManager : MonoBehaviour
         }
         else
         {
-            progressQuests.Add(new Quest() { id = questId, targetAmount = 10 });
+            progressQuests.Add(new QuestData() { id = questId, targetAmount = 10 });
             Managers.UIManager.GetLayout<StateLayout>().SetQuestList(progressQuests);
         }
     }
@@ -233,7 +231,7 @@ public struct Stat
     }
 }
 
-public class playerInfo
+public class PlayerData
 {
     public int level;
     public long nowExp;
@@ -245,7 +243,7 @@ public class playerInfo
     public EquippedEquipments equipped = new();
     public SkillDataSet skillData = new SkillDataSet();
 
-    public playerInfo(int level)
+    public PlayerData(int level)
     {
         this.level = level;
         pureStat = new Stat();
@@ -286,7 +284,7 @@ public class playerInfo
     }
 }
 
-public class Quest
+public class QuestData
 {
     public int id;
     public int targetAmount;

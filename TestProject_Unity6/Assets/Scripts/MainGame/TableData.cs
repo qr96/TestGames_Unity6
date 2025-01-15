@@ -9,11 +9,11 @@ public class TableData : MonoBehaviour
     readonly string MiscItemJsonPath = "Jsons/MiscItem";
     readonly string SkillDataJsonPath = "Jsons/SKills";
 
-    Dictionary<Equipment.Part, Dictionary<int, EquipmentData>> equipmentDataDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentData>>();
-    Dictionary<int, SkillData> skillDataDic = new Dictionary<int, SkillData>();
-    Dictionary<int, MiscItemData> miscItems = new Dictionary<int, MiscItemData>();
+    Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>> equipmentInfoDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>>();
+    Dictionary<int, SkillInfo> skillInfoDic = new Dictionary<int, SkillInfo>();
+    Dictionary<int, MiscItemInfo> miscItemInfoDic = new Dictionary<int, MiscItemInfo>();
 
-    class EquipmentData
+    class EquipmentInfo
     {
         public int code;
         public string name;
@@ -21,7 +21,7 @@ public class TableData : MonoBehaviour
         public Stat stat;
     }
 
-    class SkillData
+    class SkillInfo
     {
         public int code;
         public string name;
@@ -32,7 +32,7 @@ public class TableData : MonoBehaviour
         public int[] damage;
     }
 
-    class MiscItemData
+    class MiscItemInfo
     {
         public int code;
         public string name;
@@ -50,26 +50,26 @@ public class TableData : MonoBehaviour
             if (part == Equipment.Part.None)
                 continue;
 
-            ParseJson<List<EquipmentData>>($"{EquipmentJsonPath}/{fileName}", (dataList) =>
+            ParseJson<List<EquipmentInfo>>($"{EquipmentJsonPath}/{fileName}", (dataList) =>
             {
-                if (!equipmentDataDic.ContainsKey(part))
-                    equipmentDataDic.Add(part, new Dictionary<int, EquipmentData>());
+                if (!equipmentInfoDic.ContainsKey(part))
+                    equipmentInfoDic.Add(part, new Dictionary<int, EquipmentInfo>());
 
                 foreach (var data in dataList)
-                    equipmentDataDic[part].Add(data.code, data);
+                    equipmentInfoDic[part].Add(data.code, data);
             });
         }
 
-        ParseJson<List<MiscItemData>>(MiscItemJsonPath, (dataList) =>
+        ParseJson<List<MiscItemInfo>>(MiscItemJsonPath, (dataList) =>
         {
             foreach (var data in dataList)
-                miscItems.Add(data.code, data);
+                miscItemInfoDic.Add(data.code, data);
         });
 
-        ParseJson<List<SkillData>>(SkillDataJsonPath, (dataList) =>
+        ParseJson<List<SkillInfo>>(SkillDataJsonPath, (dataList) =>
         {
             foreach (var data in dataList)
-                skillDataDic.Add(data.code, data);
+                skillInfoDic.Add(data.code, data);
         });
     }
 
@@ -108,8 +108,8 @@ public class TableData : MonoBehaviour
     public static Stat GetStatPerLevel(int level)
     {
         var stat = new Stat();
-        stat.hp = 50;
-        stat.mp = 20;
+        stat.hp = 30;
+        stat.mp = 10;
         stat.attack = 20;
         stat.speed = 6f;
         stat.mastery = 0.5f;
@@ -117,36 +117,9 @@ public class TableData : MonoBehaviour
         return stat;
     }
 
-    public static float GetSkillBuffTime(int skillID, int skillLevel)
-    {
-        float[] buffTimes = new float[] { 10f, 9999999f };
-
-        if (skillID < buffTimes.Length)
-            return buffTimes[skillID];
-        else
-            return 0f;
-    }
-
-    public static Stat GetSkillBuffStat(int skillID, int skillLevel)
-    {
-        Stat[] stats = new Stat[] { new Stat() { speed = 2f }, new Stat() { speed = 4f } };
-
-        if (skillID < stats.Length)
-            return stats[skillID];
-        else
-            return default;
-    }
-
-    public static Stat GetSkillIncreaseStat(int skillCode, int nowLevel)
-    {
-        var stat = new Stat();
-
-        return stat;
-    }
-
     public int GetSkillMaxLevel(int skillCode)
     {
-        if (TryGetSkillData(skillCode, out var skillData))
+        if (TryGetSkillInfo(skillCode, out var skillData))
             return skillData.maxLevel;
 
         return 0;
@@ -154,7 +127,7 @@ public class TableData : MonoBehaviour
 
     public int GetSkillProcChance(int skillCode)
     {
-        if (TryGetSkillData(skillCode, out var skillData))
+        if (TryGetSkillInfo(skillCode, out var skillData))
             return skillData.procChance;
 
         return 0;
@@ -162,7 +135,7 @@ public class TableData : MonoBehaviour
 
     public int GetSkillAttackCount(int skillCode)
     {
-        if (TryGetSkillData(skillCode, out var skillData))
+        if (TryGetSkillInfo(skillCode, out var skillData))
             return skillData.attackCount;
 
         return 0;
@@ -170,7 +143,7 @@ public class TableData : MonoBehaviour
 
     public long GetSkillDamage(int skillCode, int skillLevel, long attack)
     {
-        if (TryGetSkillData(skillCode, out var skillData))
+        if (TryGetSkillInfo(skillCode, out var skillData))
         {
             if (skillLevel <= skillData.maxLevel)
             {
@@ -190,7 +163,7 @@ public class TableData : MonoBehaviour
 
     public int GetSkillEffectCode(int skillCode)
     {
-        if (TryGetSkillData(skillCode, out var skillData))
+        if (TryGetSkillInfo(skillCode, out var skillData))
             return skillData.effectCode;
 
         return 0;
@@ -203,7 +176,7 @@ public class TableData : MonoBehaviour
 
     public string GetSkillName(int skillCode)
     {
-        if (TryGetSkillData(skillCode, out var skillData))
+        if (TryGetSkillInfo(skillCode, out var skillData))
             return skillData.name;
 
         return "에러";
@@ -211,16 +184,16 @@ public class TableData : MonoBehaviour
 
     public long GetMiscItemPrice(int itemCode, int count)
     {
-        if (miscItems.ContainsKey(itemCode))
-            return miscItems[itemCode].price * count;
+        if (miscItemInfoDic.ContainsKey(itemCode))
+            return miscItemInfoDic[itemCode].price * count;
 
         return 1000;
     }
 
     public string GetMiscItemName(int itemCode)
     {
-        if (miscItems.ContainsKey(itemCode))
-            return miscItems[itemCode].name;
+        if (miscItemInfoDic.ContainsKey(itemCode))
+            return miscItemInfoDic[itemCode].name;
         return "Error";
     }
 
@@ -242,7 +215,7 @@ public class TableData : MonoBehaviour
 
     public string GetEquipmentName(Equipment.Part part, int itemCode)
     {
-        if (TryGetEquipmentData(part, itemCode, out var equipmentData))
+        if (TryGetEquipmentInfo(part, itemCode, out var equipmentData))
             return equipmentData.name;
 
         return "Error";
@@ -289,7 +262,7 @@ public class TableData : MonoBehaviour
 
     public Stat GetEquipmentPureStat(Equipment.Part part, int equipmentCode)
     {
-        if (TryGetEquipmentData(part, equipmentCode, out var equipmentData))
+        if (TryGetEquipmentInfo(part, equipmentCode, out var equipmentData))
             return equipmentData.stat;
         else
             return default;
@@ -337,19 +310,19 @@ public class TableData : MonoBehaviour
 
     long GetEquipmentOriginPrice(Equipment.Part part, int itemCode)
     {
-        if (TryGetEquipmentData(part, itemCode, out var equipmentData))
+        if (TryGetEquipmentInfo(part, itemCode, out var equipmentData))
             return equipmentData.price;
 
         return 0;
     }
 
-    bool TryGetEquipmentData(Equipment.Part part, int itemCode, out EquipmentData equipmentData)
+    bool TryGetEquipmentInfo(Equipment.Part part, int itemCode, out EquipmentInfo equipmentData)
     {
-        if (equipmentDataDic.ContainsKey(part))
+        if (equipmentInfoDic.ContainsKey(part))
         {
-            if (equipmentDataDic[part].ContainsKey(itemCode))
+            if (equipmentInfoDic[part].ContainsKey(itemCode))
             {
-                equipmentData = equipmentDataDic[part][itemCode];
+                equipmentData = equipmentInfoDic[part][itemCode];
                 return true;
             }
         }
@@ -358,11 +331,11 @@ public class TableData : MonoBehaviour
         return false;
     }
 
-    bool TryGetSkillData(int skillCode, out SkillData skillData)
+    bool TryGetSkillInfo(int skillCode, out SkillInfo skillData)
     {
-        if (skillDataDic.ContainsKey(skillCode))
+        if (skillInfoDic.ContainsKey(skillCode))
         {
-            skillData = skillDataDic[skillCode];
+            skillData = skillInfoDic[skillCode];
             return true;
         }
 
