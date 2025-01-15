@@ -145,16 +145,16 @@ public class TableData : MonoBehaviour
     {
         if (TryGetSkillInfo(skillCode, out var skillData))
         {
-            if (skillLevel <= skillData.maxLevel)
+            if (skillLevel > 0 && skillLevel <= skillData.maxLevel)
             {
                 if (skillLevel - 1 < skillData.damage.Length)
                     return attack * skillData.damage[skillLevel - 1] / 100;
                 else
-                    Debug.LogError($"GetSkillDamage(). skillLevel is larger than skillData. skillCode={skillCode}, skillLevel={skillLevel}, damage.Length={skillData.damage.Length}");
+                    Debug.LogError($"GetSkillDamage(). Error occured. skillCode={skillCode}, skillLevel={skillLevel}, damage.Length={skillData.damage.Length}");
             }
             else
             {
-                Debug.LogError($"GetSkillDamage(). skillLevel is larger than maxLevel. skillCode={skillCode}, skillLevel={skillLevel}, maxLevel={skillData.maxLevel}");
+                Debug.LogError($"GetSkillDamage(). Error occured. skillCode={skillCode}, skillLevel={skillLevel}, maxLevel={skillData.maxLevel}");
             }
         }
 
