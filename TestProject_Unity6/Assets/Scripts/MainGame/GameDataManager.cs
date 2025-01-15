@@ -8,14 +8,14 @@ public class GameDataManager : MonoBehaviour
     public MapData mapData;
     public EquipmentUpgrader equipmentUpgrader;
 
-    PlayerData playerInfo;
+    PlayerData playerData;
 
     List<QuestData> progressQuests = new List<QuestData>();
     List<QuestData> completeQuests = new List<QuestData>();
 
     private void Start()
     {
-        playerInfo = new PlayerData(1);
+        playerData = new PlayerData(1);
         ModifyPlayerExp(0);
         ModifyPlayerMoney(1000000);
         SkillLevelUp(1);
@@ -28,27 +28,27 @@ public class GameDataManager : MonoBehaviour
 
     public Stat GetPlayerStat()
     {
-        return playerInfo.maxStat;
+        return playerData.maxStat;
     }
 
     public void ModifyPlayerMoney(long money)
     {
-        playerInfo.money += money;
-        Managers.UIManager.GetPopup<InfoPopup>().SetMoney(playerInfo.money);
-        Managers.UIManager.GetPopup<EquipmentShopPopup>().SetMoney(playerInfo.money);
+        playerData.money += money;
+        Managers.UIManager.GetPopup<InfoPopup>().SetMoney(playerData.money);
+        Managers.UIManager.GetPopup<EquipmentShopPopup>().SetMoney(playerData.money);
     }
 
     public void ModifyPlayerExp(long exp)
     {
-        playerInfo.ModifyExp(exp, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
-        Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerInfo.level), playerInfo.nowExp);
-        Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerInfo.level);
+        playerData.ModifyExp(exp, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
+        Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerData.level), playerData.nowExp);
+        Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerData.level);
     }
 
     public void AddMiscItemToBag(int itemCode, int count)
     {
-        playerInfo.miscBag.AddItem(itemCode, count);
-        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
+        playerData.miscBag.AddItem(itemCode, count);
+        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerData.miscBag.ToList());
     }
 
     public void Battle(int monsterId)
@@ -65,22 +65,22 @@ public class GameDataManager : MonoBehaviour
     // Shop
     public void ShowMiscShop()
     {
-        Managers.UIManager.ShowPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList(), GetPlayerMoney());
+        Managers.UIManager.ShowPopup<MiscShopPopup>().SetPopup(playerData.miscBag.ToList(), GetPlayerMoney());
     }
 
     public void SellAllItems()
     {
-        var bag = playerInfo.miscBag.ToList();
+        var bag = playerData.miscBag.ToList();
         var price = 0L;
 
         foreach (var itemData in bag)
             price += Managers.TableData.GetMiscItemPrice(itemData.itemCode, itemData.count);
 
-        playerInfo.miscBag.Clear();
+        playerData.miscBag.Clear();
         ModifyPlayerMoney(price);
 
-        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerInfo.miscBag.ToList());
-        Managers.UIManager.GetPopup<MiscShopPopup>().SetPopup(playerInfo.miscBag.ToList(), GetPlayerMoney());
+        Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerData.miscBag.ToList());
+        Managers.UIManager.GetPopup<MiscShopPopup>().SetPopup(playerData.miscBag.ToList(), GetPlayerMoney());
     }
 
     public void StartQuest(int questId)
@@ -126,12 +126,12 @@ public class GameDataManager : MonoBehaviour
 
     public List<Equipment> GetPlayerEquipments()
     {
-        return playerInfo.equipmentBag.ToList();
+        return playerData.equipmentBag.ToList();
     }
 
     public Equipment GetPlayerEquipment(int id)
     {
-        return playerInfo.equipmentBag.GetById(id);
+        return playerData.equipmentBag.GetById(id);
     }
 
     public void EnhanceEquipment(int id)
@@ -139,77 +139,77 @@ public class GameDataManager : MonoBehaviour
         var equipment = GetPlayerEquipment(id);
         equipmentUpgrader.Enhance(equipment);
 
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
     }
 
     public void AddEquipment(int equipmentCode, int upgradeLevel, Equipment.Part part)
     {
         var newEquipment = new Equipment(equipmentCode, upgradeLevel, part, Managers.TableData.GetEquipmentPureStat(part, equipmentCode));
-        playerInfo.equipmentBag.Add(newEquipment);
+        playerData.equipmentBag.Add(newEquipment);
 
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})이(가) 구매 완료되었습니다.");
     }
 
     public void RemoveEquipment(int equipmentId)
     {
-        playerInfo.equipmentBag.Remove(equipmentId);
+        playerData.equipmentBag.Remove(equipmentId);
     }
 
     public void Equip(int equipmentId)
     {
-        var equipment = playerInfo.equipmentBag.GetById(equipmentId);
+        var equipment = playerData.equipmentBag.GetById(equipmentId);
 
-        if (playerInfo.equipped.HasPart(equipment.part))
+        if (playerData.equipped.HasPart(equipment.part))
             UnEquip(equipment.part);
 
-        if (playerInfo.equipped.Equip(equipment))
-            playerInfo.equipmentBag.Remove(equipmentId);
+        if (playerData.equipped.Equip(equipment))
+            playerData.equipmentBag.Remove(equipmentId);
 
-        playerInfo.UpdateStat();
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
+        playerData.UpdateStat();
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
         mapData.UpdatePlayerStat();
     }
 
     public void UnEquip(Equipment.Part part)
     {
-        var equipment = playerInfo.equipped.UnEquip(part);
+        var equipment = playerData.equipped.UnEquip(part);
 
         if (equipment != null)
-            playerInfo.equipmentBag.Add(equipment);
+            playerData.equipmentBag.Add(equipment);
 
-        playerInfo.UpdateStat();
-        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerInfo.equipmentBag.ToList(), playerInfo.equipped.ToList(), playerInfo.maxStat);
+        playerData.UpdateStat();
+        Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
         mapData.UpdatePlayerStat();
     }
 
     public long GetPlayerMoney()
     {
-        return playerInfo.money;
+        return playerData.money;
     }
 
     public List<SkillData> GetEquippedSkillDatas()
     {
-        return playerInfo.skillData.GetEquippedSkills();
+        return playerData.skillData.GetEquippedSkills();
     }
 
     public void SkillLevelUp(int skillCode)
     {
-        var nowLevel = playerInfo.skillData.GetSkillLevel(skillCode);
+        var nowLevel = playerData.skillData.GetSkillLevel(skillCode);
         if (nowLevel < Managers.TableData.GetSkillMaxLevel(skillCode))
-            playerInfo.skillData.SkillLevelUp(skillCode);
+            playerData.skillData.SkillLevelUp(skillCode);
     }
 
     public void EquipSkill(int skillCode)
     {
-        playerInfo.skillData.EquipSkill(skillCode);
-        Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerInfo.skillData.GetSkills(), GetEquippedSkillDatas());
+        playerData.skillData.EquipSkill(skillCode);
+        Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerData.skillData.GetSkills(), GetEquippedSkillDatas());
     }
 
     public void UnEquipSkill(int skillCode)
     {
-        playerInfo.skillData.UnEquipSkill(skillCode);
-        Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerInfo.skillData.GetSkills(), GetEquippedSkillDatas());
+        playerData.skillData.UnEquipSkill(skillCode);
+        Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerData.skillData.GetSkills(), GetEquippedSkillDatas());
     }
 }
 
