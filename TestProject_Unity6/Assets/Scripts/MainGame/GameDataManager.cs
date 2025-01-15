@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,9 @@ using UnityEngine;
 
 public class GameDataManager : MonoBehaviour
 {
+    readonly string PlayerDataDirectoryPath = "SaveData/12345";
+    readonly string PlayerDataFilePath = "PlayerData.json";
+
     public MapData mapData;
     public EquipmentUpgrader equipmentUpgrader;
 
@@ -15,15 +19,21 @@ public class GameDataManager : MonoBehaviour
 
     private void Start()
     {
-        playerData = new PlayerData(1);
-        ModifyPlayerExp(0);
-        ModifyPlayerMoney(1000000);
-        SkillLevelUp(1);
-        SkillLevelUp(4);
-        SkillLevelUp(6);
-        EquipSkill(1);
-        EquipSkill(4);
-        EquipSkill(6);
+        if (!Managers.File.TryLoadData($"{PlayerDataDirectoryPath}/{PlayerDataFilePath}", out playerData))
+        {
+            playerData = new PlayerData(1);
+            ModifyPlayerExp(0);
+            ModifyPlayerMoney(1000000);
+            SkillLevelUp(1);
+            SkillLevelUp(1);
+            SkillLevelUp(4);
+            SkillLevelUp(6);
+            EquipSkill(1);
+            EquipSkill(4);
+            EquipSkill(6);
+
+            SaveData();
+        }
     }
 
     public Stat GetPlayerStat()
@@ -34,6 +44,8 @@ public class GameDataManager : MonoBehaviour
     public void ModifyPlayerMoney(long money)
     {
         playerData.money += money;
+        SaveData();
+
         Managers.UIManager.GetPopup<InfoPopup>().SetMoney(playerData.money);
         Managers.UIManager.GetPopup<EquipmentShopPopup>().SetMoney(playerData.money);
     }
@@ -43,12 +55,14 @@ public class GameDataManager : MonoBehaviour
         playerData.ModifyExp(exp, () => Managers.effect.ShowEffect(4, Managers.MonsterManager.player.transform.position, Managers.MonsterManager.player.transform));
         Managers.UIManager.GetLayout<StateLayout>().SetUserExpBar(TableData.GetMaxExp(playerData.level), playerData.nowExp);
         Managers.UIManager.GetLayout<StateLayout>().SetLevel(playerData.level);
+        SaveData();
     }
 
     public void AddMiscItemToBag(int itemCode, int count)
     {
         playerData.miscBag.AddItem(itemCode, count);
         Managers.UIManager.GetPopup<InfoPopup>().SetBagTab(playerData.miscBag.ToList());
+        SaveData();
     }
 
     public void Battle(int monsterId)
@@ -140,6 +154,7 @@ public class GameDataManager : MonoBehaviour
         equipmentUpgrader.Enhance(equipment);
 
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
+        SaveData();
     }
 
     public void AddEquipment(int equipmentCode, int upgradeLevel, Equipment.Part part)
@@ -149,11 +164,13 @@ public class GameDataManager : MonoBehaviour
 
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
         Managers.UIManager.ShowPopup<MessagePopup>().SetPopup("안내", $"{Managers.TableData.GetEquipmentName(part, equipmentCode)} (+{upgradeLevel})이(가) 구매 완료되었습니다.");
+        SaveData();
     }
 
     public void RemoveEquipment(int equipmentId)
     {
         playerData.equipmentBag.Remove(equipmentId);
+        SaveData();
     }
 
     public void Equip(int equipmentId)
@@ -169,6 +186,7 @@ public class GameDataManager : MonoBehaviour
         playerData.UpdateStat();
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
         mapData.UpdatePlayerStat();
+        SaveData();
     }
 
     public void UnEquip(Equipment.Part part)
@@ -181,6 +199,7 @@ public class GameDataManager : MonoBehaviour
         playerData.UpdateStat();
         Managers.UIManager.GetPopup<InfoPopup>().SetEquipTab(playerData.equipmentBag.ToList(), playerData.equipped.ToList(), playerData.maxStat);
         mapData.UpdatePlayerStat();
+        SaveData();
     }
 
     public long GetPlayerMoney()
@@ -198,18 +217,26 @@ public class GameDataManager : MonoBehaviour
         var nowLevel = playerData.skillData.GetSkillLevel(skillCode);
         if (nowLevel < Managers.TableData.GetSkillMaxLevel(skillCode))
             playerData.skillData.SkillLevelUp(skillCode);
+        SaveData();
     }
 
     public void EquipSkill(int skillCode)
     {
         playerData.skillData.EquipSkill(skillCode);
         Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerData.skillData.GetSkills(), GetEquippedSkillDatas());
+        SaveData();
     }
 
     public void UnEquipSkill(int skillCode)
     {
         playerData.skillData.UnEquipSkill(skillCode);
         Managers.UIManager.GetPopup<InfoPopup>().SetSkillTab(playerData.skillData.GetSkills(), GetEquippedSkillDatas());
+        SaveData();
+    }
+
+    void SaveData()
+    {
+        Managers.File.SaveData(PlayerDataDirectoryPath, PlayerDataFilePath, playerData);
     }
 }
 
@@ -241,7 +268,7 @@ public class PlayerData
     public Bag miscBag = new Bag(999);
     public EquipmentBag equipmentBag = new();
     public EquippedEquipments equipped = new();
-    public SkillDataSet skillData = new SkillDataSet();
+    public SkillDataBag skillData = new SkillDataBag();
 
     public PlayerData(int level)
     {
@@ -364,7 +391,9 @@ public class Bag
 
 public class SkillData
 {
+    [JsonProperty]
     public int code { get; private set; }
+    [JsonProperty]
     public int level { get; private set; }
 
     public SkillData(int code)
@@ -379,10 +408,13 @@ public class SkillData
     }
 }
 
-public class SkillDataSet
+public class SkillDataBag
 {
+    [JsonProperty]
     Dictionary<int, SkillData> skillDataDic = new Dictionary<int, SkillData>();
+    [JsonProperty]
     List<int> equipSkills = new List<int>();
+    [JsonProperty]
     int maxSkill = 3;
 
     public void SkillLevelUp(int skillCode)
@@ -468,7 +500,9 @@ public class Equipment
 
 public class EquipmentBag
 {
+    [JsonProperty]
     List<Equipment> bag = new List<Equipment>();
+    [JsonProperty]
     int nextId;
 
     public void Add(Equipment item)
@@ -507,6 +541,7 @@ public class EquipmentBag
 
 public class EquippedEquipments
 {
+    [JsonProperty]
     List<Equipment> equipped = new List<Equipment>();
 
     public bool Equip(Equipment equipment)

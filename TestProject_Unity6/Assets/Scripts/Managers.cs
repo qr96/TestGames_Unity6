@@ -12,6 +12,7 @@ public class Managers : MonoBehaviour
     public UIManager _uiManager;
     public GameDataManager _gameDataManager;
     public TableData _tableData;
+    public FileManager _fileManager;
 
     public static EffectManager effect { get { return Instance?._effect; } }
     public static CameraMover CameraMover { get { return Instance?._cameraMover; } }
@@ -20,6 +21,7 @@ public class Managers : MonoBehaviour
     public static UIManager UIManager { get { return Instance?._uiManager; } }
     public static GameDataManager GameData { get { return Instance?._gameDataManager; } }
     public static TableData TableData { get { return Instance?._tableData; } }
+    public static FileManager File { get { return Instance?._fileManager; } }
 
     private void Awake()
     {
