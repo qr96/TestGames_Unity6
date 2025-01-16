@@ -8,10 +8,12 @@ public class TableData : MonoBehaviour
     readonly string EquipmentJsonPath = "Jsons/Equipments";
     readonly string MiscItemJsonPath = "Jsons/MiscItem";
     readonly string SkillDataJsonPath = "Jsons/SKills";
+    readonly string MonsterJsonPath = "Jsons/Monsters";
 
     Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>> equipmentInfoDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>>();
     Dictionary<int, SkillInfo> skillInfoDic = new Dictionary<int, SkillInfo>();
     Dictionary<int, MiscItemInfo> miscItemInfoDic = new Dictionary<int, MiscItemInfo>();
+    Dictionary<int, MonsterInfo> monsterInfoDic = new Dictionary<int, MonsterInfo>();
 
     class EquipmentInfo
     {
@@ -37,6 +39,13 @@ public class TableData : MonoBehaviour
         public int code;
         public string name;
         public long price;
+    }
+
+    class MonsterInfo
+    {
+        public int code;
+        public string name;
+        public Stat stat;
     }
 
     private void Awake()
@@ -70,6 +79,12 @@ public class TableData : MonoBehaviour
         {
             foreach (var data in dataList)
                 skillInfoDic.Add(data.code, data);
+        });
+
+        ParseJson<List<MonsterInfo>>(MonsterJsonPath, (dataList) =>
+        {
+            foreach (var data in dataList)
+                monsterInfoDic.Add(data.code, data);
         });
     }
 
@@ -308,6 +323,14 @@ public class TableData : MonoBehaviour
         return Resources.Load<Sprite>("Sprites/None");
     }
 
+    public Stat GetMonsterStat(int code)
+    {
+        if (TryGetMonsterInfo(code, out var info))
+            return info.stat;
+
+        return default;
+    }
+
     long GetEquipmentOriginPrice(Equipment.Part part, int itemCode)
     {
         if (TryGetEquipmentInfo(part, itemCode, out var equipmentData))
@@ -340,6 +363,18 @@ public class TableData : MonoBehaviour
         }
 
         skillData = default;
+        return false;
+    }
+
+    bool TryGetMonsterInfo(int code, out MonsterInfo monsterInfo)
+    {
+        if (monsterInfoDic.ContainsKey(code))
+        {
+            monsterInfo = monsterInfoDic[code];
+            return true;
+        }
+
+        monsterInfo = default;
         return false;
     }
 }
