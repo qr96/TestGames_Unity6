@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class TestExtension
 {
-    public static Vector3 ToVector(this float[] array)
+    public static Vector3 ToVector3(this float[] array)
     {
         return new Vector3(array[0], array[1], array[2]);
     }
