@@ -68,7 +68,7 @@ public class MapManager : MonoBehaviour
     Vector3 GetWarpPoint(int targetMapId, int prevMapId)
     {
         if (targetMapId == 1 && prevMapId == 0)
-            return new Vector3(30f, 1f, 1f);
+            return new Vector3(0f, 1f, 0f);
         else if (targetMapId == 0 && prevMapId == 1)
             return new Vector3(-24f, 1f, 5f);
 

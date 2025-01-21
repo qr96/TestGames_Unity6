@@ -41,7 +41,7 @@ public class MapData : MonoBehaviour
         }
         else
         {
-            SpawnMonsters();
+            SpawnMonsters(mapId);
             reduceHpCo = StartCoroutine(ReduceHpCo(1f));
         }
 
@@ -49,21 +49,34 @@ public class MapData : MonoBehaviour
         UpdatePlayerStat();
     }
 
-    public void SpawnMonsters()
+    public void SpawnMonsters(int mapCode)
     {
-        for (int i = 0; i < 5; i++)
-            monsters.Add(new BattleUnit(i, new Stat() { hp = 50, attack = 2 }));
-
-        foreach (var monster in monsters)
+        if (Managers.TableData.TryGetMapUnitsInfo(mapCode, out var units))
         {
-            if (monster.IsDead())
+            var idCounter = 0;
+            foreach (var unit in units)
             {
-                var newPos = new Vector3(Random.Range(0f, 20f), 1f, Random.Range(-10f, 10f));
-                var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-                monster.Respawn();
-                Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
+                var stat = Managers.TableData.GetMonsterStat(unit.code);
+                var battleUnit = new BattleUnit(idCounter++, stat);
+                battleUnit.Respawn();
+                monsters.Add(battleUnit);
+                Managers.MonsterManager.SpawnMonster(battleUnit.id, unit.position.ToVector3(), unit.rotation.ToEuler());
             }
         }
+
+        //for (int i = 0; i < 5; i++)
+        //    monsters.Add(new BattleUnit(i, new Stat() { hp = 50, attack = 2 }));
+
+        //foreach (var monster in monsters)
+        //{
+        //    if (monster.IsDead())
+        //    {
+        //        var newPos = new Vector3(Random.Range(0f, 20f), 1f, Random.Range(-10f, 10f));
+        //        var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+        //        monster.Respawn();
+        //        Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
+        //    }
+        //}
     }
 
     public void RemoveAllMonsters()

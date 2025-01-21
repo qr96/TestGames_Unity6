@@ -9,11 +9,14 @@ public class TableData : MonoBehaviour
     readonly string MiscItemJsonPath = "Jsons/MiscItem";
     readonly string SkillDataJsonPath = "Jsons/SKills";
     readonly string MonsterJsonPath = "Jsons/Monsters";
+    readonly string MapUnitJsonPath = "Jsons/MapUnits";
+    readonly int MapUnitInfoCount = 2;
 
     Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>> equipmentInfoDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>>();
     Dictionary<int, SkillInfo> skillInfoDic = new Dictionary<int, SkillInfo>();
     Dictionary<int, MiscItemInfo> miscItemInfoDic = new Dictionary<int, MiscItemInfo>();
     Dictionary<int, MonsterInfo> monsterInfoDic = new Dictionary<int, MonsterInfo>();
+    Dictionary<int, List<MapUnitInfo>> mapUnitInfoDic = new Dictionary<int, List<MapUnitInfo>>();
 
     class EquipmentInfo
     {
@@ -46,6 +49,20 @@ public class TableData : MonoBehaviour
         public int code;
         public string name;
         public Stat stat;
+    }
+
+    public class MapUnitInfo
+    {
+        public int code;
+        public UnitType unitType;
+        public float[] position;
+        public float[] rotation;
+
+        public enum UnitType
+        {
+            None,
+            Monster
+        }
     }
 
     private void Awake()
@@ -86,6 +103,12 @@ public class TableData : MonoBehaviour
             foreach (var data in dataList)
                 monsterInfoDic.Add(data.code, data);
         });
+
+        for (int i = 0; i < MapUnitInfoCount; i++)
+            ParseJson<List<MapUnitInfo>>($"{MapUnitJsonPath}/{i}", (dataList) =>
+            {
+                mapUnitInfoDic.Add(i, dataList);
+            });
     }
 
     void ParseJson<T>(string jsonPath, Action<T> onDesrialize)
@@ -329,6 +352,18 @@ public class TableData : MonoBehaviour
             return info.stat;
 
         return default;
+    }
+
+    public bool TryGetMapUnitsInfo(int mapCode, out List<MapUnitInfo> mapUnits)
+    {
+        if (mapUnitInfoDic.ContainsKey(mapCode))
+        {
+            mapUnits = mapUnitInfoDic[mapCode];
+            return true;
+        }
+
+        mapUnits = default;
+        return false;
     }
 
     long GetEquipmentOriginPrice(Equipment.Part part, int itemCode)

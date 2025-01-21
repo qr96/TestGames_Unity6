@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static TableData;
 
 public class MapMaker : MonoBehaviour
 {
@@ -57,11 +58,8 @@ public class MapMaker : MonoBehaviour
 
             foreach (var unitInfo in unitInfoList)
             {
-                var position = new Vector3(unitInfo.position[0], unitInfo.position[1], unitInfo.position[2]);
-                var eulerAngles = Quaternion.Euler(unitInfo.rotation[0], unitInfo.rotation[1], unitInfo.rotation[2]);
-
                 var prefab = Resources.Load<GameObject>($"Prefabs/Monsters/{unitInfo.code}");
-                var instantiated = Instantiate(prefab, position, eulerAngles);
+                var instantiated = Instantiate(prefab, unitInfo.position.ToVector3(), unitInfo.rotation.ToEuler());
 
                 instantiated.gameObject.SetActive(true);
                 unitObjectList.Add(instantiated);
@@ -70,16 +68,4 @@ public class MapMaker : MonoBehaviour
     }
 }
 
-public class MapUnitInfo
-{
-    public int code;
-    public UnitType unitType;
-    public float[] position;
-    public float[] rotation;
 
-    public enum UnitType
-    {
-        None,
-        Monster
-    }
-}
