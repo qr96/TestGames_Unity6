@@ -12,12 +12,16 @@ public class MapMaker : MonoBehaviour
 
     public int mapCode;
     public int unitCode;
+    public int targetMapCode;
     public MapUnitInfo.UnitType unitType;
     public Vector3 position;
 
     public List<MapUnitInfo> unitInfoList = new List<MapUnitInfo>();
     public List<GameObject> unitObjectList = new List<GameObject>();
+    
     public MapInfo nowMapInfo = new MapInfo();
+    public List<GameObject> portalObjectList = new List<GameObject>();
+    public List<GameObject> startPointObjectList = new List<GameObject>();
 
     public class MapInfo
     {
@@ -44,6 +48,16 @@ public class MapMaker : MonoBehaviour
         }
     }
 
+    public void SpawnPortal()
+    {
+        SpawnPortal(targetMapCode, position);
+    }
+
+    public void SpawnStartPoint()
+    {
+        SpawnStartPoint(targetMapCode, position);
+    }
+
     public void SaveData()
     {
         for (int i = 0; i < unitInfoList.Count; i++)
@@ -58,21 +72,35 @@ public class MapMaker : MonoBehaviour
             unitInfo.rotation = new float[] { eulerAngles.x, eulerAngles.y, eulerAngles.z };
         }
 
+        for (int i = 0; i < nowMapInfo.portals.Count; i++)
+        {
+            var portalInfo = nowMapInfo.portals[i];
+            var portalObject = portalObjectList[i];
+
+            portalInfo.position = portalObject.transform.position.ToArray();
+        }
+
+        for (int i = 0; i < nowMapInfo.startPoints.Count; i++)
+        {
+            var startPointInfo = nowMapInfo.startPoints[i];
+            var startPointObject = startPointObjectList[i];
+
+            startPointInfo.position = startPointObject.transform.position.ToArray();
+        }
+
         SaveData(MapUnitDirectoryPath, $"{mapCode}.json", unitInfoList);
-        
+        SaveData(MapInfoDirectoryPath, $"{mapCode}.json", nowMapInfo);
+
         Debug.Log("SaveData");
     }
 
     public void LoadData()
     {
-        if (TryLoadData<List<MapUnitInfo>>($"{MapUnitDirectoryPath}/{mapCode}.json", out var loaded))
-        {
-            Debug.Log("LoadData");
-            unitInfoList = loaded;
+        ClearAll();
 
-            foreach (var unitObject in unitObjectList)
-                Destroy(unitObject);
-            unitObjectList.Clear();
+        if (TryLoadData<List<MapUnitInfo>>($"{MapUnitDirectoryPath}/{mapCode}.json", out var mapUnitInfos))
+        {
+            unitInfoList = mapUnitInfos;
 
             foreach (var unitInfo in unitInfoList)
             {
@@ -83,9 +111,57 @@ public class MapMaker : MonoBehaviour
                 unitObjectList.Add(instantiated);
             }
         }
+
+        if (TryLoadData<MapInfo>($"{MapInfoDirectoryPath}/{mapCode}.json", out var mapInfo))
+        {
+            foreach (var portalInfo in mapInfo.portals)
+                SpawnPortal(portalInfo.mapCode, portalInfo.position.ToVector3());
+
+            foreach (var startPoint in mapInfo.startPoints)
+                SpawnStartPoint(startPoint.mapCode, startPoint.position.ToVector3());
+        }
     }
 
-    public void SaveData<T>(string directoryPath, string fileName, T targetObject)
+    void SpawnPortal(int mapCode, Vector3 position)
+    {
+        var prefab = Resources.Load<GameObject>($"Prefabs/Etc/Portal");
+        var instantiated = Instantiate(prefab);
+        instantiated.transform.position = position;
+        instantiated.gameObject.SetActive(true);
+        portalObjectList.Add(instantiated);
+        nowMapInfo.portals.Add(new WarpInfo() { mapCode = mapCode, position = position.ToArray() });
+    }
+
+    void SpawnStartPoint(int mapCode, Vector3 position)
+    {
+        var prefab = Resources.Load<GameObject>($"Prefabs/Etc/StartPoint");
+        var instantiated = Instantiate(prefab);
+        instantiated.transform.position = position;
+        instantiated.gameObject.SetActive(true);
+        startPointObjectList.Add(instantiated);
+        nowMapInfo.startPoints.Add(new WarpInfo() { mapCode = mapCode, position = position.ToArray() });
+    }
+
+    void ClearAll()
+    {
+        foreach (var unitObject in unitObjectList)
+            Destroy(unitObject);
+
+        foreach (var portal in portalObjectList)
+            Destroy(portal);
+
+        foreach (var startPoint in startPointObjectList)
+            Destroy(startPoint);
+
+        unitObjectList.Clear();
+        portalObjectList.Clear();
+        startPointObjectList.Clear();
+
+        nowMapInfo.startPoints.Clear();
+        nowMapInfo.portals.Clear();
+    }
+
+    void SaveData<T>(string directoryPath, string fileName, T targetObject)
     {
         var objectType = targetObject.GetType();
         var fullPath = $"{Application.dataPath}/{directoryPath}/{fileName}";
@@ -102,7 +178,7 @@ public class MapMaker : MonoBehaviour
         }
     }
 
-    public bool TryLoadData<T>(string filePath, out T loadObject)
+    bool TryLoadData<T>(string filePath, out T loadObject)
     {
         var fullPath = $"{Application.dataPath}/{filePath}";
         if (File.Exists(fullPath))
