@@ -10,6 +10,7 @@ public class TableData : MonoBehaviour
     readonly string SkillDataJsonPath = "Jsons/SKills";
     readonly string MonsterJsonPath = "Jsons/Monsters";
     readonly string MapUnitJsonPath = "Jsons/MapUnits";
+    readonly string MapWarpJsonPath = "Jsons/MapInfos";
     readonly int MapUnitInfoCount = 2;
 
     Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>> equipmentInfoDic = new Dictionary<Equipment.Part, Dictionary<int, EquipmentInfo>>();
@@ -17,6 +18,7 @@ public class TableData : MonoBehaviour
     Dictionary<int, MiscItemInfo> miscItemInfoDic = new Dictionary<int, MiscItemInfo>();
     Dictionary<int, MonsterInfo> monsterInfoDic = new Dictionary<int, MonsterInfo>();
     Dictionary<int, List<MapUnitInfo>> mapUnitInfoDic = new Dictionary<int, List<MapUnitInfo>>();
+    Dictionary<int, MapWarpInfo> mapWarpInfoDic = new Dictionary<int, MapWarpInfo>(); 
 
     class EquipmentInfo
     {
@@ -65,6 +67,18 @@ public class TableData : MonoBehaviour
         }
     }
 
+    public class MapWarpInfo
+    {
+        public List<WarpInfo> startPoints = new List<WarpInfo>();
+        public List<WarpInfo> portals = new List<WarpInfo>();
+    }
+
+    public class WarpInfo
+    {
+        public int mapCode;
+        public float[] position;
+    }
+
     private void Awake()
     {
         var equipmentParts = Enum.GetValues(typeof(Equipment.Part));
@@ -105,10 +119,10 @@ public class TableData : MonoBehaviour
         });
 
         for (int i = 0; i < MapUnitInfoCount; i++)
-            ParseJson<List<MapUnitInfo>>($"{MapUnitJsonPath}/{i}", (dataList) =>
-            {
-                mapUnitInfoDic.Add(i, dataList);
-            });
+            ParseJson<List<MapUnitInfo>>($"{MapUnitJsonPath}/{i}", (dataList) => mapUnitInfoDic.Add(i, dataList));
+
+        for (int i = 0; i < MapUnitInfoCount; i++)
+            ParseJson<MapWarpInfo>($"{MapWarpJsonPath}/{i}", (data) => mapWarpInfoDic.Add(i, data));
     }
 
     void ParseJson<T>(string jsonPath, Action<T> onDesrialize)
@@ -363,6 +377,18 @@ public class TableData : MonoBehaviour
         }
 
         mapUnits = default;
+        return false;
+    }
+
+    public bool TryGetMapWarpInfo(int mapCode, out MapWarpInfo mapWarpInfo)
+    {
+        if (mapWarpInfoDic.ContainsKey(mapCode))
+        {
+            mapWarpInfo = mapWarpInfoDic[mapCode];
+            return true;
+        }
+
+        mapWarpInfo = default;
         return false;
     }
 

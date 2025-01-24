@@ -11,4 +11,9 @@ public static class TestExtension
     {
         return Quaternion.Euler(array[0], array[1], array[2]);
     }
+
+    public static float[] ToArray(this Vector3 vector3)
+    {
+        return new float[] { vector3.x, vector3.y, vector3.z };
+    }
 }

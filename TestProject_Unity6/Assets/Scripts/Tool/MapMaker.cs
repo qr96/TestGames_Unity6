@@ -19,21 +19,9 @@ public class MapMaker : MonoBehaviour
     public List<MapUnitInfo> unitInfoList = new List<MapUnitInfo>();
     public List<GameObject> unitObjectList = new List<GameObject>();
     
-    public MapInfo nowMapInfo = new MapInfo();
+    public MapWarpInfo nowMapInfo = new MapWarpInfo();
     public List<GameObject> portalObjectList = new List<GameObject>();
     public List<GameObject> startPointObjectList = new List<GameObject>();
-
-    public class MapInfo
-    {
-        public List<WarpInfo> startPoints = new List<WarpInfo>();
-        public List<WarpInfo> portals = new List<WarpInfo>();
-    }
-
-    public class WarpInfo
-    {
-        public int mapCode;
-        public float[] position;
-    }
 
     public void Spawn()
     {
@@ -112,7 +100,7 @@ public class MapMaker : MonoBehaviour
             }
         }
 
-        if (TryLoadData<MapInfo>($"{MapInfoDirectoryPath}/{mapCode}.json", out var mapInfo))
+        if (TryLoadData<MapWarpInfo>($"{MapInfoDirectoryPath}/{mapCode}.json", out var mapInfo))
         {
             foreach (var portalInfo in mapInfo.portals)
                 SpawnPortal(portalInfo.mapCode, portalInfo.position.ToVector3());
