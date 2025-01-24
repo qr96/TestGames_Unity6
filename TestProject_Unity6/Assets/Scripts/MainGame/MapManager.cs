@@ -37,26 +37,29 @@ public class MapManager : MonoBehaviour
 
     void SpawnPortal(int mapId)
     {
-        var portalInfos = GetPortalInfos(mapId);
-        
-        while (portalPool.Count < portalInfos.Count)
+        if (Managers.TableData.TryGetMapWarpInfo(mapId, out var warpInfos))
         {
-            var portal = Instantiate(portalPrefab);
-            portalPool.Add(portal);
-        }
-        
-        for (int i = 0; i < portalInfos.Count; i++)
-        {
-            var portal = portalPool[i];
-            var portalInfo = portalInfos[i];
+            var portalInfos = warpInfos.portals;
 
-            portal.gameObject.SetActive(true);
-            portal.Set((col) => OnPortalEnter(col, portalInfo.Item1), null);
-            portal.transform.position = portalInfo.Item2;
-        }
+            while (portalPool.Count < portalInfos.Count)
+            {
+                var portal = Instantiate(portalPrefab);
+                portalPool.Add(portal);
+            }
 
-        for (int i = portalInfos.Count; i < portalPool.Count; i++)
-            portalPool[i].gameObject.SetActive(false);
+            for (int i = 0; i < portalInfos.Count; i++)
+            {
+                var portal = portalPool[i];
+                var portalInfo = portalInfos[i];
+
+                portal.gameObject.SetActive(true);
+                portal.Set((col) => OnPortalEnter(col, portalInfo.mapCode), null);
+                portal.transform.position = portalInfo.position.ToVector3();
+            }
+
+            for (int i = portalInfos.Count; i < portalPool.Count; i++)
+                portalPool[i].gameObject.SetActive(false);
+        }
     }
 
     void OnPortalEnter(Collider col, int targetMapId)
@@ -67,21 +70,14 @@ public class MapManager : MonoBehaviour
 
     Vector3 GetWarpPoint(int targetMapId, int prevMapId)
     {
-        if (targetMapId == 1 && prevMapId == 0)
-            return new Vector3(0f, 1f, 0f);
-        else if (targetMapId == 0 && prevMapId == 1)
-            return new Vector3(-24f, 1f, 5f);
+        if (Managers.TableData.TryGetMapWarpInfo(targetMapId, out var warpInfos))
+        {
+            var startPoints = warpInfos.startPoints;
+            foreach (var startPoint in startPoints)
+                if (startPoint.mapCode == prevMapId)
+                    return startPoint.position.ToVector3();
+        }
 
         return Vector3.zero;
-    }
-
-    List<Tuple<int, Vector3>> GetPortalInfos(int mapId)
-    {
-        if (mapId == 0)
-            return new List<Tuple<int, Vector3>>() { new Tuple<int, Vector3>(1, new Vector3(-24f, 0f, 5f)) };
-        else if (mapId == 1)
-            return new List<Tuple<int, Vector3>>() { new Tuple<int, Vector3>(0, new Vector3(30f, 0f, 1f)) };
-
-        return default;
     }
 }
