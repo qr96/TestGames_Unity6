@@ -19,7 +19,7 @@ public class MapData : MonoBehaviour
     {
         playerUnit = new BattleUnit(1, Managers.GameData.GetPlayerStat());
 
-        StartCoroutine(ChargeMpCo(1));
+        StartCoroutine(ChargeMpCo(0.2f));
     }
 
     public void EnterMap(int mapId)
@@ -63,20 +63,6 @@ public class MapData : MonoBehaviour
                 Managers.MonsterManager.SpawnMonster(battleUnit.id, unit.position.ToVector3(), unit.rotation.ToEuler());
             }
         }
-
-        //for (int i = 0; i < 5; i++)
-        //    monsters.Add(new BattleUnit(i, new Stat() { hp = 50, attack = 2 }));
-
-        //foreach (var monster in monsters)
-        //{
-        //    if (monster.IsDead())
-        //    {
-        //        var newPos = new Vector3(Random.Range(0f, 20f), 1f, Random.Range(-10f, 10f));
-        //        var newRotate = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-        //        monster.Respawn();
-        //        Managers.MonsterManager.SpawnMonster(monster.id, newPos, newRotate);
-        //    }
-        //}
     }
 
     public void RemoveAllMonsters()
@@ -215,9 +201,42 @@ public class MapData : MonoBehaviour
                 }
 
                 usingSkills.Add(new Tuple<int, long[]>(skillCode, damages));
+                break;
             }
         }
 
         return usingSkills;
+    }
+
+    Tuple<int, long[]> GetSkillDamage()
+    {
+        var skillDatas = Managers.GameData.GetEquippedSkillDatas();
+        var usingSkill = new Tuple<int, long[]>(0, new long[0]);
+        var mastery = playerUnit.MaxStat.mastery;
+
+        foreach (var skillData in skillDatas)
+        {
+            var skillCode = skillData.code;
+            var skillLevel = skillData.level;
+            var procChance = Managers.TableData.GetSkillProcChance(skillCode);
+            var attackCount = Managers.TableData.GetSkillAttackCount(skillCode);
+
+            if (Random.Range(0, 100) < procChance)
+            {
+                var damages = new long[attackCount];
+                for (int i = 0; i < attackCount; i++)
+                {
+                    var damage = Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack());
+                    var factor = Random.Range((int)(mastery * 100), 100);
+                    damage = damage * factor / 100;
+                    damages[i] = damage;
+                }
+
+                usingSkill = new Tuple<int, long[]>(skillCode, damages);
+                break;
+            }
+        }
+
+        return usingSkill;
     }
 }
