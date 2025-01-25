@@ -44,7 +44,13 @@ public class PlayerController : MonoBehaviour
     {
         if (nowState == State.Idle)
         {
-            var input = joystick.Direction == Vector2.zero ? inputAction.ReadValue<Vector2>() : joystick.Direction;
+            var input = Vector2.zero;
+
+            if (inputAction != null)
+                input = inputAction.ReadValue<Vector2>();
+            else if (joystick != null)
+                input = joystick.Direction;
+
             input.Normalize();
 
             moveDirection = new Vector3(input.x, 0f, input.y);
@@ -54,7 +60,7 @@ public class PlayerController : MonoBehaviour
                 var inputAttackVector = moveDirection;
                 var isAttack = false;
 
-                // Å¸°Ù °ø°İ
+                // íƒ€ê²Ÿ ê³µê²©
                 foreach (var enemy in enemies)
                 {
                     var objectAttackVector = (enemy.transform.position - transform.position);
@@ -66,26 +72,26 @@ public class PlayerController : MonoBehaviour
                     }
                 }
 
-                // ºñÈ°¼ºÈ­µÈ Å¸°Ù ¸ñ·Ï¿¡¼­ Á¦°Å (¹İµå½Ã °ø°İ Á÷ÈÄ¿¡ ÇØÁà¾ßÇÔ)
+                // ë¹„í™œì„±í™”ëœ íƒ€ê²Ÿ ëª©ë¡ì—ì„œ ì œê±° (ë°˜ë“œì‹œ ê³µê²© ì§í›„ì— í•´ì¤˜ì•¼í•¨)
                 foreach (var enemy in enemies)
                     if (!enemy.isActiveAndEnabled) Managers.UIManager.GetLayout<HudLayout>().RemoveTarget(enemy.Id);
                 enemies.RemoveWhere(enemy => !enemy.isActiveAndEnabled);
 
                 if (isAttack)
                 {
-                    // °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç
+                    // ê³µê²© ì• ë‹ˆë©”ì´ì…˜
                     animator.SetTrigger("Attack");
                     animator.SetBool("Moving", false);
                     attackEnd = DateTime.Now.AddSeconds(attackCoolTime);
                     OnPushed(-inputAttackVector);
 
-                    // »óÅÂ º¯°æ
+                    // ìƒíƒœ ë³€ê²½
                     nowState = State.Attack;
                 }
             }
             else
             {
-                // ¾Ö´Ï¸ŞÀÌ¼Ç
+                // ì• ë‹ˆë©”ì´ì…˜
                 if (moveDirection == Vector3.zero)
                     animator.SetBool("Moving", false);
                 else
@@ -111,7 +117,7 @@ public class PlayerController : MonoBehaviour
             var moveDirectionLeft = new Vector3(moveDirection.x * cos45 - moveDirection.z * sin45, 0f, moveDirection.x * sin45 + moveDirection.z * cos45);
             var moveDirectionRight = new Vector3(moveDirection.x * cos45 + moveDirection.z * sin45, 0f, -moveDirection.x * sin45 + moveDirection.z * cos45);
 
-            // º® ºÙ¾î¼­ ÀÌµ¿ º¸Á¤
+            // ë²½ ë¶™ì–´ì„œ ì´ë™ ë³´ì •
             if (Physics.Raycast(transform.position, moveDirectionLeft, out var hit, 0.52f, LayerMask.GetMask("Wall"))
                 || Physics.Raycast(transform.position, moveDirectionLeft, out hit, 0.71f, LayerMask.GetMask("Wall"))
                 || Physics.Raycast(transform.position, moveDirectionRight, out hit, 0.71f, LayerMask.GetMask("Wall")))
