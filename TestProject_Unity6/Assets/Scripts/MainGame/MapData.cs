@@ -14,12 +14,21 @@ public class MapData : MonoBehaviour
     Coroutine reduceHpCo;
     int nowMapId = -1;
     int spawnedItemId;
+    int lastTownMapId;
 
     private void Start()
     {
         playerUnit = new BattleUnit(1, Managers.GameData.GetPlayerStat());
 
         StartCoroutine(ChargeMpCo(0.2f));
+    }
+
+    private void Update()
+    {
+        if (Managers.MonsterManager.player.transform.position.y < -20f)
+        {
+            Managers.Map.MoveMap(lastTownMapId);
+        }
     }
 
     public void EnterMap(int mapId)
@@ -31,6 +40,8 @@ public class MapData : MonoBehaviour
 
         if (TableData.IsTown(mapId))
         {
+            lastTownMapId = mapId;
+
             if (!TableData.IsTown(nowMapId))
             {
                 foreach (var itemData in acquiredBag.ToList())
@@ -206,37 +217,5 @@ public class MapData : MonoBehaviour
         }
 
         return usingSkills;
-    }
-
-    Tuple<int, long[]> GetSkillDamage()
-    {
-        var skillDatas = Managers.GameData.GetEquippedSkillDatas();
-        var usingSkill = new Tuple<int, long[]>(0, new long[0]);
-        var mastery = playerUnit.MaxStat.mastery;
-
-        foreach (var skillData in skillDatas)
-        {
-            var skillCode = skillData.code;
-            var skillLevel = skillData.level;
-            var procChance = Managers.TableData.GetSkillProcChance(skillCode);
-            var attackCount = Managers.TableData.GetSkillAttackCount(skillCode);
-
-            if (Random.Range(0, 100) < procChance)
-            {
-                var damages = new long[attackCount];
-                for (int i = 0; i < attackCount; i++)
-                {
-                    var damage = Managers.TableData.GetSkillDamage(skillCode, skillLevel, playerUnit.GetAttack());
-                    var factor = Random.Range((int)(mastery * 100), 100);
-                    damage = damage * factor / 100;
-                    damages[i] = damage;
-                }
-
-                usingSkill = new Tuple<int, long[]>(skillCode, damages);
-                break;
-            }
-        }
-
-        return usingSkill;
     }
 }

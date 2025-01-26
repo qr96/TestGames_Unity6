@@ -78,6 +78,6 @@ public class MapManager : MonoBehaviour
                     return startPoint.position.ToVector3();
         }
 
-        return Vector3.zero;
+        return new Vector3(0f, 1f, 0f);
     }
 }
