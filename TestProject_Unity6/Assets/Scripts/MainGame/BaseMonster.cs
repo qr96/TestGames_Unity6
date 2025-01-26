@@ -16,6 +16,7 @@ public class BaseMonster : MonoBehaviour
     public float knockBack;
 
     public int Id { get; private set; }
+    public int Code { get; private set; }
 
     public void OnAttacked(Vector3 pushed)
     {
@@ -28,9 +29,10 @@ public class BaseMonster : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OnSpawn(int id)
+    public void OnSpawn(int id, int code)
     {
         Id = id;
+        Code = code;
         gameObject.SetActive(true);
     }
 }

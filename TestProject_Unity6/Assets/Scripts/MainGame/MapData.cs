@@ -60,7 +60,7 @@ public class MapData : MonoBehaviour
                 var battleUnit = new BattleUnit(idCounter++, stat);
                 battleUnit.Respawn();
                 monsters.Add(battleUnit);
-                Managers.MonsterManager.SpawnMonster(battleUnit.id, unit.position.ToVector3(), unit.rotation.ToEuler());
+                Managers.MonsterManager.SpawnMonster(battleUnit.id, unit.code, unit.position.ToVector3(), unit.rotation.ToEuler());
             }
         }
     }

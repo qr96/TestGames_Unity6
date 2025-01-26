@@ -8,7 +8,7 @@ public class MonsterManager : MonoBehaviour
     public PlayerController player;
     public BaseMonster monsterPrefab;
 
-    Stack<BaseMonster> monsterPool = new Stack<BaseMonster>();
+    Dictionary<int, Stack<BaseMonster>> monsterPoolDic = new Dictionary<int, Stack<BaseMonster>>();
     List<BaseMonster> spawnedMonsters = new List<BaseMonster>();
     Dictionary<int, BaseMonster> monsterDic = new Dictionary<int, BaseMonster>();
 
@@ -17,14 +17,18 @@ public class MonsterManager : MonoBehaviour
         return spawnedMonsters;
     }
 
-    public void SpawnMonster(int id, Vector3 position, Quaternion rotation)
+    public void SpawnMonster(int id, int code, Vector3 position, Quaternion rotation)
     {
         if (!monsterDic.ContainsKey(id))
         {
-            var monster = monsterPool.Count > 0 ? monsterPool.Pop() : Instantiate(monsterPrefab);
+            if (!monsterPoolDic.ContainsKey(code))
+                monsterPoolDic.Add(code, new Stack<BaseMonster>());
+
+            var monsterPool = monsterPoolDic[code];
+            var monster = monsterPool.Count > 0 ? monsterPool.Pop() : Instantiate(Resources.Load<BaseMonster>($"Prefabs/Monsters/{code}"));
             monster.transform.position = position;
             monster.transform.rotation = rotation;
-            monster.OnSpawn(id);
+            monster.OnSpawn(id, code);
 
             spawnedMonsters.Add(monster);
             monsterDic.Add(id, monster);
@@ -42,7 +46,7 @@ public class MonsterManager : MonoBehaviour
             var monster = monsterDic[id];
             monster.OnDead();
 
-            monsterPool.Push(monster);
+            monsterPoolDic[monster.Code].Push(monster);
             spawnedMonsters.Remove(monster);
             monsterDic.Remove(id);
         }
@@ -57,7 +61,7 @@ public class MonsterManager : MonoBehaviour
         foreach (var monster in spawnedMonsters)
         {
             monster.OnDead();
-            monsterPool.Push(monster);
+            monsterPoolDic[monster.Code].Push(monster);
             monsterDic.Remove(monster.Id);
         }
 
