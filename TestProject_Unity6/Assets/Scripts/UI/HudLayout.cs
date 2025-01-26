@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class HudLayout : UILayout
 {
-    const float DAMAGE_TEXT_SPACE = 0.5f;
+    const float DAMAGE_TEXT_SPACE = 36f;
 
     public GuageBar hpBarPrefab;
     public TMP_Text nameTagPrefab;
@@ -22,10 +22,12 @@ public class HudLayout : UILayout
     Stack<TMP_Text> damagePool = new Stack<TMP_Text>();
 
     Camera mainCamera;
+    RectTransform rectTransform;
 
     private void Start()
     {
         mainCamera = Camera.main;
+        rectTransform = GetComponent<RectTransform>();
         hpBarPrefab.SetActive(false);
         nameTagPrefab.gameObject.SetActive(false);
         damagePrefab.gameObject.SetActive(false);
@@ -122,31 +124,40 @@ public class HudLayout : UILayout
         }
     }
 
-    public void ShowDamage(long damage, Vector3 position)
+    public void ShowDamage(long[] damages, Vector3 position)
     {
-        TMP_Text damageIns;
-        var startPos = mainCamera.WorldToScreenPoint(position);
-        var endPos = mainCamera.WorldToScreenPoint(position + Vector3.up);
+        var rectPos = WorldToAnchored(position, rectTransform);
+        ShowDamage(damages, rectPos);
+    }
 
-        if (damagePool.Count > 0)
-            damageIns = damagePool.Pop();
-        else
-            damageIns = Instantiate(damagePrefab, transform);
+    void ShowDamage(long damage, Vector2 startPosition)
+    {
+        var damageIns = damagePool.Count > 0 ? damagePool.Pop() : Instantiate(damagePrefab, transform);
 
         damageIns.gameObject.SetActive(true);
         damageIns.text = damage.ToString();
         damageIns.alpha = 1f;
-        damageIns.transform.position = startPos;
         damageIns.transform.SetAsLastSibling();
-        damageIns.transform.DOMoveY(endPos.y, 1f);
+        damageIns.rectTransform.anchoredPosition = startPosition;
+        damageIns.rectTransform.DOAnchorPosY(startPosition.y + 100f, 1f);
         damageIns.DOFade(0f, 1f)
             .SetEase(Ease.InCirc)
             .OnComplete(() => damagePool.Push(damageIns));
     }
 
-    public void ShowDamage(long[] damages, Vector3 position)
+    void ShowDamage(long[] damages, Vector2 position)
     {
         for (int i = damages.Length - 1; i >= 0; i--)
-            ShowDamage(damages[i], position + Vector3.up * DAMAGE_TEXT_SPACE * i);
+            ShowDamage(damages[i], position + Vector2.up * DAMAGE_TEXT_SPACE * i);
+    }
+
+    Vector2 WorldToAnchored(Vector3 worldPos, RectTransform parentRect)
+    {
+        var screenPoint = mainCamera.WorldToScreenPoint(worldPos);
+
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, screenPoint, null, out var anchoredPos))
+            return anchoredPos;
+
+        return Vector2.zero;
     }
 }
