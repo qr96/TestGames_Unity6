@@ -118,9 +118,12 @@ public class HudLayout : UILayout
         if (nameTargetDic.ContainsKey(target))
         {
             var nameTag = nameTargetDic[target];
-            nameTag.gameObject.SetActive(false);
-            nameTagPool.Push(nameTag);
-            nameTargetDic.Remove(target);
+            if (nameTag != null)
+            {
+                nameTag.gameObject.SetActive(false);
+                nameTagPool.Push(nameTag);
+                nameTargetDic.Remove(target);
+            }
         }
     }
 
