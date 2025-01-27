@@ -15,8 +15,10 @@ public class DroppedItem : MonoBehaviour
 
     private void Update()
     {
-        model.transform.localRotation = Quaternion.Euler(new Vector3(0f, rotateY, 0f));
-        rotateY += Time.deltaTime * rotateSpeed;
+        var newRotate = model.transform.localEulerAngles;
+        newRotate.y += Time.deltaTime * rotateSpeed;
+        newRotate.y %= 360f;
+        model.transform.localEulerAngles = newRotate;
     }
 
     private void OnTriggerEnter(Collider other)
