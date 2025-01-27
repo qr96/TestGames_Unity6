@@ -255,12 +255,8 @@ public class TableData : MonoBehaviour
         var upgradePrice = 1000L;
         var originPrice = GetEquipmentOriginPrice(part, itemCode);
 
-        expectPrice = originPrice / 100;
-
         for (int i = 1; i <= upgradeLevel; i++)
             expectPrice = (long)((expectPrice + upgradePrice) / (double)GetEquipmentEnhancePossibilty(itemCode, i));
-
-        expectPrice *= 100;
 
         return expectPrice;
     }
