@@ -4,7 +4,15 @@
     "name": "달팽이",
     "stat": {
       "hp": 50,
-      "attack": 2
+      "attack": 4
+    }
+  },
+  {
+    "code": 2,
+    "name": "빨간달팽이",
+    "stat": {
+      "hp": 250,
+      "attack": 8
     }
   }
 ]

@@ -142,8 +142,8 @@ public class HudLayout : UILayout
         damageIns.alpha = 1f;
         damageIns.transform.SetAsLastSibling();
         damageIns.rectTransform.anchoredPosition = startPosition;
-        damageIns.rectTransform.DOAnchorPosY(startPosition.y + 100f, 1f);
-        damageIns.DOFade(0f, 1f)
+        damageIns.rectTransform.DOAnchorPosY(startPosition.y + 50f, 0.5f);
+        damageIns.DOFade(0f, 0.5f)
             .SetEase(Ease.InCirc)
             .OnComplete(() => damagePool.Push(damageIns));
     }

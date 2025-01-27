@@ -46,10 +46,11 @@ public class PlayerController : MonoBehaviour
         {
             var input = Vector2.zero;
 
-            if (inputAction != null)
-                input = inputAction.ReadValue<Vector2>();
-            else if (joystick != null)
+            if (joystick != null)
                 input = joystick.Direction;
+
+            if (input == Vector2.zero && inputAction != null)
+                input = inputAction.ReadValue<Vector2>();
 
             input.Normalize();
 

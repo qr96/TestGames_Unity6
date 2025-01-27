@@ -161,7 +161,7 @@ public class TableData : MonoBehaviour
     {
         var stat = new Stat();
         stat.hp = 30;
-        stat.mp = 10;
+        stat.mp = 30;
         stat.attack = 20;
         stat.speed = 6f;
         stat.mastery = 0.5f;
