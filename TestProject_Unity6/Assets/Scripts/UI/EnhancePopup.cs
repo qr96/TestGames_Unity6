@@ -73,19 +73,22 @@ public class EnhancePopup : UIPopup
         var needMoney = TableData.GetEquipmentEnhancePrice(equipment.code);
         var success = TableData.GetEquipmentEnhancePossibilty(equipment.code, equipment.upgradeLevel);
 
-        SetPopup(TableData.GetEquipmentSprite(equipment.code, equipment.part), equipment.part, equipment.upgradeLevel, maxEnhance, needMoney, success, playerMoney);
+        SetPopup(equipment.code, equipment.part, equipment.upgradeLevel, maxEnhance, needMoney, success, playerMoney);
     }
 
-    void SetPopup(Sprite equipIcon, Equipment.Part part, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
+    void SetPopup(int code, Equipment.Part part, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
     {
+        var equipIcon = TableData.GetEquipmentSprite(code, part);
         equipmentSlot.SetSlot(equipIcon, nowUpgrade);
-        SetInfo(part, nowUpgrade, maxUpgrade, needMoney, success, playerMoney);
+        SetInfo(code, part, nowUpgrade, maxUpgrade, needMoney, success, playerMoney);
     }
 
-    void SetInfo(Equipment.Part part, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
+    void SetInfo(int code, Equipment.Part part, int nowUpgrade, int maxUpgrade, long needMoney, float success, long playerMoney)
     {
         var info = "";
         var enhanceStat = Managers.TableData.GetEquipmentEnhanceIncrease(part, nowUpgrade);
+        var nowPrice = Managers.TableData.GetEquipmentPrice(part, code, nowUpgrade);
+        var nextPrice = Managers.TableData.GetEquipmentPrice(part, code, nowUpgrade + 1);
 
         if (nowUpgrade == maxUpgrade)
             info = "강화 완료";
@@ -93,8 +96,10 @@ public class EnhancePopup : UIPopup
         {
             info += "[강화 정보]\n";
             info += $"강화 레벨 : +{nowUpgrade} > +{nowUpgrade + 1}\n";
-            info += $"소모 비용 : {needMoney}\n";
+            info += $"소모 비용 : {needMoney.ToFormat()}\n";
             info += $"성공 확률 : {success * 100}%\n";
+            info += $"현재 가격 : {nowPrice.ToFormat()}\n";
+            info += $"다음 가격 : {nextPrice.ToFormat()}\n";
             info += "\n";
             info += "[강화 능력치]\n";
             info += enhanceStat.attack > 0 ? $"공격력 : +{enhanceStat.attack}\n" : "";
@@ -102,6 +107,7 @@ public class EnhancePopup : UIPopup
             info += enhanceStat.mp > 0 ? $"기력 : +{enhanceStat.mp}\n" : "";
             info += enhanceStat.speed > 0 ? $"이동속도 : +{enhanceStat.speed * 10}\n" : "";
             info += enhanceStat.mastery > 0 ? $"무기숙련 : +{enhanceStat.mastery * 100}\n" : "";
+            info += "\n";
         }
 
         enhanceInfo.text = info;
