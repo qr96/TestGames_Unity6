@@ -28,9 +28,10 @@ public class DroppedItemManager : MonoBehaviour
         else
             item = Instantiate(items[itemCode]);
 
-        var spwanDirection = new Vector3(Random.Range(-1f, 1f), 1f, Random.Range(-1f, 1f)).normalized;
+        var spawnDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 0.4f;
+        var spawnVector = new Vector3(spawnDirection.x, 1f, spawnDirection.y);
         item.transform.position = position;
-        item.SpawnItem(itemId, itemCode, spwanDirection * spwanPower, OnGetItem);
+        item.SpawnItem(itemId, itemCode, spawnVector * spwanPower, OnGetItem);
     }
 
     void OnGetItem(int itemId, int itemCode, DroppedItem item)
