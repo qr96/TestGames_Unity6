@@ -163,7 +163,7 @@ public class TableData : MonoBehaviour
         stat.hp = 30;
         stat.mp = 30;
         stat.attack = 20;
-        stat.speed = 6f;
+        stat.speed = 10f;
         stat.mastery = 0.5f;
 
         return stat;

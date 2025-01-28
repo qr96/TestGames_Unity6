@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigid: {fileID: 8482662609807847745}
   knockBack: 5
+  knockBackTime: 0.5
+  moveSpeed: 3
 --- !u!1001 &6101988074741361626
 PrefabInstance:
   m_ObjectHideFlags: 0
