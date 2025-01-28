@@ -11,7 +11,8 @@ public class CameraMover : MonoBehaviour
     }
 
     public Transform target;
-    public Vector3 cameraPos;
+    public Vector3 cameraOffset;
+    public float distance;
     public float smoothTime;
     public float lerp;
     public Mode mode;
@@ -20,6 +21,7 @@ public class CameraMover : MonoBehaviour
 
     private void LateUpdate()
     {
+        var cameraPos = cameraOffset * distance;
         var targetPos = target.position + cameraPos;
         var calculatedPos = targetPos;
 
@@ -33,7 +35,7 @@ public class CameraMover : MonoBehaviour
 
     public void MoveToTarget()
     {
-        var targetPos = target.position + cameraPos;
+        var targetPos = target.position + cameraOffset;
         transform.position = targetPos;
     }
 }
