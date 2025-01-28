@@ -74,9 +74,9 @@ public class GameDataManager : MonoBehaviour
         SaveData();
     }
 
-    public void Battle(int monsterId)
+    public void Battle(int monsterId, bool isAttack)
     {
-        mapData.Battle(monsterId);
+        mapData.Battle(monsterId, isAttack);
     }
 
     public void EnterMap(int mapId)

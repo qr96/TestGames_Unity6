@@ -82,7 +82,7 @@ public class MapData : MonoBehaviour
         Managers.MonsterManager.RemoveAllMonsters();
     }
 
-    public void Battle(int monsterId)
+    public void Battle(int monsterId, bool isAttack)
     {
         var monster = monsters[monsterId];
 
@@ -94,21 +94,28 @@ public class MapData : MonoBehaviour
         {
             if (Managers.MonsterManager.TryGetMonsterPosition(monsterId, out var monsterPosition))
             {
-                var playerAttackSkills = GetSkillDamageList();
-
-                foreach (var attackSkill in playerAttackSkills)
+                if (isAttack)
                 {
-                    var skillCode = attackSkill.Item1;
-                    var damages = attackSkill.Item2;
-                    var skillEffectCode = Managers.TableData.GetSkillEffectCode(skillCode);
+                    var playerAttackSkills = GetSkillDamageList();
 
-                    foreach (var damage in damages)
-                        monster.TakeDamage(damage);
+                    foreach (var attackSkill in playerAttackSkills)
+                    {
+                        var skillCode = attackSkill.Item1;
+                        var damages = attackSkill.Item2;
+                        var skillEffectCode = Managers.TableData.GetSkillEffectCode(skillCode);
 
-                    Managers.effect.ShowEffect(skillEffectCode, monsterPosition);
-                    Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
+                        foreach (var damage in damages)
+                            monster.TakeDamage(damage);
+
+                        Managers.effect.ShowEffect(skillEffectCode, monsterPosition);
+                        Managers.UIManager.GetLayout<HudLayout>().ShowDamage(attackSkill.Item2, monsterPosition + Vector3.up * 1f);
+                    }
                 }
-
+                else
+                {
+                    Managers.effect.ShowEffect(6, Managers.MonsterManager.player.transform.position);
+                }
+                
                 Managers.UIManager.GetLayout<HudLayout>().SetHpBar(monsterId, monster.MaxStat.hp, monster.NowStat.hp);
 
                 playerUnit.TakeDamage(monster.GetAttack());

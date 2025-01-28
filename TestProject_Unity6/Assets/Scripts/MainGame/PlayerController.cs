@@ -60,17 +60,16 @@ public class PlayerController : MonoBehaviour
             {
                 var inputAttackVector = moveDirection;
                 var isAttack = false;
+                var lastEnemyVector = Vector3.zero;
 
                 // 타겟 공격
                 foreach (var enemy in enemies)
                 {
-                    var objectAttackVector = (enemy.transform.position - transform.position);
-                    if (Vector3.Dot(objectAttackVector, inputAttackVector) > 0f)
-                    {
-                        enemy.OnAttacked(inputAttackVector);
-                        Managers.GameData.Battle(enemy.Id);
-                        isAttack = true;
-                    }
+                    var enemyVector = (enemy.transform.position - transform.position);
+                    isAttack = Vector3.Dot(enemyVector, inputAttackVector) > 0f;
+                    enemy.OnAttacked(isAttack ? inputAttackVector : enemyVector);
+                    Managers.GameData.Battle(enemy.Id, isAttack);
+                    lastEnemyVector = enemyVector;
                 }
 
                 // 비활성화된 타겟 목록에서 제거 (반드시 공격 직후에 해줘야함)
@@ -84,11 +83,12 @@ public class PlayerController : MonoBehaviour
                     animator.SetTrigger("Attack");
                     animator.SetBool("Moving", false);
                     attackEnd = DateTime.Now.AddSeconds(attackCoolTime);
-                    OnPushed(-inputAttackVector);
-
+                    
                     // 상태 변경
                     nowState = State.Attack;
                 }
+
+                OnPushed(isAttack ? -inputAttackVector : -lastEnemyVector);
             }
             else
             {
