@@ -12,21 +12,55 @@ public class BaseMonster : MonoBehaviour
     }
 
     public Rigidbody rigid;
+    public TriggerEvent detectTrigger;
 
     public float knockBack;
     public float knockBackTime;
     public float moveSpeed;
+    public float chaseDistance;
+    public float targetPositionError;
 
-    GameObject targetPlayer;
+    public GameObject targetPlayer;
     State nowState;
     DateTime knockBackEnd;
+    public Vector3 targetPosition;
 
     public int Id { get; private set; }
     public int Code { get; private set; }
 
+    private void Start()
+    {
+        detectTrigger.Set(OnEnterDetect, null);
+    }
+
     private void Update()
     {
-        if (nowState == State.Damaged)
+        if (nowState == State.Idle)
+        {
+            if (targetPlayer != null)
+                nowState = State.Move;
+        }
+        else if(nowState == State.Move)
+        {
+            if (targetPlayer != null)
+            {
+                var targetDistance = (targetPlayer.transform.position - transform.position).sqrMagnitude;
+                if (targetDistance < chaseDistance)
+                {
+                    targetPosition = targetPlayer.transform.position;
+                }
+                else
+                {
+                    targetPlayer = null;
+                    nowState = State.Idle;
+                }
+            }
+            else
+            {
+                nowState = State.Idle;
+            }
+        }
+        else if (nowState == State.Damaged)
         {
             if (DateTime.Now > knockBackEnd)
                 nowState = State.Idle;
@@ -35,18 +69,18 @@ public class BaseMonster : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (targetPlayer != null && nowState != State.Damaged)
+        if (nowState == State.Move)
         {
-            var direction = targetPlayer.transform.position - transform.position;
-            direction.y = 0;
+            var deltaPosition = targetPosition - transform.position;
 
-            var resultVelocity = direction.normalized * moveSpeed;
-            resultVelocity.y = rigid.linearVelocity.y;
+            if (deltaPosition.sqrMagnitude > targetPositionError)
+            {
+                var resultVelocity = deltaPosition.normalized * moveSpeed;
+                resultVelocity.y = rigid.linearVelocity.y;
 
-            rigid.linearVelocity = resultVelocity;
-            rigid.rotation = Quaternion.LookRotation(direction);
-
-            nowState = State.Move;
+                rigid.linearVelocity = resultVelocity;
+                rigid.rotation = Quaternion.LookRotation(deltaPosition);
+            }
         }
     }
 
@@ -73,5 +107,14 @@ public class BaseMonster : MonoBehaviour
         Code = code;
         gameObject.SetActive(true);
         nowState = State.Idle;
+    }
+
+    void OnEnterDetect(Collider col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            if (targetPlayer == null)
+                targetPlayer = col.gameObject;
+        }
     }
 }
