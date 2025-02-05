@@ -72,11 +72,12 @@ public class BaseMonster : MonoBehaviour
         if (nowState == State.Move)
         {
             var deltaPosition = targetPosition - transform.position;
-
+            
             if (deltaPosition.sqrMagnitude > targetPositionError)
             {
                 var resultVelocity = deltaPosition.normalized * moveSpeed;
                 resultVelocity.y = rigid.linearVelocity.y;
+                deltaPosition.y = 0f;
 
                 rigid.linearVelocity = resultVelocity;
                 rigid.rotation = Quaternion.LookRotation(deltaPosition);
