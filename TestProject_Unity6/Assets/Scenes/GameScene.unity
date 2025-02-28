@@ -1359,12 +1359,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 9569962, guid: fe2a5bf9b4c2d4a4b9853a8506f18c40, type: 3}
+    - target: {fileID: 9569962, guid: fe2a5bf9b4c2d4a4b9853a8506f18c40, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d6263abcf84019249bcde0fb7c66c8ee, type: 2}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe2a5bf9b4c2d4a4b9853a8506f18c40, type: 3}
+--- !u!95 &87390274 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9569962, guid: fe2a5bf9b4c2d4a4b9853a8506f18c40, type: 3}
+  m_PrefabInstance: {fileID: 87390273}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &88420654
 GameObject:
   m_ObjectHideFlags: 0
@@ -8528,7 +8536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigid: {fileID: 700958387}
-  animator: {fileID: 1824885905}
+  animator: {fileID: 87390274}
   joystick: {fileID: 47619632}
   attackTrigger: {fileID: 783059254}
   speed: 6
@@ -10715,7 +10723,7 @@ Camera:
     height: 1
   near clip plane: 10
   far clip plane: 150
-  field of view: 25
+  field of view: 20
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -10741,13 +10749,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 845886947}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30070576, y: 0, z: 0, w: 0.953717}
-  m_LocalPosition: {x: 0, y: 39, z: -58}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: 41, z: -70}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 35, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &845886951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10805,9 +10813,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 700958384}
-  cameraOffset: {x: 0, y: 38, z: -58}
+  cameraOffset: {x: 0, y: 40, z: -70}
   distance: 1
-  smoothTime: 0.2
+  smoothTime: 0.16
   lerp: 0.5
   mode: 1
 --- !u!114 &845886953
@@ -14879,7 +14887,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 1.8e-43, y: 1.8e-43, z: 1.1e-44, w: 0}
+  m_BoundingSphereOverride: {x: 2.1429e-41, y: 2.524355e-29, z: 0, w: 0.71998596}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
@@ -22612,7 +22620,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1824885904}
-  - component: {fileID: 1824885905}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -22636,28 +22643,6 @@ Transform:
   - {fileID: 687501668}
   m_Father: {fileID: 700958384}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1824885905
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824885903}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 555dddb0fd62c1a4a8a87449606cff55, type: 3}
-  m_Controller: {fileID: 9100000, guid: d6263abcf84019249bcde0fb7c66c8ee, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1827793322
 GameObject:
   m_ObjectHideFlags: 0
@@ -24361,6 +24346,12 @@ MonoBehaviour:
   safeArea: {fileID: 595624729}
   layoutParent: {fileID: 10367081}
   popupParent: {fileID: 1751497382}
+  safeTop: 1
+  safeBottom: 0
+  safeLeft: 0
+  safeRight: 0
+  minRatio: 0.5625
+  maxRatio: 0
 --- !u!1 &1948484588
 GameObject:
   m_ObjectHideFlags: 0

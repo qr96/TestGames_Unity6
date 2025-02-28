@@ -15,19 +15,24 @@ public class UIManager : MonoBehaviour
     public RectTransform layoutParent;
     public RectTransform popupParent;
 
+    public bool safeTop;
+    public bool safeBottom;
+    public bool safeLeft;
+    public bool safeRight;
+
+    public float minRatio;
+    public float maxRatio;
+
     CanvasDimensionsChangeCallback canvasChangeCallback;
+    CanvasScaler canvasScaler;
 
     private void Awake()
     {
-        UIUtil.ApplySafeAreaAnchor(ref safeArea);
-        UIUtil.ApplyPreserveRatio(safeArea, 0.75f);
-
+        canvasScaler = canvas.GetComponent<CanvasScaler>();
         canvasChangeCallback = canvas.GetComponent<CanvasDimensionsChangeCallback>();
-        canvasChangeCallback.SetDimensionsChangeCallback(() =>
-        {
-            UIUtil.ApplySafeAreaAnchor(ref safeArea);
-        });
+        canvasChangeCallback.SetDimensionsChangeCallback(() => UpdateSafeArea());
 
+        UpdateSafeArea();
         RegisterAllLayoutsAndPopups();
     }
 
@@ -108,5 +113,11 @@ public class UIManager : MonoBehaviour
 
         foreach (var popup in popups)
             uiPopups.Add(popup);
+    }
+
+    void UpdateSafeArea()
+    {
+        UIUtil.ApplySafeAreaAnchor(ref safeArea, safeTop, safeBottom, safeLeft, safeRight);
+        UIUtil.ApplyPreserveRatio(safeArea.rect, canvasScaler, minRatio, maxRatio);
     }
 }
